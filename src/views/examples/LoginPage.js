@@ -1,142 +1,110 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 // reactstrap components
 import {
   Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Form,
+  FormGroup,
+  Row,
   Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Container,
-  Col
+  Col,
 } from "reactstrap";
 
-// core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
-import TransparentFooter from "components/Footers/TransparentFooter.js";
 
 function LoginPage() {
-  const [firstFocus, setFirstFocus] = React.useState(false);
-  const [lastFocus, setLastFocus] = React.useState(false);
-  React.useEffect(() => {
-    document.body.classList.add("login-page");
-    document.body.classList.add("sidebar-collapse");
-    document.documentElement.classList.remove("nav-open");
-    window.scrollTo(0, 0);
-    document.body.scrollTop = 0;
-    return function cleanup() {
-      document.body.classList.remove("login-page");
-      document.body.classList.remove("sidebar-collapse");
-    };
-  }, []);
   return (
-    <>
-      <ExamplesNavbar />
-      <div className="page-header clear-filter" filter-color="blue">
-        <div
-          className="page-header-image"
-          style={{
-            backgroundImage: "url(" + require("assets/img/login.jpg") + ")"
-          }}
-        ></div>
-        <div className="content">
-          <Container>
-            <Col className="ml-auto mr-auto" md="4">
-              <Card className="card-login card-plain">
-                <Form action="" className="form" method="">
-                  <CardHeader className="text-center">
-                    <div className="logo-container">
-                      <img
-                        alt="..."
-                        src={require("assets/img/now-logo.png")}
-                      ></img>
-                    </div>
-                  </CardHeader>
-                  <CardBody>
-                    <InputGroup
-                      className={
-                        "no-border input-lg" +
-                        (firstFocus ? " input-group-focus" : "")
-                      }
-                    >
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="now-ui-icons users_circle-08"></i>
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="First Name..."
-                        type="text"
-                        onFocus={() => setFirstFocus(true)}
-                        onBlur={() => setFirstFocus(false)}
-                      ></Input>
-                    </InputGroup>
-                    <InputGroup
-                      className={
-                        "no-border input-lg" +
-                        (lastFocus ? " input-group-focus" : "")
-                      }
-                    >
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="now-ui-icons text_caps-small"></i>
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="Last Name..."
-                        type="text"
-                        onFocus={() => setLastFocus(true)}
-                        onBlur={() => setLastFocus(false)}
-                      ></Input>
-                    </InputGroup>
-                  </CardBody>
-                  <CardFooter className="text-center">
-                    <Button
-                      block
-                      className="btn-round"
-                      color="info"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="lg"
-                    >
-                      Get Started
-                    </Button>
-                    <div className="pull-left">
-                      <h6>
-                        <a
-                          className="link"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          Create Account
-                        </a>
-                      </h6>
-                    </div>
-                    <div className="pull-right">
-                      <h6>
-                        <a
-                          className="link"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          Need Help?
-                        </a>
-                      </h6>
-                    </div>
-                  </CardFooter>
-                </Form>
-              </Card>
-            </Col>
-          </Container>
-        </div>
-        <TransparentFooter />
-      </div>
-    </>
+    <div
+      style={{
+        height: "100vh",
+        justifyContent: "center",
+        flexDirection: "column",
+        display: "flex",
+      }}
+    >
+      <Row style={{ justifyContent: "center", alignItems: "center" }}>
+        <Col
+          md="3"
+          sm="4"
+          style={{ justifyContent: "center", alignItems: "center" }}
+        >
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 35,
+            }}
+          >
+            <Button className="btn-round" color="info" type="button" size="lg">
+              Connect Web3 Wallet
+            </Button>
+          </Row>
+          <hr
+            style={{
+              color: "gray",
+              backgroundColor: "gray",
+              height: 1,
+              marginLeft: 40,
+              marginRight: 40,
+            }}
+          />
+          <div
+            style={{
+              backgroundColor: "gray",
+              width: 26,
+              height: 26,
+              borderRadius: 20,
+              padding: 2,
+              position: "absolute",
+              top: "21%",
+              left: "47%",
+            }}
+          >
+            <h7 style={{ color: "white" }}>OR</h7>
+          </div>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 35,
+            }}
+          >
+            <h3 style={{ color: "gray" }}>Sign up with email</h3>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              marginLeft: 30,
+              marginRight: 40,
+            }}
+          >
+            <FormGroup style={{ width: "100%" }}>
+              <Input
+                style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
+                defaultValue=""
+                placeholder="Enter email"
+                type="email"
+              ></Input>
+              <Input
+                style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
+                defaultValue=""
+                placeholder="create password"
+                type="password"
+              ></Input>
+              <Input
+                style={{ marginBottom: 30, width: "100%", borderColor: 'gray' }}
+                defaultValue=""
+                placeholder="confirm password"
+                type="password"
+              ></Input>
+            </FormGroup>
+          </Row>
+          <Row style={{ justifyContent: "center", alignItems: "center" }}>
+            <Button className="btn-round" color="info" type="button" size="lg" to="/profile-page" tag={Link}>
+              Sign up
+            </Button>
+          </Row>
+        </Col>
+      </Row>
+    </div>
   );
 }
 
