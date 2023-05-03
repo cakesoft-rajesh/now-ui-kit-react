@@ -27,7 +27,8 @@ import "./assets/demo/nucleo-icons-page-styles.css?v=1.5.0";
 // pages for this kit
 // import Index from "./views/Index.js";
 // import NucleoIcons from "./views/NucleoIcons.js";
-import LoginPage from "./views/examples/LoginPage.js";
+import LoginPage from "./views/examples/LoginPage";
+import SignUpPage from "./views/examples/SignUpPage.js";
 // import LandingPage from "./views/examples/LandingPage.js";
 import ProfilePage from "./views/examples/ProfilePage.js";
 import ProfileDetailPage from "./views/examples/ProfileDetailPage";
@@ -54,6 +55,10 @@ root.render(
         <Route
           path="/profile-detail-page"
           render={(props) => <ProfileDetailPage {...props} />}
+        />
+        <Route
+          path="/signup-page"
+          render={(props) => <SignUpPage {...props} />}
         />
         <Route
           path="/login-page"

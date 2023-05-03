@@ -12,6 +12,8 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  Form,
+  FormFeedback,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
@@ -20,12 +22,13 @@ import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
 const wc = new WalletConnect();
 
-class LoginPage extends Component {
+class SignUpPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       showLoader: false,
+      invalidPassword: false,
       showWalletConnectModal: false
     };
   }
@@ -135,32 +138,13 @@ class LoginPage extends Component {
             <Col
               md="3"
               sm="4"
-              style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
+              style={{ justifyContent: "center", alignItems: "center" }}
             >
-              <Row
-                style={{
-                  justifyContent: "end",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  style={{
-                    padding: '13px 30px',
-                    fontSize: '15px',
-                    fontWeight: 'bold',
-                    marginBottom: '30px'
-                  }}
-                  className="btn-round" color="info" type="button" size="lg"
-                  outline
-                  to="/signup-page" tag={Link}
-                >
-                  Sign Up
-                </Button>
-              </Row>
               <Row
                 style={{
                   justifyContent: "center",
                   alignItems: "center",
+                  marginBottom: 35,
                 }}
               >
                 <Button
@@ -171,7 +155,7 @@ class LoginPage extends Component {
                     fontWeight: 'bold',
                   }}
                   onClick={this.toggleWalletConnectModal} className="btn-round" color="info" type="button" size="lg">
-                  Log in with Web 3.0 Wallet
+                  Connect Web3 Wallet
                 </Button>
               </Row>
               <hr
@@ -191,7 +175,7 @@ class LoginPage extends Component {
                   borderRadius: 20,
                   padding: 2,
                   position: "absolute",
-                  top: "42%",
+                  top: "21%",
                   left: "47%",
                 }}
               >
@@ -200,38 +184,68 @@ class LoginPage extends Component {
               <Row
                 style={{
                   justifyContent: "center",
-                  marginLeft: 30,
-                  marginRight: 40,
-                  marginTop: 40,
+                  alignItems: "center",
+                  marginTop: 35,
                 }}
               >
-                <FormGroup style={{ width: "100%" }}>
-                  <Input
-                    style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
-                    defaultValue=""
-                    placeholder="Email"
-                    type="email"
-                  ></Input>
-                  <Input
-                    style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
-                    defaultValue=""
-                    placeholder="Password"
-                    type="password"
-                  ></Input>
-                </FormGroup>
+                <h3 style={{ color: "gray" }}>Sign up with email</h3>
               </Row>
-              <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                <Button
+              <Form
+                onSubmit={() => this.props.history.push('/profile-page')}
+              >
+                <Row
                   style={{
-                    width: "100%",
-                    padding: '13px 0px',
-                    fontSize: '15px',
-                    fontWeight: 'bold',
+                    justifyContent: "center",
+                    marginLeft: 30,
+                    marginRight: 40,
                   }}
-                  className="btn-round" color="info" type="button" size="lg">
-                  Log in with email
-                </Button>
-              </Row>
+                >
+                  <FormGroup style={{ width: "100%" }}>
+                    <Input
+                      style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
+                      defaultValue=""
+                      placeholder="Enter email"
+                      type="email"
+                      required
+                    ></Input>
+                  </FormGroup>
+                  <FormGroup style={{ width: "100%" }}>
+                    <Input
+                      style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
+                      defaultValue=""
+                      placeholder="create password"
+                      type="password"
+                      required
+                    ></Input>
+                  </FormGroup>
+                  <FormGroup style={{ width: "100%" }}>
+                    <Input
+                      style={{ width: "100%", borderColor: 'gray' }}
+                      defaultValue=""
+                      placeholder="confirm password"
+                      type="password"
+                      required
+                      invalid={this.state.invalidPassword}
+                      // onChange={}s
+                    ></Input>
+                    <FormFeedback>
+                      Password mismatch
+                    </FormFeedback>
+                  </FormGroup>
+                </Row>
+                <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                  <Button
+                    style={{
+                      width: "100%",
+                      padding: '13px 0px',
+                      fontSize: '15px',
+                      fontWeight: 'bold',
+                    }}
+                    className="btn-round" color="info" type="submit" size="lg" >
+                    Sign up
+                  </Button>
+                </Row>
+              </Form>
             </Col>
           </Row>
         </div>
@@ -317,4 +331,4 @@ class LoginPage extends Component {
   }
 }
 
-export default LoginPage;
+export default SignUpPage;
