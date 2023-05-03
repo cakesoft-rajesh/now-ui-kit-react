@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { FaLink } from 'react-icons/fa';
 import { MdExitToApp } from 'react-icons/md';
-import { RiPencilLine } from 'react-icons/ri';
 import {
   Button,
   FormGroup,
@@ -11,7 +10,7 @@ import {
 } from "reactstrap";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
-class ProfilePage extends Component {
+class ProfileDetailPage extends Component {
 
   constructor(props) {
     super(props);
@@ -25,7 +24,6 @@ class ProfilePage extends Component {
           sm="4"
           style={{ marginTop: 40, marginLeft: 10, marginRight: 0 }}
         >
-          <h6>Profile Settings</h6>
           <Row
             style={{
               marginLeft: 0,
@@ -40,6 +38,7 @@ class ProfilePage extends Component {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                width: "100%"
               }}
             >
               <div
@@ -63,14 +62,7 @@ class ProfilePage extends Component {
                   ></i>
                 </div>
               </div>
-              <h6 style={{ color: "gray", marginLeft: 5 }}>Add Avatar</h6>
-              <div style={{ marginLeft: 5, marginRight: 0, marginBottom: 10 }}>
-                <RiPencilLine />
-              </div>
             </Row>
-            <Button className="btn-round" color="info" type="button" size="sm">
-              Save
-            </Button>
           </Row>
         </Col>
         <Col
@@ -81,15 +73,33 @@ class ProfilePage extends Component {
             backgroundColor: "#e0e0e0",
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
-            height: "100vh",
+            height: "auto",
           }}
         >
-          <h6 style={{ marginTop: 20 }}>Connected Web3 Wallet</h6>
+          <Row style={{ justifyContent: "center", alignItems: "center" }}>
+            <Button
+              style={{
+                pointerEvents: 'none',
+                fontWeight: 'bold',
+                fontSize: '15px',
+                padding: '5px 15px',
+              }}
+              className="btn-round"
+              color="info"
+              size="lg"
+            >
+              Digital I.D.
+            </Button>
+          </Row>
+          <Row style={{ justifyContent: "center", alignItems: "center" }}>
+            <h6 style={{ marginTop: 15 }}>yourname.blockchain.io</h6>
+          </Row>
           <Row
             style={{
               marginLeft: 0,
               marginRight: 0,
               display: "flex",
+              justifyContent: 'center',
               alignItems: "center",
             }}
           >
@@ -119,60 +129,109 @@ class ProfilePage extends Component {
           </Row>
           <Row
             style={{
+              marginLeft: 0,
+              marginRight: 0,
+              color: "gray"
+            }}
+          >
+            <Col xs={12}
+              style={{
+                display: "flex",
+                justifyContent: 'center',
+                alignItems: "center",
+              }}
+            >
+              <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                Payment Id :
+              </div>
+              <h6 style={{ marginLeft: 5 }}>
+                Pending
+              </h6>
+            </Col>
+            <Col xs={12}
+              style={{
+                display: "flex",
+                justifyContent: 'center',
+                alignItems: "center",
+              }}
+            >
+              <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                Membership :
+              </div>
+              <h6 style={{ marginLeft: 5 }}>
+                Pending
+              </h6>
+            </Col>
+          </Row>
+          <Row
+            style={{
               justifyContent: "center",
               marginLeft: 0,
               marginRight: 10,
             }}
           >
             <FormGroup style={{ width: "100%", marginTop: 15 }}>
-              <h6>Name(individual or business)</h6>
+              <h6>Name</h6>
               <Input
+                disabled
                 style={{
                   marginBottom: 10,
                   width: "100%",
                   backgroundColor: "white",
                 }}
-                defaultValue=""
-                placeholder="Enter Name"
                 type="text"
               ></Input>
               <h6>Telephone number</h6>
               <Input
+                disabled
                 style={{
                   marginBottom: 10,
                   width: "100%",
                   backgroundColor: "white",
                 }}
-                defaultValue=""
-                placeholder="Enter Telephone number"
                 type="number"
               ></Input>
               <h6>User name</h6>
               <Input
+                disabled
                 style={{
                   marginBottom: 10,
                   width: "100%",
                   backgroundColor: "white",
                 }}
-                defaultValue=""
-                placeholder="Enter username"
                 type="text"
               ></Input>
               <h6>Email</h6>
               <Input
+                disabled
                 style={{
                   marginBottom: 30,
                   width: "100%",
                   backgroundColor: "white",
                 }}
-                defaultValue=""
-                placeholder="Enter email"
-                type="email"
+                type="text"
               ></Input>
             </FormGroup>
           </Row>
           <Row style={{ justifyContent: "center", alignItems: "center" }}>
-            <Button className="btn-round" color="info" type="button" size="lg">
+            <Button
+              style={{
+                padding: '15px 30px',
+                fontSize: '15px',
+                fontWeight: 'bold',
+              }}
+              className="btn-round" color="info" type="button" size="lg" outline>
+              My Credentials
+            </Button>
+          </Row>
+          <Row style={{ justifyContent: "center", alignItems: "center" }}>
+            <Button
+              style={{
+                padding: '15px 70px',
+                fontSize: '15px',
+                fontWeight: 'bold',
+              }}
+              className="btn-round" color="info" type="button" size="lg">
               Done
             </Button>
           </Row>
@@ -182,4 +241,4 @@ class ProfilePage extends Component {
   }
 }
 
-export default ProfilePage;
+export default ProfileDetailPage;
