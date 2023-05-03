@@ -12,6 +12,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  Form,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
@@ -26,6 +27,8 @@ class LoginPage extends Component {
     super(props);
     this.state = {
       showLoader: false,
+      email: "",
+      password: "",
       showWalletConnectModal: false
     };
   }
@@ -34,7 +37,7 @@ class LoginPage extends Component {
     try {
       this.setState({ showLoader: true, showWalletConnectModal: false });
       let response = await Server.request({
-        url: "/getSignMessage",
+        url: "/web3Auth/getSignMessage",
         method: "GET"
       });
       const message = response.messageToSign;
@@ -86,22 +89,18 @@ class LoginPage extends Component {
         signature = await web3.eth.personal.sign(messageToSign, account);
       }
       let signatureVerified = await Server.request({
-        url: `/verifySignMessage?messageToSign=${messageToSign}&signature=${signature}`,
-        method: "GET",
-        // data: {
-        //   messageToSign,
-        //   signature
-        // }
+        url: '/web3Auth/verifySignMessage',
+        method: "POST",
+        data: {
+          messageToSign,
+          signature
+        }
       });
       if (signatureVerified.success) {
         this.setState({ showLoader: false });
-        // GeneralFunctions.setAuthUser(signatureVerified.user);
-        // GeneralFunctions.setPermissions(signatureVerified.user.role);
-        // GeneralFunctions.setAuthorizationHeader(signatureVerified.token);
         localStorage.setItem("loggedInUsingWallet", true);
         localStorage.setItem("walletAddress", signatureVerified.address);
-        this.props.history.push("/profile-page");
-        // window.location.reload();
+        Server.redirectToServerAPI(JSON.stringify(signatureVerified));
       } else {
         throw Error(signatureVerified.message);
       }
@@ -114,6 +113,29 @@ class LoginPage extends Component {
     }
   };
 
+  login = async (event) => {
+    try {
+      event.preventDefault();
+      this.setState({ showLoader: true });
+      let response = await Server.request({
+        url: "/web2Auth/login",
+        method: "POST",
+        data: {
+          email: this.state.email,
+          password: this.state.password,
+        }
+      });
+      if (response.success) {
+        Server.redirectToServerAPI(JSON.stringify(response));
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
 
   toggleWalletConnectModal = () => {
     this.setState({ showWalletConnectModal: !this.state.showWalletConnectModal });
@@ -197,41 +219,49 @@ class LoginPage extends Component {
               >
                 <h7 style={{ color: "white" }}>OR</h7>
               </div>
-              <Row
-                style={{
-                  justifyContent: "center",
-                  marginLeft: 30,
-                  marginRight: 40,
-                  marginTop: 40,
-                }}
+              <Form
+                onSubmit={(event) => this.login(event)}
               >
-                <FormGroup style={{ width: "100%" }}>
-                  <Input
-                    style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
-                    defaultValue=""
-                    placeholder="Email"
-                    type="email"
-                  ></Input>
-                  <Input
-                    style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
-                    defaultValue=""
-                    placeholder="Password"
-                    type="password"
-                  ></Input>
-                </FormGroup>
-              </Row>
-              <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                <Button
+                <Row
                   style={{
-                    width: "100%",
-                    padding: '13px 0px',
-                    fontSize: '15px',
-                    fontWeight: 'bold',
+                    justifyContent: "center",
+                    marginLeft: 10,
+                    marginRight: 10,
+                    marginTop: 40,
                   }}
-                  className="btn-round" color="info" type="button" size="lg">
-                  Log in with email
-                </Button>
-              </Row>
+                >
+                  <FormGroup style={{ width: "100%" }}>
+                    <Input
+                      style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
+                      placeholder="Email"
+                      type="email"
+                      value={this.state.email}
+                      onChange={(event) => this.setState({ email: event.target.value })}
+                      required
+                    ></Input>
+                    <Input
+                      style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
+                      placeholder="Password"
+                      type="password"
+                      value={this.state.password}
+                      onChange={(event) => this.setState({ password: event.target.value })}
+                      required
+                    ></Input>
+                  </FormGroup>
+                </Row>
+                <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                  <Button
+                    style={{
+                      width: "100%",
+                      padding: '13px 0px',
+                      fontSize: '15px',
+                      fontWeight: 'bold',
+                    }}
+                    className="btn-round" color="info" type="submit" size="lg">
+                    Log in with email
+                  </Button>
+                </Row>
+              </Form>
             </Col>
           </Row>
         </div>
@@ -267,6 +297,7 @@ class LoginPage extends Component {
                     className="btn-round" color="info" type="button" size="lg" outline>
                     <label
                       style={{
+                        cursor: 'pointer',
                         float: 'left',
                         marginBottom: '0px'
                       }}
@@ -274,7 +305,7 @@ class LoginPage extends Component {
                       MetaMask
                     </label>
                     <img
-                      style={{ float: 'right', width: '30px' }}
+                      style={{ cursor: 'pointer', float: 'right', width: '30px' }}
                       alt="..."
                       className="rounded-circle"
                       src="metamask.png"

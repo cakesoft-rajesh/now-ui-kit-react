@@ -1,6 +1,10 @@
 import axios from "axios";
 import * as GeneralFunctions from "./GeneralFunctions";
 
+export const redirectToServerAPI = async (message) => {
+    window.location.assign(`${process.env.REACT_APP_BASE_URL}/reactNativeMessage?message=${message}`);
+}
+
 export const request = async (obj) => {
     let headers = {};
     let authorization =
