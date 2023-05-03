@@ -276,6 +276,7 @@ class LoginPage extends Component {
             isOpen={this.state.showWalletConnectModal}
             toggle={(event) => this.toggleWalletConnectModal()}
             className="modal-md"
+            style={{ width: "90%", top: "25%" }}
           >
             <ModalHeader
               toggle={(event) => this.toggleWalletConnectModal()}

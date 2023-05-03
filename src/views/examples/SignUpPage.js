@@ -138,7 +138,7 @@ class SignUpPage extends Component {
             <Col
               md="3"
               sm="4"
-              style={{ justifyContent: "center", alignItems: "center" }}
+              style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
             >
               <Row
                 style={{
@@ -226,7 +226,7 @@ class SignUpPage extends Component {
                       type="password"
                       required
                       invalid={this.state.invalidPassword}
-                      // onChange={}s
+                    // onChange={}s
                     ></Input>
                     <FormFeedback>
                       Password mismatch
@@ -260,6 +260,7 @@ class SignUpPage extends Component {
             isOpen={this.state.showWalletConnectModal}
             toggle={(event) => this.toggleWalletConnectModal()}
             className="modal-md"
+            style={{ width: "90%", top: "25%" }}
           >
             <ModalHeader
               toggle={(event) => this.toggleWalletConnectModal()}
