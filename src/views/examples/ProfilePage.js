@@ -1,5 +1,7 @@
-import React, { Component } from "react";
+import Web3 from 'web3';
 import { FaLink } from 'react-icons/fa';
+import React, { Component } from "react";
+import WalletConnect from 'walletconnect';
 import { MdExitToApp } from 'react-icons/md';
 import { RiPencilLine } from 'react-icons/ri';
 import {
@@ -12,8 +14,12 @@ import {
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
+import membershipABI from "../../contracts_abi/membership.json";
 import * as Server from "../../utils/Server";
+import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
+
+const wc = new WalletConnect();
 
 class ProfilePage extends Component {
 
@@ -40,13 +46,41 @@ class ProfilePage extends Component {
       let url; let data;
       if (this.state.signupMethod === 'web3') {
         url = "/web3Auth/signup";
-        data = {
+        let dataForBlockChain = {
           email: this.state.email,
           firstName: this.state.firstName,
           lastName: this.state.lastName,
           phone: this.state.phone,
           userName: this.state.phone,
           displayUsername: this.state.displayUsername,
+          walletAddress: this.state.walletAddress
+        };
+        const hash = await GeneralFunctions.encrypt(JSON.stringify(dataForBlockChain));
+        let details = navigator.userAgent;
+        let regexp = /android|iphone|kindle|ipad/i;
+        let isMobileDevice = regexp.test(details);
+        let provider;
+        if (isMobileDevice) {
+          const connector = await wc.connect();
+          let walletConnectProvider = await wc.getWeb3Provider({
+            rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+          })
+          await walletConnectProvider.enable();
+          provider = walletConnectProvider;
+        } else {
+          provider = Web3.givenProvider;
+        }
+        const web3 = new Web3(provider);
+        const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
+        const response = await myContract.methods
+          .setUser(hash)
+          .send(
+            {
+              from: this.state.walletAddress
+            }
+          );
+        if (response.status) data = {
+          chainId: await web3.eth.getChainId(),
           walletAddress: this.state.walletAddress
         };
       } else {

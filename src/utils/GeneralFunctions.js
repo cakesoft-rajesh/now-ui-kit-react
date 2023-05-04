@@ -1,19 +1,19 @@
-// import CryptoJS from "crypto-js";
+import CryptoJS from "crypto-js";
 
-// export const encrypt = (string, secret) => {
-//   var base64 = CryptoJS.AES.encrypt(string, secret).toString();
-//   var parsedData = CryptoJS.enc.Base64.parse(base64);
-//   var hex = parsedData.toString(CryptoJS.enc.Hex);
-//   return hex;
-// }
+export const encrypt = (string) => {
+  var base64 = CryptoJS.AES.encrypt(string, process.env.REACT_APP_SECRET).toString();
+  var parsedData = CryptoJS.enc.Base64.parse(base64);
+  var hex = parsedData.toString(CryptoJS.enc.Hex);
+  return hex;
+}
 
-// export const decrypt = (cipherText, secret) => {
-//   var reb64 = CryptoJS.enc.Hex.parse(cipherText);
-//   var bytes = reb64.toString(CryptoJS.enc.Base64);
-//   var decrypt = CryptoJS.AES.decrypt(bytes, secret);
-//   var plain = decrypt.toString(CryptoJS.enc.Utf8);
-//   return plain;
-// }
+export const decrypt = (cipherText) => {
+  var reb64 = CryptoJS.enc.Hex.parse(cipherText);
+  var bytes = reb64.toString(CryptoJS.enc.Base64);
+  var decrypt = CryptoJS.AES.decrypt(bytes, process.env.REACT_APP_SECRET);
+  var plain = decrypt.toString(CryptoJS.enc.Utf8);
+  return plain;
+}
 
 export const _getFormatAddress = (address) => {
   address = address.slice(2, address.length);
