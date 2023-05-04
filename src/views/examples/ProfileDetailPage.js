@@ -287,7 +287,7 @@ class ProfileDetailPage extends Component {
               {this.state.signupMethod === 'web3'
                 ? <Button
                   onClick={() => {
-                    Server.redirectToServerAPI('myCredentialsPage');
+                    Server.redirectToServerAPI("myCredentialsPage");
                   }}
                   style={{
                     padding: '15px 30px',
@@ -299,7 +299,7 @@ class ProfileDetailPage extends Component {
                 </Button>
                 : <Button
                   onClick={() => {
-                    Server.redirectToServerAPI('web3DescriptionPage');
+                    Server.redirectToServerAPI("web3DescriptionPage");
                   }}
                   style={{
                     padding: '15px 30px',
@@ -315,7 +315,7 @@ class ProfileDetailPage extends Component {
             <Row style={{ justifyContent: "center", alignItems: "center" }}>
               <Button
                 onClick={() => {
-                  Server.redirectToServerAPI('homePage');
+                  Server.redirectToServerAPI("homePage");
                 }}
                 style={{
                   padding: '15px 70px',
