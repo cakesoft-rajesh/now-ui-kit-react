@@ -5,12 +5,9 @@ export const redirectToServerAPI = async (message) => {
     window.location.assign(`${process.env.REACT_APP_BASE_URL}/reactNativeMessage?message=${message}`);
 }
 
-export const request = async (obj) => {
+export const request = async (obj, token) => {
     let headers = {};
-    let authorization =
-        obj.token === "marketplaceAccessToken"
-            ? localStorage.getItem("marketplaceAuthorization")
-            : localStorage.getItem("authorization");
+    let authorization = token ? `Bearer ${token}` : null;
     if (authorization) headers["Authorization"] = authorization;
     try {
         if (obj.params) {

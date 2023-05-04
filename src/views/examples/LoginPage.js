@@ -98,8 +98,7 @@ class LoginPage extends Component {
       });
       if (signatureVerified.success) {
         this.setState({ showLoader: false });
-        localStorage.setItem("loggedInUsingWallet", true);
-        localStorage.setItem("walletAddress", signatureVerified.address);
+        Object.assign(response, { signupMethod: 'web3' });
         Server.redirectToServerAPI(JSON.stringify(signatureVerified));
       } else {
         throw Error(signatureVerified.message);
@@ -126,6 +125,7 @@ class LoginPage extends Component {
         }
       });
       if (response.success) {
+        Object.assign(response, { signupMethod: 'web2' });
         Server.redirectToServerAPI(JSON.stringify(response));
       }
     } catch (error) {

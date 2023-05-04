@@ -1,6 +1,5 @@
 import Web3 from 'web3';
 import { SiweMessage } from 'siwe';
-import { Link } from "react-router-dom";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import {
@@ -28,6 +27,9 @@ class SignUpPage extends Component {
     super(props);
     this.state = {
       showLoader: false,
+      email: '',
+      password: '',
+      confirmPassword: '',
       invalidPassword: false,
       showWalletConnectModal: false
     };
@@ -89,22 +91,22 @@ class SignUpPage extends Component {
         signature = await web3.eth.personal.sign(messageToSign, account);
       }
       let signatureVerified = await Server.request({
-        url: `/verifySignMessage?messageToSign=${messageToSign}&signature=${signature}`,
-        method: "GET",
-        // data: {
-        //   messageToSign,
-        //   signature
-        // }
+        url: '/web3Auth/connectWallet',
+        method: "POST",
+        data: {
+          messageToSign,
+          signature
+        }
       });
       if (signatureVerified.success) {
         this.setState({ showLoader: false });
-        // GeneralFunctions.setAuthUser(signatureVerified.user);
-        // GeneralFunctions.setPermissions(signatureVerified.user.role);
-        // GeneralFunctions.setAuthorizationHeader(signatureVerified.token);
-        localStorage.setItem("loggedInUsingWallet", true);
-        localStorage.setItem("walletAddress", signatureVerified.address);
-        this.props.history.push("/profile-page");
-        // window.location.reload();
+        this.props.history.push({
+          pathname: '/profile-page',
+          state: {
+            signupMethod: 'web3',
+            walletAddress: signatureVerified.walletAddress
+          }
+        })
       } else {
         throw Error(signatureVerified.message);
       }
@@ -191,7 +193,15 @@ class SignUpPage extends Component {
                 <h3 style={{ color: "gray" }}>Sign up with email</h3>
               </Row>
               <Form
-                onSubmit={() => this.props.history.push('/profile-page')}
+                onSubmit={() => this.props.history.push({
+                  pathname: '/profile-page',
+                  state: {
+                    email: this.state.email,
+                    password: this.state.password,
+                    confirmPassword: this.state.confirmPassword,
+                    signupMethod: 'web2'
+                  }
+                })}
               >
                 <Row
                   style={{
@@ -203,30 +213,40 @@ class SignUpPage extends Component {
                   <FormGroup style={{ width: "100%" }}>
                     <Input
                       style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
-                      defaultValue=""
+                      value={this.state.email}
                       placeholder="Enter email"
                       type="email"
                       required
+                      onChange={(event) => this.setState({ email: event.target.value })}
                     ></Input>
                   </FormGroup>
                   <FormGroup style={{ width: "100%" }}>
                     <Input
                       style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
-                      defaultValue=""
+                      value={this.state.password}
                       placeholder="create password"
                       type="password"
                       required
+                      onChange={(event) => this.setState({ password: event.target.value })}
                     ></Input>
                   </FormGroup>
                   <FormGroup style={{ width: "100%" }}>
                     <Input
                       style={{ width: "100%", borderColor: 'gray' }}
-                      defaultValue=""
+                      value={this.state.confirmPassword}
                       placeholder="confirm password"
                       type="password"
                       required
                       invalid={this.state.invalidPassword}
-                    // onChange={}s
+                      onChange={(event) => {
+                        this.setState({ confirmPassword: event.target.value }, () => {
+                          if (this.state.password !== this.state.confirmPassword) {
+                            this.setState({ invalidPassword: true })
+                          } else {
+                            this.setState({ invalidPassword: false })
+                          }
+                        })
+                      }}
                     ></Input>
                     <FormFeedback>
                       Password mismatch
@@ -241,7 +261,9 @@ class SignUpPage extends Component {
                       fontSize: '15px',
                       fontWeight: 'bold',
                     }}
-                    className="btn-round" color="info" type="submit" size="lg" >
+                    className="btn-round" color="info" type="submit" size="lg"
+                    disabled={this.state.invalidPassword}
+                  >
                     Sign up
                   </Button>
                 </Row>
