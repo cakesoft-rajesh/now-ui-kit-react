@@ -256,7 +256,7 @@ class ProfileDetailPage extends Component {
                     width: "100%",
                     backgroundColor: "white",
                   }}
-                  type="number"
+                  type="text"
                   value={this.state.phone}
                 ></Input>
                 <h6>User name</h6>

@@ -279,7 +279,7 @@ class ProfilePage extends Component {
                       backgroundColor: "white",
                     }}
                     placeholder="Enter telephone number"
-                    type="number"
+                    type="text"
                     required
                     value={this.state.phone}
                     onChange={(event) => this.setState({ phone: event.target.value })}
