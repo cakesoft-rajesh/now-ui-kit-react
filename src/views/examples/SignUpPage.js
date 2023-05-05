@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import { SiweMessage } from 'siwe';
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
+import { FaChevronLeft } from 'react-icons/fa';
 import {
   Button,
   FormGroup,
@@ -131,9 +132,10 @@ class SignUpPage extends Component {
         <div
           style={{
             height: "100vh",
-            justifyContent: "center",
+            // justifyContent: "center",
             flexDirection: "column",
             display: "flex",
+            marginTop: 20
           }}
         >
           <Row style={{ justifyContent: "center", alignItems: "center" }}>
@@ -142,6 +144,22 @@ class SignUpPage extends Component {
               sm="4"
               style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
             >
+              <Row
+                style={{
+                  justifyContent: "start",
+                  alignItems: "center",
+                  marginLeft: 0
+                }}
+              >
+                <FaChevronLeft
+                  size="20"
+                  style={{
+                    cursor: 'pointer',
+                    marginBottom: '30px'
+                  }}
+                  onClick={() => this.props.history.push('/login-page')}
+                />
+              </Row>
               <Row
                 style={{
                   justifyContent: "center",
@@ -177,11 +195,14 @@ class SignUpPage extends Component {
                   borderRadius: 20,
                   padding: 2,
                   position: "absolute",
-                  top: "21%",
+                  top: "29%",
                   left: "47%",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
               >
-                <h7 style={{ color: "white" }}>OR</h7>
+                <h6 style={{ color: "white", marginBottom: 0 }}>OR</h6>
               </div>
               <Row
                 style={{

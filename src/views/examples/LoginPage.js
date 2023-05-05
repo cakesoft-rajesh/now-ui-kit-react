@@ -148,9 +148,10 @@ class LoginPage extends Component {
         <div
           style={{
             height: "100vh",
-            justifyContent: "center",
+            // justifyContent: "center",
             flexDirection: "column",
             display: "flex",
+            marginTop: 20
           }}
         >
           <Row style={{ justifyContent: "center", alignItems: "center" }}>
@@ -215,9 +216,12 @@ class LoginPage extends Component {
                   position: "absolute",
                   top: "42%",
                   left: "47%",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
               >
-                <h7 style={{ color: "white" }}>OR</h7>
+                <h6 style={{ color: "white", marginBottom: 0 }}>OR</h6>
               </div>
               <Form
                 onSubmit={(event) => this.login(event)}
