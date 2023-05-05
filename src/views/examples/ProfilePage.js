@@ -109,8 +109,7 @@ class ProfilePage extends Component {
           let regexp = /android|iphone|kindle|ipad/i;
           let isMobileDevice = regexp.test(details);
           let provider;
-          let run = true
-          if (isMobileDevice || run) {
+          if (isMobileDevice) {
             const connector = await wc.connect();
             let walletConnectProvider = await wc.getWeb3Provider({
               rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
