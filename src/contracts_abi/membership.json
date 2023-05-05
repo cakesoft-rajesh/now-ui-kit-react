@@ -1,295 +1,327 @@
 [
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "membershipId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "buyMembership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_price",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_duration",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_count",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "_unlimitedCount",
-          "type": "bool"
-        },
-        {
-          "internalType": "bool",
-          "name": "_unlimitedDuration",
-          "type": "bool"
-        },
-        {
-          "internalType": "bool",
-          "name": "_freeMembership",
-          "type": "bool"
-        }
-      ],
-      "name": "createMembership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getAllMembership",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "bytes32",
-              "name": "_id",
-              "type": "bytes32"
-            },
-            {
-              "internalType": "address",
-              "name": "membershipCreatedBy",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "membershipName",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "membershipPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "membershipDuration",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "membershipCount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "membershipSold",
-              "type": "uint256"
-            },
-            {
-              "internalType": "bool",
-              "name": "unlimitedCount",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "unlimitedDuration",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "freeMembership",
-              "type": "bool"
-            }
-          ],
-          "internalType": "struct Membership.membership[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "membershipId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "getMembershipPurchasedBy",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "_id",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "purchaseBy",
-              "type": "address"
-            },
-            {
-              "internalType": "bool",
-              "name": "purchased",
-              "type": "bool"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expiryDate",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct Membership.membershipPurchased[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "userAddress",
-          "type": "address"
-        }
-      ],
-      "name": "getUser",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "hash",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getUserCreatedMembership",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "bytes32",
-              "name": "_id",
-              "type": "bytes32"
-            },
-            {
-              "internalType": "address",
-              "name": "membershipCreatedBy",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "membershipName",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "membershipPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "membershipDuration",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "membershipCount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "membershipSold",
-              "type": "uint256"
-            },
-            {
-              "internalType": "bool",
-              "name": "unlimitedCount",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "unlimitedDuration",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "freeMembership",
-              "type": "bool"
-            }
-          ],
-          "internalType": "struct Membership.membership[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "membershipId",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "address",
-          "name": "member",
-          "type": "address"
-        }
-      ],
-      "name": "hasMembership",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "purchased",
-          "type": "bool"
-        },
-        {
-          "internalType": "bool",
-          "name": "expired",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "expiryDate",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "hash",
-          "type": "string"
-        }
-      ],
-      "name": "setUser",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-  ]
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "membershipId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "buyMembership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_duration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_count",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_unlimitedCount",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_unlimitedDuration",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_freeMembership",
+        "type": "bool"
+      }
+    ],
+    "name": "createMembership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getAdminUser",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllMembership",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "_id",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "membershipCreatedBy",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "membershipName",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "membershipPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "membershipDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "membershipCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "membershipSold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "unlimitedCount",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "unlimitedDuration",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "freeMembership",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct Membership.membership[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "membershipId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getMembershipPurchasedBy",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "_id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "purchaseBy",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "purchased",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "expiryDate",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Membership.membershipPurchased[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getUser",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getUserCreatedMembership",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "_id",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "membershipCreatedBy",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "membershipName",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "membershipPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "membershipDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "membershipCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "membershipSold",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "unlimitedCount",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "unlimitedDuration",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "freeMembership",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct Membership.membership[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "membershipId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "member",
+        "type": "address"
+      }
+    ],
+    "name": "hasMembership",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "purchased",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "expired",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "expiryDate",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "name": "setAdminUser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "name": "setUser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
