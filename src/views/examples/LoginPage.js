@@ -38,7 +38,7 @@ class LoginPage extends Component {
       this.setState({ showLoader: true, showWalletConnectModal: false });
       const signIn = localStorage.getItem('signIn');
       if (signIn) {
-        Server.redirectToServerAPI(JSON.stringify('Login Successfull'));
+        Server.sendDataToMobileApp(JSON.stringify('Login Successfull'));
       } else {
         let response = await Server.request({
           url: "/web3Auth/getSignMessage",
@@ -109,7 +109,7 @@ class LoginPage extends Component {
           localStorage.setItem('signIn', true);
           localStorage.setItem('walletAddress', signatureVerified.walletAddress);
           Object.assign(response, { signupMethod: 'web3' });
-          Server.redirectToServerAPI(JSON.stringify(signatureVerified));
+          Server.sendDataToMobileApp(JSON.stringify(signatureVerified));
         } else {
           throw Error(signatureVerified.message);
         }
@@ -137,7 +137,7 @@ class LoginPage extends Component {
       });
       if (response.success) {
         Object.assign(response, { signupMethod: 'web2' });
-        Server.redirectToServerAPI(JSON.stringify(response));
+        Server.sendDataToMobileApp(JSON.stringify(response));
       }
     } catch (error) {
       this.notificationSystem.addNotification({
