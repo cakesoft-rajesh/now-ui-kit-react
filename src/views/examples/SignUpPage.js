@@ -17,7 +17,9 @@ import {
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
+import membershipABI from "../../contracts_abi/membership.json";
 import * as Server from "../../utils/Server";
+import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
 const wc = new WalletConnect();
@@ -39,77 +41,116 @@ class SignUpPage extends Component {
   authenticate = async (walletConnect) => {
     try {
       this.setState({ showLoader: true, showWalletConnectModal: false });
-      let response = await Server.request({
-        url: "/getSignMessage",
-        method: "GET"
-      });
-      const message = response.messageToSign;
-      if (!message) {
-        throw new Error("Invalid message to sign");
-      }
-      let details = navigator.userAgent;
-      let regexp = /android|iphone|kindle|ipad/i;
-      let isMobileDevice = regexp.test(details);
-      let signature; let messageToSign;
-      if (isMobileDevice || walletConnect) {
-        const connector = await wc.connect();
-        const account = connector.accounts.length ? connector.accounts[0] : null;
-        if (account) {
+      const signIn = localStorage.getItem('signIn');
+      if (signIn) {
+        const walletAddress = localStorage.getItem('walletAddress');
+        this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}`);
+      } else {
+        let response = await Server.request({
+          url: "/getSignMessage",
+          method: "GET"
+        });
+        const message = response.messageToSign;
+        if (!message) {
+          throw new Error("Invalid message to sign");
+        }
+        let details = navigator.userAgent;
+        let regexp = /android|iphone|kindle|ipad/i;
+        let isMobileDevice = regexp.test(details);
+        let signature; let messageToSign; let web3;
+        if (isMobileDevice || walletConnect) {
+          const connector = await wc.connect();
+          let walletConnectProvider = await wc.getWeb3Provider({
+            rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+          });
+          await walletConnectProvider.enable();
+          web3 = new Web3(walletConnectProvider);
+          const account = connector.accounts.length ? connector.accounts[0] : null;
+          if (account) {
+            const siwe = new SiweMessage({
+              domain: window.location.hostname,
+              uri: window.location.origin,
+              address: account,
+              chainId: connector.chainId,
+              version: '1',
+              statement: message,
+              nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
+            });
+            messageToSign = siwe.prepareMessage();
+            await new Promise((resolve, reject) => {
+              setTimeout(async () => {
+                try {
+                  signature = await connector.signPersonalMessage([account, messageToSign]);
+                } catch (error) {
+                  reject(new Error(error.message || error));
+                }
+                clearTimeout();
+                resolve();
+              }, 5000);
+            });
+          }
+        } else {
+          const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          web3 = new Web3(Web3.givenProvider);
+          const account = Web3.utils.toChecksumAddress(accounts[0]);
           const siwe = new SiweMessage({
             domain: window.location.hostname,
             uri: window.location.origin,
             address: account,
-            chainId: connector.chainId,
+            chainId: await web3.eth.getChainId(),
             version: '1',
             statement: message,
             nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
           });
           messageToSign = siwe.prepareMessage();
-          await new Promise((resolve, reject) => {
-            setTimeout(async () => {
-              signature = await connector.signPersonalMessage([account, messageToSign]);
-              clearTimeout();
-              resolve();
-            }, 5000);
-          })
+          signature = await web3.eth.personal.sign(messageToSign, account);
         }
-      } else {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        const web3 = new Web3(Web3.givenProvider);
-        const account = Web3.utils.toChecksumAddress(accounts[0]);
-        const siwe = new SiweMessage({
-          domain: window.location.hostname,
-          uri: window.location.origin,
-          address: account,
-          chainId: await web3.eth.getChainId(),
-          version: '1',
-          statement: message,
-          nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
-        });
-        messageToSign = siwe.prepareMessage();
-        signature = await web3.eth.personal.sign(messageToSign, account);
-      }
-      let signatureVerified = await Server.request({
-        url: '/web3Auth/connectWallet',
-        method: "POST",
-        data: {
-          messageToSign,
-          signature
-        }
-      });
-      if (signatureVerified.success) {
-        this.setState({ showLoader: false });
-        this.props.history.push({
-          pathname: '/profile-page',
-          state: {
-            signupMethod: 'web3',
-            walletAddress: signatureVerified.walletAddress
+        let signatureVerified = await Server.request({
+          url: '/web3Auth/connectWallet',
+          method: "POST",
+          data: {
+            messageToSign,
+            signature
           }
-        })
-      } else {
-        throw Error(signatureVerified.message);
+        });
+        if (signatureVerified.success) {
+          this.setState({ showLoader: false });
+          localStorage.setItem('signIn', true);
+          localStorage.setItem('walletAddress', signatureVerified.walletAddress);
+          const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
+          const response = await myContract.methods
+            .getUser(signatureVerified.walletAddress)
+            .call();
+          if (response) {
+            let data = await GeneralFunctions.decrypt(response);
+            if (data) data = JSON.parse(data);
+            this.props.history.push({
+              pathname: '/profile-detail-page',
+              state: {
+                email: data.email,
+                password: data.password,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                phone: data.phone,
+                displayUsername: data.displayUsername,
+                signupMethod: 'web3',
+                walletAddress: data.walletAddress,
+              }
+            });
+          } else {
+            this.props.history.push({
+              pathname: '/profile-page',
+              state: {
+                signupMethod: 'web3',
+                walletAddress: signatureVerified.walletAddress
+              }
+            });
+          }
+        } else {
+          throw Error(signatureVerified.message);
+        }
       }
     } catch (error) {
       this.notificationSystem.addNotification({

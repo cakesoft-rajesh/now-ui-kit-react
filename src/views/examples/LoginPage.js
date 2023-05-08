@@ -36,72 +36,83 @@ class LoginPage extends Component {
   authenticate = async (walletConnect) => {
     try {
       this.setState({ showLoader: true, showWalletConnectModal: false });
-      let response = await Server.request({
-        url: "/web3Auth/getSignMessage",
-        method: "GET"
-      });
-      const message = response.messageToSign;
-      if (!message) {
-        throw new Error("Invalid message to sign");
-      }
-      let details = navigator.userAgent;
-      let regexp = /android|iphone|kindle|ipad/i;
-      let isMobileDevice = regexp.test(details);
-      let signature; let messageToSign;
-      if (isMobileDevice || walletConnect) {
-        const connector = await wc.connect();
-        const account = connector.accounts.length ? connector.accounts[0] : null;
-        if (account) {
+      const signIn = localStorage.getItem('signIn');
+      if (signIn) {
+        Server.redirectToServerAPI(JSON.stringify('Login Successfull'));
+      } else {
+        let response = await Server.request({
+          url: "/web3Auth/getSignMessage",
+          method: "GET"
+        });
+        const message = response.messageToSign;
+        if (!message) {
+          throw new Error("Invalid message to sign");
+        }
+        let details = navigator.userAgent;
+        let regexp = /android|iphone|kindle|ipad/i;
+        let isMobileDevice = regexp.test(details);
+        let signature; let messageToSign;
+        if (isMobileDevice || walletConnect) {
+          const connector = await wc.connect();
+          const account = connector.accounts.length ? connector.accounts[0] : null;
+          if (account) {
+            const siwe = new SiweMessage({
+              domain: window.location.hostname,
+              uri: window.location.origin,
+              address: account,
+              chainId: connector.chainId,
+              version: '1',
+              statement: message,
+              nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
+            });
+            messageToSign = siwe.prepareMessage();
+            await new Promise((resolve, reject) => {
+              setTimeout(async () => {
+                try {
+                  signature = await connector.signPersonalMessage([account, messageToSign]);
+                } catch (error) {
+                  reject(new Error(error.message || error));
+                }
+                clearTimeout();
+                resolve();
+              }, 5000);
+            })
+          }
+        } else {
+          const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          const web3 = new Web3(Web3.givenProvider);
+          const account = Web3.utils.toChecksumAddress(accounts[0]);
           const siwe = new SiweMessage({
             domain: window.location.hostname,
             uri: window.location.origin,
             address: account,
-            chainId: connector.chainId,
+            chainId: await web3.eth.getChainId(),
             version: '1',
             statement: message,
             nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
           });
           messageToSign = siwe.prepareMessage();
-          await new Promise((resolve, reject) => {
-            setTimeout(async () => {
-              signature = await connector.signPersonalMessage([account, messageToSign]);
-              clearTimeout();
-              resolve();
-            }, 5000);
-          })
+          signature = await web3.eth.personal.sign(messageToSign, account);
         }
-      } else {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
+        let signatureVerified = await Server.request({
+          url: '/web3Auth/verifySignMessage',
+          method: "POST",
+          data: {
+            messageToSign,
+            signature
+          }
         });
-        const web3 = new Web3(Web3.givenProvider);
-        const account = Web3.utils.toChecksumAddress(accounts[0]);
-        const siwe = new SiweMessage({
-          domain: window.location.hostname,
-          uri: window.location.origin,
-          address: account,
-          chainId: await web3.eth.getChainId(),
-          version: '1',
-          statement: message,
-          nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
-        });
-        messageToSign = siwe.prepareMessage();
-        signature = await web3.eth.personal.sign(messageToSign, account);
-      }
-      let signatureVerified = await Server.request({
-        url: '/web3Auth/verifySignMessage',
-        method: "POST",
-        data: {
-          messageToSign,
-          signature
+        if (signatureVerified.success) {
+          this.setState({ showLoader: false });
+          localStorage.setItem('signIn', true);
+          localStorage.setItem('walletAddress', signatureVerified.walletAddress);
+          Object.assign(response, { signupMethod: 'web3' });
+          Server.redirectToServerAPI(JSON.stringify(signatureVerified));
+        } else {
+          throw Error(signatureVerified.message);
         }
-      });
-      if (signatureVerified.success) {
-        this.setState({ showLoader: false });
-        Object.assign(response, { signupMethod: 'web3' });
-        Server.redirectToServerAPI(JSON.stringify(signatureVerified));
-      } else {
-        throw Error(signatureVerified.message);
       }
     } catch (error) {
       this.notificationSystem.addNotification({

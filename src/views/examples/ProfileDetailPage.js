@@ -1,5 +1,7 @@
-import React, { Component } from "react";
+import Web3 from "web3";
 import { FaLink } from 'react-icons/fa';
+import React, { Component } from "react";
+import WalletConnect from "walletconnect";
 import { MdExitToApp } from 'react-icons/md';
 import {
   Button,
@@ -10,8 +12,12 @@ import {
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
+import membershipABI from "../../contracts_abi/membership.json";
 import * as Server from "../../utils/Server";
+import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
+
+const wc = new WalletConnect();
 
 class ProfileDetailPage extends Component {
 
@@ -33,8 +39,56 @@ class ProfileDetailPage extends Component {
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
     if (params.accessToken && params.signupMethod) {
       this.getUser(params.accessToken, params.signupMethod);
+    } else if (params.walletAddress) {
+      this.getUserInfoFromBlockchain(params.walletAddress);
     }
   }
+
+  getUserInfoFromBlockchain = async (walletAddress) => {
+    try {
+      this.setState({ showLoader: true });
+      let details = navigator.userAgent;
+      let regexp = /android|iphone|kindle|ipad/i;
+      let isMobileDevice = regexp.test(details);
+      let provider;
+      if (isMobileDevice) {
+        const connector = await wc.connect();
+        let walletConnectProvider = await wc.getWeb3Provider({
+          rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+        });
+        await walletConnectProvider.enable();
+        provider = walletConnectProvider;
+      } else {
+        provider = Web3.givenProvider;
+      }
+      const web3 = new Web3(provider);
+      const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
+      const response = await myContract.methods
+        .getUser(walletAddress)
+        .call();
+      if (response) {
+        let data = await GeneralFunctions.decrypt(response);
+        if (data) data = JSON.parse(data);
+        this.setState({
+          showLoader: false,
+          email: data.email,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phone: data.phone,
+          displayUsername: data.displayUsername,
+          signupMethod: 'web3',
+          walletAddress: data.walletAddress,
+        });
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
 
   getUser = async (accessToken, signupMethod) => {
     try {

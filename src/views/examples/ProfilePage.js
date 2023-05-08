@@ -113,7 +113,7 @@ class ProfilePage extends Component {
             const connector = await wc.connect();
             let walletConnectProvider = await wc.getWeb3Provider({
               rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
-            })
+            });
             await walletConnectProvider.enable();
             provider = walletConnectProvider;
           } else {
