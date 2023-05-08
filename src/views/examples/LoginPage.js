@@ -38,7 +38,7 @@ class LoginPage extends Component {
       this.setState({ showLoader: true, showWalletConnectModal: false });
       const signIn = localStorage.getItem('signIn');
       if (signIn) {
-        Server.sendDataToMobileApp(JSON.stringify('Login Successfull'));
+        Server.sendDataToMobileApp('Login Successfull');
       } else {
         let response = await Server.request({
           url: "/web3Auth/getSignMessage",
