@@ -292,7 +292,8 @@ class LoginPage extends Component {
             isOpen={this.state.showWalletConnectModal}
             toggle={(event) => this.toggleWalletConnectModal()}
             className="modal-md"
-            style={{ width: "90%", top: "25%" }}
+            style={{ width: "90%" }}
+            centered
           >
             <ModalHeader
               toggle={(event) => this.toggleWalletConnectModal()}
@@ -355,6 +356,80 @@ class LoginPage extends Component {
                       src="walletConnect.png"
                     ></img>
                   </Button>
+                </Col>
+                <Col sm={12}>
+                  <Row style={{ justifyContent: 'center', margin: '20px 0px' }}>
+                    <div
+                      style={{
+                        color: 'gray',
+                        fontSize: '25px',
+                        fontWeight: 'bold',
+                      }}
+                    >What is a wallet?</div>
+                  </Row>
+                  <Row style={{ justifyContent: 'center', margin: '0px 0px' }}>
+                    <div
+                      style={{
+                        color: 'black',
+                        fontSize: '15px',
+                        fontWeight: 'bold',
+                      }}
+                    >A Home for your Digital Assets</div>
+                  </Row>
+                  <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
+                    <div
+                      style={{
+                        color: 'gray',
+                        fontSize: '15px',
+                        fontWeight: 'bold',
+                      }}
+                    >Wallets are used to send, receive, store, and display digital assets like Ethereum and NFTS</div>
+                  </Row>
+                  <Row style={{ justifyContent: 'center', margin: '0px 0px', marginTop: '20px' }}>
+                    <div
+                      style={{
+                        color: 'black',
+                        fontSize: '15px',
+                        fontWeight: 'bold',
+                      }}
+                    >A New Way to Log In</div>
+                  </Row>
+                  <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
+                    <div
+                      style={{
+                        color: 'gray',
+                        fontSize: '15px',
+                        fontWeight: 'bold',
+                      }}
+                    >Instead of creating new accounts and passwords on every website, just connect your wallet</div>
+                  </Row>
+                </Col>
+                <Col sm={12}>
+                  <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
+                    <Button
+                      style={{
+                        width: "50%",
+                        padding: '13px 0px',
+                        fontSize: '15px',
+                        fontWeight: 'bold',
+                      }}
+                      onClick={async () => await Server.sendDataToMobileApp(JSON.stringify({ message: 'getWallet' }))}
+                      className="btn-round" color="info" type="button" size="lg"
+                    >
+                      Get a Wallet
+                    </Button>
+                  </Row>
+                  <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
+                    <div
+                      style={{
+                        color: 'gray',
+                        fontSize: '15px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      Learn More
+                    </div>
+                  </Row>
                 </Col>
               </Row>
             </ModalBody>
