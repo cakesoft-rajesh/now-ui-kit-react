@@ -136,6 +136,7 @@ class LoginPage extends Component {
         }
       });
       if (response.success) {
+        this.setState({ showLoader: false });
         Object.assign(response, { signupMethod: 'web2' });
         Server.sendDataToMobileApp(JSON.stringify(response));
       }

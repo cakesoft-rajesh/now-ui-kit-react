@@ -196,7 +196,9 @@ class ProfileDetailPage extends Component {
                   </Button>
                 </Row>
                 <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                  <h6 style={{ marginTop: 15 }}>yourname.blockchain.io</h6>
+                  <h6 style={{ marginTop: 15 }}>
+                    {this.state.firstName ? `${this.state.firstName} ${this.state.lastName}` : null}
+                  </h6>
                 </Row>
                 <Row
                   style={{

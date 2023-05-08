@@ -36,6 +36,7 @@ class ProfilePage extends Component {
       confirmPassword: this.props.location.state ? this.props.location.state.confirmPassword : "",
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
+      ztiAppName: 'own'
     };
   }
 
@@ -53,7 +54,8 @@ class ProfilePage extends Component {
           phone: this.state.phone,
           userName: this.state.phone,
           displayUsername: this.state.displayUsername,
-          walletAddress: this.state.walletAddress
+          walletAddress: this.state.walletAddress,
+          ztiAppName: this.state.ztiAppName
         };
         // const hash = await GeneralFunctions.encrypt(JSON.stringify(dataForBlockChain));
         // let details = navigator.userAgent;
@@ -95,6 +97,7 @@ class ProfilePage extends Component {
           phone: this.state.phone,
           userName: this.state.phone,
           displayUsername: this.state.displayUsername,
+          ztiAppName: this.state.ztiAppName
         };
       }
       let response = await Server.request({
@@ -121,15 +124,16 @@ class ProfilePage extends Component {
           }
           const web3 = new Web3(provider);
           const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
-          const response = await myContract.methods
+          const blockchainResponse = await myContract.methods
             .setUser(hash)
             .send(
               {
                 from: this.state.walletAddress
               }
             );
-          if (response.status) {
+          if (blockchainResponse.status) {
             this.setState({ showLoader: false });
+            await Server.sendDataToMobileApp(JSON.stringify(response));
             this.props.history.push({
               pathname: '/profile-detail-page',
               state: {
@@ -148,6 +152,7 @@ class ProfilePage extends Component {
           };
         } else {
           this.setState({ showLoader: false });
+          await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
             pathname: '/profile-detail-page',
             state: {
