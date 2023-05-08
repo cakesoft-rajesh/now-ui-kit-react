@@ -36,7 +36,7 @@ class ProfilePage extends Component {
       confirmPassword: this.props.location.state ? this.props.location.state.confirmPassword : "",
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
-      ztiAppName: 'own'
+      ztiAppName: 'zti'
     };
   }
 
