@@ -44,7 +44,50 @@ class SignUpPage extends Component {
       const signIn = localStorage.getItem('signIn');
       if (signIn) {
         const walletAddress = localStorage.getItem('walletAddress');
-        this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}`);
+        let details = navigator.userAgent;
+        let regexp = /android|iphone|kindle|ipad/i;
+        let isMobileDevice = regexp.test(details);
+        let provider;
+        if (isMobileDevice) {
+          const connector = await wc.connect();
+          let walletConnectProvider = await wc.getWeb3Provider({
+            rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+          });
+          await walletConnectProvider.enable();
+          provider = walletConnectProvider;
+        } else {
+          provider = Web3.givenProvider;
+        }
+        const web3 = new Web3(provider);
+        const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
+        const response = await myContract.methods
+          .getUser(walletAddress)
+          .call();
+        if (response) {
+          let data = await GeneralFunctions.decrypt(response);
+          if (data) data = JSON.parse(data);
+          this.props.history.push({
+            pathname: '/profile-detail-page',
+            state: {
+              email: data.email,
+              password: data.password,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              phone: data.phone,
+              displayUsername: data.displayUsername,
+              signupMethod: 'web3',
+              walletAddress: data.walletAddress,
+            }
+          });
+        } else {
+          this.props.history.push({
+            pathname: '/profile-page',
+            state: {
+              signupMethod: 'web3',
+              walletAddress
+            }
+          });
+        }
       } else {
         let response = await Server.request({
           url: "/getSignMessage",
