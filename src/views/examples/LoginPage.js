@@ -408,7 +408,8 @@ class LoginPage extends Component {
                   <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
                     <Button
                       style={{
-                        width: "50%",
+                        marginTop: 35,
+                        width: "70%",
                         padding: '13px 0px',
                         fontSize: '15px',
                         fontWeight: 'bold',
