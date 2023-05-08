@@ -11,6 +11,7 @@ import {
   Input,
   Col,
   Form,
+  Alert,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
@@ -185,11 +186,29 @@ class ProfilePage extends Component {
         <PageSpinner showLoader={this.state.showLoader} />
         <Row>
           <Col
-            md="6"
-            sm="4"
+            sm="6"
             style={{ marginTop: 40, marginLeft: 10, marginRight: 0 }}
           >
-            <h6>Welcome! Set up your profile:</h6>
+            {
+              this.state.walletAddress
+              &&
+              <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <Alert
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 'bold',
+                    background: '#919799',
+                    borderRadius: '30px',
+                    padding: '5px 20px',
+                  }}
+                >
+                  Success! Your Wallet is Connected
+                </Alert>
+              </Row>
+            }
+            <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <h6 style={{ color: '#275996' }}>Welcome! Set up your profile:</h6>
+            </Row>
             <Row
               style={{
                 marginLeft: 0,
@@ -208,8 +227,8 @@ class ProfilePage extends Component {
               >
                 <div
                   style={{
-                    width: 60,
-                    height: 60,
+                    width: 45,
+                    height: 45,
                     borderRadius: 40,
                     display: "flex",
                     justifyContent: "center",
@@ -219,7 +238,7 @@ class ProfilePage extends Component {
                 >
                   <div
                     className="alert-icon"
-                    style={{ marginLeft: 0, marginRight: 0 }}
+                    style={{ marginLeft: 0, marginRight: 0, display: 'flex' }}
                   >
                     <i
                       className="now-ui-icons users_single-02"
@@ -227,20 +246,20 @@ class ProfilePage extends Component {
                     ></i>
                   </div>
                 </div>
-                <h6 style={{ color: "gray", marginLeft: 5 }}>Add Avatar</h6>
-                <div style={{ marginLeft: 5, marginRight: 0, marginBottom: 10 }}>
+                <h6 style={{ color: "gray", marginLeft: 5, marginBottom: 0 }}>Add Avatar</h6>
+                <div style={{ marginLeft: 5, marginRight: 0, marginBottom: 0 }}>
                   <RiPencilLine />
                 </div>
               </Row>
-              <Button className="btn-round" color="info" type="button" size="sm">
+              {/* <Button className="btn-round" color="info" type="button" size="sm">
                 Save
-              </Button>
+              </Button> */}
             </Row>
           </Col>
           <Col
             sm={6}
             style={{
-              marginTop: 20,
+              marginTop: 10,
               marginLeft: 10,
               backgroundColor: "#e0e0e0",
               borderTopLeftRadius: 30,

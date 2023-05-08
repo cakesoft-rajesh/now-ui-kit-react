@@ -122,8 +122,7 @@ class ProfileDetailPage extends Component {
         <PageSpinner showLoader={this.state.showLoader} />
         <Row>
           <Col
-            md="6"
-            sm="4"
+            sm="6"
             style={{ marginTop: 40, marginLeft: 10, marginRight: 0 }}
           >
             <Row
@@ -156,11 +155,11 @@ class ProfileDetailPage extends Component {
                 >
                   <div
                     className="alert-icon"
-                    style={{ marginLeft: 0, marginRight: 0 }}
+                    style={{ marginLeft: 0, marginRight: 0, display: 'flex' }}
                   >
                     <i
                       className="now-ui-icons users_single-02"
-                      style={{ color: "white", fontSize: "24px" }}
+                      style={{ color: "white", fontSize: "35px" }}
                     ></i>
                   </div>
                 </div>
@@ -170,7 +169,7 @@ class ProfileDetailPage extends Component {
           <Col
             sm={6}
             style={{
-              marginTop: 20,
+              marginTop: 10,
               marginLeft: 10,
               backgroundColor: "#e0e0e0",
               borderTopLeftRadius: 30,
@@ -181,21 +180,6 @@ class ProfileDetailPage extends Component {
             {this.state.signupMethod === 'web3'
               ? <>
                 <Row style={{ marginTop: 10, justifyContent: "center", alignItems: "center" }}>
-                  <Button
-                    style={{
-                      pointerEvents: 'none',
-                      fontWeight: 'bold',
-                      fontSize: '15px',
-                      padding: '5px 15px',
-                    }}
-                    className="btn-round"
-                    color="info"
-                    size="lg"
-                  >
-                    Digital I.D.
-                  </Button>
-                </Row>
-                <Row style={{ justifyContent: "center", alignItems: "center" }}>
                   <h6 style={{ marginTop: 15 }}>
                     {this.state.firstName ? `${this.state.firstName} ${this.state.lastName}` : null}
                   </h6>
@@ -235,7 +219,7 @@ class ProfileDetailPage extends Component {
                 </Row>
               </>
               : <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                <h4 style={{ marginTop: 80, fontWeight: 'bold' }}>Welcome {`${this.state.firstName} ${this.state.lastName}`}</h4>
+                <h4 style={{ marginTop: 20, fontWeight: 'bold' }}>Welcome {`${this.state.firstName} ${this.state.lastName}`}</h4>
               </Row>
             }
             <Row
