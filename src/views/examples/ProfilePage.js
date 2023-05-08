@@ -133,7 +133,7 @@ class ProfilePage extends Component {
             );
           if (blockchainResponse.status) {
             this.setState({ showLoader: false });
-            await Server.sendDataToMobileApp(JSON.stringify(response));
+            // await Server.sendDataToMobileApp(JSON.stringify(response));
             this.props.history.push({
               pathname: '/profile-detail-page',
               state: {
@@ -152,7 +152,7 @@ class ProfilePage extends Component {
           };
         } else {
           this.setState({ showLoader: false });
-          await Server.sendDataToMobileApp(JSON.stringify(response));
+          // await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
             pathname: '/profile-detail-page',
             state: {
