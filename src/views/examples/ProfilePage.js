@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import Select from 'react-select';
 import { FaLink } from 'react-icons/fa';
 import React, { Component } from "react";
 import WalletConnect from 'walletconnect';
@@ -15,6 +16,7 @@ import {
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
+import CountryCode from "../../utils/CountryCode.json";
 import membershipABI from "../../contracts_abi/membership.json";
 import * as Server from "../../utils/Server";
 import * as NetworkData from 'utils/networks';
@@ -37,8 +39,18 @@ class ProfilePage extends Component {
       confirmPassword: this.props.location.state ? this.props.location.state.confirmPassword : "",
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
-      ztiAppName: 'zti'
+      ztiAppName: 'zti',
+      countryCode: "",
+      countryCodesOptions: []
     };
+  }
+
+  async componentDidMount() {
+    const countryCodesOptions = CountryCode.map(code => ({
+      label: `${code.emoji} +${code.dialingCode}`,
+      value: code.dialingCode
+    }))
+    this.setState({ countryCodesOptions });
   }
 
   signup = async (event) => {
@@ -52,8 +64,8 @@ class ProfilePage extends Component {
           email: this.state.email,
           firstName: this.state.firstName,
           lastName: this.state.lastName,
-          phone: this.state.phone,
-          userName: this.state.phone,
+          phone: `${this.state.countryCode.value}${this.state.phone}`,
+          userName: `${this.state.countryCode.value}${this.state.phone}`,
           displayUsername: this.state.displayUsername,
           walletAddress: this.state.walletAddress,
           ztiAppName: this.state.ztiAppName
@@ -95,8 +107,8 @@ class ProfilePage extends Component {
           confirmPassword: this.state.confirmPassword,
           firstName: this.state.firstName,
           lastName: this.state.lastName,
-          phone: this.state.phone,
-          userName: this.state.phone,
+          phone: `${this.state.countryCode.value}${this.state.phone}`,
+          userName: `${this.state.countryCode.value}${this.state.phone}`,
           displayUsername: this.state.displayUsername,
           ztiAppName: this.state.ztiAppName
         };
@@ -143,8 +155,8 @@ class ProfilePage extends Component {
                 confirmPassword: this.state.confirmPassword,
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,
-                phone: this.state.phone,
-                userName: this.state.phone,
+                phone: `${this.state.countryCode.value}${this.state.phone}`,
+                userName: `${this.state.countryCode.value}${this.state.phone}`,
                 displayUsername: this.state.displayUsername,
                 signupMethod: this.state.signupMethod,
                 walletAddress: this.state.walletAddress
@@ -162,8 +174,8 @@ class ProfilePage extends Component {
               confirmPassword: this.state.confirmPassword,
               firstName: this.state.firstName,
               lastName: this.state.lastName,
-              phone: this.state.phone,
-              userName: this.state.phone,
+              phone: `${this.state.countryCode.value}${this.state.phone}`,
+              userName: `${this.state.countryCode.value}${this.state.phone}`,
               displayUsername: this.state.displayUsername,
               signupMethod: this.state.signupMethod,
               walletAddress: this.state.walletAddress
@@ -342,18 +354,39 @@ class ProfilePage extends Component {
                     onChange={(event) => this.setState({ lastName: event.target.value })}
                   ></Input>
                   <h6>Telephone number</h6>
-                  <Input
-                    style={{
-                      marginBottom: 10,
-                      width: "100%",
-                      backgroundColor: "white",
-                    }}
-                    placeholder="Enter telephone number"
-                    type="text"
-                    required
-                    value={this.state.phone}
-                    onChange={(event) => this.setState({ phone: event.target.value })}
-                  ></Input>
+                  <Row>
+                    <Col xs={4} className='pr-0'>
+                      <Select
+                        styles={{
+                          control: (baseStyles) => ({
+                            ...baseStyles,
+                            borderRadius: '30px',
+                            fontSize: '0.8571em',
+                            color: '#E3E3E3'
+                          })
+                        }}
+                        value={this.state.countryCode}
+                        onChange={(result) => this.setState({ countryCode: result })}
+                        options={this.state.countryCodesOptions}
+                        required
+                        placeholder='Code'
+                      />
+                    </Col>
+                    <Col xs={8}>
+                      <Input
+                        style={{
+                          marginBottom: 10,
+                          width: "100%",
+                          backgroundColor: "white",
+                        }}
+                        placeholder="Enter telephone number"
+                        type="text"
+                        required
+                        value={this.state.phone}
+                        onChange={(event) => this.setState({ phone: event.target.value })}
+                      ></Input>
+                    </Col>
+                  </Row>
                   <h6>User name</h6>
                   <Input
                     style={{
