@@ -116,6 +116,12 @@ class ProfileDetailPage extends Component {
     }
   };
 
+  logout = async () => {
+    await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
+    await GeneralFunctions.clearFullLocalStorage();
+    this.props.history.push("/login-page")
+  }
+
   render() {
     return (
       <>
@@ -214,7 +220,7 @@ class ProfileDetailPage extends Component {
                   <MdExitToApp
                     size="20"
                     style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px' }}
-                    onClick={() => (GeneralFunctions.clearFullLocalStorage(), this.props.history.push("/login-page"))}
+                    onClick={this.logout}
                   />
                 </Row>
               </>
