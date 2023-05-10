@@ -164,7 +164,7 @@ class ProfilePage extends Component {
   };
 
   logout = async () => {
-    // await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
+    await Server.sesndDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
     await GeneralFunctions.clearFullLocalStorage();
     this.props.history.push("/login-page")
   }
