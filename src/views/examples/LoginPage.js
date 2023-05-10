@@ -16,7 +16,9 @@ import {
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
+import membershipABI from "../../contracts_abi/membership.json";
 import * as Server from "../../utils/Server";
+import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
 const wc = new WalletConnect();
@@ -31,6 +33,50 @@ class LoginPage extends Component {
       password: "",
       showWalletConnectModal: false
     };
+  }
+
+  async componentDidMount() {
+    let params = await GeneralFunctions.getQueryStringParams(window.location.search);
+    if (params.dokuId) localStorage.setItem('dokuId', params.dokuId);
+    const signIn = localStorage.getItem('signIn');
+    if (signIn) {
+      this.setState({ showLoader: true });
+      const walletAddress = localStorage.getItem('walletAddress');
+      let details = navigator.userAgent;
+      let regexp = /android|iphone|kindle|ipad/i;
+      let isMobileDevice = regexp.test(details);
+      let provider;
+      if (isMobileDevice) {
+        const connector = await wc.connect();
+        let walletConnectProvider = await wc.getWeb3Provider({
+          rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+        });
+        await walletConnectProvider.enable();
+        provider = walletConnectProvider;
+      } else {
+        provider = Web3.givenProvider;
+      }
+      const web3 = new Web3(provider);
+      this.checkIfDataStoredOnBlockchain(web3, walletAddress);
+    }
+  }
+
+  checkIfDataStoredOnBlockchain = async (web3, walletAddress) => {
+    const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
+    const response = await myContract.methods
+      .getUser(walletAddress)
+      .call();
+    if (response && response.metaData) {
+      this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}`);
+    } else {
+      this.props.history.push({
+        pathname: '/profile-page',
+        state: {
+          signupMethod: 'web3',
+          walletAddress
+        }
+      });
+    }
   }
 
   authenticate = async (walletConnect) => {
@@ -51,16 +97,17 @@ class LoginPage extends Component {
         let details = navigator.userAgent;
         let regexp = /android|iphone|kindle|ipad/i;
         let isMobileDevice = regexp.test(details);
-        let signature; let messageToSign;
+        let signature; let messageToSign; let chainId;
         if (isMobileDevice || walletConnect) {
           const connector = await wc.connect();
+          chainId = connector.chainId;
           const account = connector.accounts.length ? connector.accounts[0] : null;
           if (account) {
             const siwe = new SiweMessage({
               domain: window.location.hostname,
               uri: window.location.origin,
               address: account,
-              chainId: connector.chainId,
+              chainId,
               version: '1',
               statement: message,
               nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
@@ -84,11 +131,12 @@ class LoginPage extends Component {
           });
           const web3 = new Web3(Web3.givenProvider);
           const account = Web3.utils.toChecksumAddress(accounts[0]);
+          chainId = await web3.eth.getChainId();
           const siwe = new SiweMessage({
             domain: window.location.hostname,
             uri: window.location.origin,
             address: account,
-            chainId: await web3.eth.getChainId(),
+            chainId,
             version: '1',
             statement: message,
             nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
@@ -107,6 +155,7 @@ class LoginPage extends Component {
         if (signatureVerified.success) {
           this.setState({ showLoader: false });
           localStorage.setItem('signIn', true);
+          localStorage.setItem('chainId', chainId);
           localStorage.setItem('walletAddress', signatureVerified.walletAddress);
           Object.assign(response, { signupMethod: 'web3' });
           Server.sendDataToMobileApp(JSON.stringify(signatureVerified));

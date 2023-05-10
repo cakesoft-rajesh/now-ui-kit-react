@@ -1,7 +1,7 @@
-import Web3 from "web3";
+// import Web3 from "web3";
 import { FaLink } from 'react-icons/fa';
 import React, { Component } from "react";
-import WalletConnect from "walletconnect";
+// import WalletConnect from "walletconnect";
 import { MdExitToApp } from 'react-icons/md';
 import {
   Button,
@@ -12,12 +12,12 @@ import {
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
-import membershipABI from "../../contracts_abi/membership.json";
+// import membershipABI from "../../contracts_abi/membership.json";
 import * as Server from "../../utils/Server";
-import * as NetworkData from 'utils/networks';
+// import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
-const wc = new WalletConnect();
+// const wc = new WalletConnect();
 
 class ProfileDetailPage extends Component {
 
@@ -32,70 +32,76 @@ class ProfileDetailPage extends Component {
       displayUsername: this.props.location.state ? this.props.location.state.displayUsername : "",
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
+      membershipStatus: '',
+      dokuId: ''
     };
   }
 
   async componentDidMount() {
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
+    const dokuId = localStorage.getItem('dokuId');
+    if (dokuId) this.setState({ dokuId });
     if (params.accessToken && params.signupMethod) {
       this.getUser(params.accessToken, params.signupMethod);
     } else if (params.walletAddress) {
-      this.getUserInfoFromBlockchain(params.walletAddress);
+      this.getUser(params.walletAddress, 'web3');
     }
   }
 
-  getUserInfoFromBlockchain = async (walletAddress) => {
-    try {
-      this.setState({ showLoader: true });
-      let details = navigator.userAgent;
-      let regexp = /android|iphone|kindle|ipad/i;
-      let isMobileDevice = regexp.test(details);
-      let provider;
-      if (isMobileDevice) {
-        const connector = await wc.connect();
-        let walletConnectProvider = await wc.getWeb3Provider({
-          rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
-        });
-        await walletConnectProvider.enable();
-        provider = walletConnectProvider;
-      } else {
-        provider = Web3.givenProvider;
-      }
-      const web3 = new Web3(provider);
-      const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
-      const response = await myContract.methods
-        .getUser(walletAddress)
-        .call();
-      if (response) {
-        let data = await GeneralFunctions.decrypt(response);
-        if (data) data = JSON.parse(data);
-        this.setState({
-          showLoader: false,
-          email: data.email,
-          password: data.password,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          phone: data.phone,
-          displayUsername: data.displayUsername,
-          signupMethod: 'web3',
-          walletAddress: data.walletAddress,
-        });
-      }
-    } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
-      this.setState({ showLoader: false });
-    }
-  };
+  // getUserInfoFromBlockchain = async (walletAddress) => {
+  //   try {
+  //     this.setState({ showLoader: true });
+  //     let details = navigator.userAgent;
+  //     let regexp = /android|iphone|kindle|ipad/i;
+  //     let isMobileDevice = regexp.test(details);
+  //     let provider;
+  //     if (isMobileDevice) {
+  //       const connector = await wc.connect();
+  //       let walletConnectProvider = await wc.getWeb3Provider({
+  //         rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+  //       });
+  //       await walletConnectProvider.enable();
+  //       provider = walletConnectProvider;
+  //     } else {
+  //       provider = Web3.givenProvider;
+  //     }
+  //     const web3 = new Web3(provider);
+  //     const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
+  //     const response = await myContract.methods
+  //       .getUser(walletAddress)
+  //       .call();
+  //     if (response) {
+  //       let data = await GeneralFunctions.decrypt(response);
+  //       if (data) data = JSON.parse(data);
+  //       this.setState({
+  //         showLoader: false,
+  //         email: data.email,
+  //         password: data.password,
+  //         firstName: data.firstName,
+  //         lastName: data.lastName,
+  //         phone: data.phone,
+  //         displayUsername: data.displayUsername,
+  //         signupMethod: 'web3',
+  //         walletAddress: data.walletAddress,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     this.notificationSystem.addNotification({
+  //       message: error.message,
+  //       level: "error",
+  //     });
+  //     this.setState({ showLoader: false });
+  //   }
+  // };
 
   getUser = async (accessToken, signupMethod) => {
     try {
       this.setState({ showLoader: true });
+      const chainId = localStorage.getItem('chainId');
+      const membershipId = process.env.REACT_APP_MEMBERSHIP_ID;
       let response = await Server.request(
         {
-          url: '/user/detail',
+          url: `/user/detail?membershipId=${membershipId}&chainId=${chainId}`,
           method: "GET",
         },
         accessToken
@@ -117,7 +123,7 @@ class ProfileDetailPage extends Component {
   };
 
   logout = async () => {
-    await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
+    // await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
     await GeneralFunctions.clearFullLocalStorage();
     this.props.history.push("/login-page")
   }
@@ -246,7 +252,7 @@ class ProfileDetailPage extends Component {
                   Payment Id :
                 </div>
                 <h6 style={{ marginLeft: 5 }}>
-                  Pending
+                  {this.state.dokuId || 'Pending'}
                 </h6>
               </Col>
               <Col xs={12}
@@ -260,7 +266,7 @@ class ProfileDetailPage extends Component {
                   Membership :
                 </div>
                 <h6 style={{ marginLeft: 5 }}>
-                  Pending
+                  {this.state.membershipStatus || 'Pending'}
                 </h6>
               </Col>
             </Row>

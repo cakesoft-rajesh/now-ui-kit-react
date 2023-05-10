@@ -70,35 +70,6 @@ class ProfilePage extends Component {
           walletAddress: this.state.walletAddress,
           ztiAppName: this.state.ztiAppName
         };
-        // const hash = await GeneralFunctions.encrypt(JSON.stringify(dataForBlockChain));
-        // let details = navigator.userAgent;
-        // let regexp = /android|iphone|kindle|ipad/i;
-        // let isMobileDevice = regexp.test(details);
-        // let provider;
-        // let run = true
-        // if (isMobileDevice || run) {
-        //   const connector = await wc.connect();
-        //   let walletConnectProvider = await wc.getWeb3Provider({
-        //     rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
-        //   })
-        //   await walletConnectProvider.enable();
-        //   provider = walletConnectProvider;
-        // } else {
-        //   provider = Web3.givenProvider;
-        // }
-        // const web3 = new Web3(provider);
-        // const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
-        // const response = await myContract.methods
-        //   .setUser(hash)
-        //   .send(
-        //     {
-        //       from: this.state.walletAddress
-        //     }
-        //   );
-        // if (response.status) data = {
-        //   chainId: await web3.eth.getChainId(),
-        //   walletAddress: this.state.walletAddress
-        // };
       } else {
         url = "/web2Auth/signup";
         data = {
@@ -138,7 +109,7 @@ class ProfilePage extends Component {
           const web3 = new Web3(provider);
           const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
           const blockchainResponse = await myContract.methods
-            .setUser(hash)
+            .buyMembership(process.env.REACT_APP_MEMBERSHIP_ID, hash)
             .send(
               {
                 from: this.state.walletAddress
@@ -193,11 +164,11 @@ class ProfilePage extends Component {
   };
 
   logout = async () => {
-    await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
+    // await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
     await GeneralFunctions.clearFullLocalStorage();
     this.props.history.push("/login-page")
   }
-  
+
   render() {
     return (
       <>

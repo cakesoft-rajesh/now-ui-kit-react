@@ -38,6 +38,24 @@ class SignUpPage extends Component {
     };
   }
 
+  checkIfDataStoredOnBlockchain = async (web3, walletAddress) => {
+    const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
+    const response = await myContract.methods
+      .getUser(walletAddress)
+      .call();
+    if (response && response.metaData) {
+      this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}`);
+    } else {
+      this.props.history.push({
+        pathname: '/profile-page',
+        state: {
+          signupMethod: 'web3',
+          walletAddress
+        }
+      });
+    }
+  }
+
   authenticate = async (walletConnect) => {
     try {
       this.setState({ showLoader: true, showWalletConnectModal: false });
@@ -48,7 +66,7 @@ class SignUpPage extends Component {
         let regexp = /android|iphone|kindle|ipad/i;
         let isMobileDevice = regexp.test(details);
         let provider;
-        if (isMobileDevice) {
+        if (isMobileDevice || walletConnect) {
           const connector = await wc.connect();
           let walletConnectProvider = await wc.getWeb3Provider({
             rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
@@ -59,35 +77,7 @@ class SignUpPage extends Component {
           provider = Web3.givenProvider;
         }
         const web3 = new Web3(provider);
-        const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
-        const response = await myContract.methods
-          .getUser(walletAddress)
-          .call();
-        if (response) {
-          let data = await GeneralFunctions.decrypt(response);
-          if (data) data = JSON.parse(data);
-          this.props.history.push({
-            pathname: '/profile-detail-page',
-            state: {
-              email: data.email,
-              password: data.password,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              phone: data.phone,
-              displayUsername: data.displayUsername,
-              signupMethod: 'web3',
-              walletAddress: data.walletAddress,
-            }
-          });
-        } else {
-          this.props.history.push({
-            pathname: '/profile-page',
-            state: {
-              signupMethod: 'web3',
-              walletAddress
-            }
-          });
-        }
+        this.checkIfDataStoredOnBlockchain(web3, walletAddress);
       } else {
         let response = await Server.request({
           url: "/getSignMessage",
@@ -100,11 +90,12 @@ class SignUpPage extends Component {
         let details = navigator.userAgent;
         let regexp = /android|iphone|kindle|ipad/i;
         let isMobileDevice = regexp.test(details);
-        let signature; let messageToSign; let web3;
+        let signature; let messageToSign; let web3; let chainId;
         if (isMobileDevice || walletConnect) {
           const connector = await wc.connect();
+          chainId = connector.chainId;
           let walletConnectProvider = await wc.getWeb3Provider({
-            rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+            rpc: { [chainId]: await NetworkData.networks[chainId] }
           });
           await walletConnectProvider.enable();
           web3 = new Web3(walletConnectProvider);
@@ -114,7 +105,7 @@ class SignUpPage extends Component {
               domain: window.location.hostname,
               uri: window.location.origin,
               address: account,
-              chainId: connector.chainId,
+              chainId,
               version: '1',
               statement: message,
               nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
@@ -138,11 +129,12 @@ class SignUpPage extends Component {
           });
           web3 = new Web3(Web3.givenProvider);
           const account = Web3.utils.toChecksumAddress(accounts[0]);
+          chainId = await web3.eth.getChainId();
           const siwe = new SiweMessage({
             domain: window.location.hostname,
             uri: window.location.origin,
             address: account,
-            chainId: await web3.eth.getChainId(),
+            chainId,
             version: '1',
             statement: message,
             nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
@@ -161,36 +153,9 @@ class SignUpPage extends Component {
         if (signatureVerified.success) {
           this.setState({ showLoader: false });
           localStorage.setItem('signIn', true);
+          localStorage.setItem('chainId', chainId);
           localStorage.setItem('walletAddress', signatureVerified.walletAddress);
-          const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
-          const response = await myContract.methods
-            .getUser(signatureVerified.walletAddress)
-            .call();
-          if (response) {
-            let data = await GeneralFunctions.decrypt(response);
-            if (data) data = JSON.parse(data);
-            this.props.history.push({
-              pathname: '/profile-detail-page',
-              state: {
-                email: data.email,
-                password: data.password,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                phone: data.phone,
-                displayUsername: data.displayUsername,
-                signupMethod: 'web3',
-                walletAddress: data.walletAddress,
-              }
-            });
-          } else {
-            this.props.history.push({
-              pathname: '/profile-page',
-              state: {
-                signupMethod: 'web3',
-                walletAddress: signatureVerified.walletAddress
-              }
-            });
-          }
+          this.checkIfDataStoredOnBlockchain(web3, signatureVerified.walletAddress);
         } else {
           throw Error(signatureVerified.message);
         }
