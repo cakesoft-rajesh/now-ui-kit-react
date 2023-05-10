@@ -1,7 +1,7 @@
 // import Web3 from "web3";
 import { FaLink } from 'react-icons/fa';
 import React, { Component } from "react";
-// import WalletConnect from "walletconnect";
+import WalletConnect from "walletconnect";
 import { MdExitToApp } from 'react-icons/md';
 import {
   Button,
@@ -17,7 +17,7 @@ import * as Server from "../../utils/Server";
 // import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
-// const wc = new WalletConnect();
+const wc = new WalletConnect();
 
 class ProfileDetailPage extends Component {
 
@@ -124,6 +124,13 @@ class ProfileDetailPage extends Component {
 
   logout = async () => {
     await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
+    let details = navigator.userAgent;
+    let regexp = /android|iphone|kindle|ipad/i;
+    let isMobileDevice = regexp.test(details);
+    if (isMobileDevice) {
+      const connector = await wc.connect();
+      await connector.killSession();
+    }
     await GeneralFunctions.clearFullLocalStorage();
     this.props.history.push("/login-page")
   }

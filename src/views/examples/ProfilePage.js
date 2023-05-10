@@ -165,6 +165,13 @@ class ProfilePage extends Component {
 
   logout = async () => {
     await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
+    let details = navigator.userAgent;
+    let regexp = /android|iphone|kindle|ipad/i;
+    let isMobileDevice = regexp.test(details);
+    if (isMobileDevice) {
+      const connector = await wc.connect();
+      await connector.killSession();
+    }
     await GeneralFunctions.clearFullLocalStorage();
     this.props.history.push("/login-page")
   }
