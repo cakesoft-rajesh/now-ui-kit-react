@@ -41,77 +41,38 @@ class ProfileDetailPage extends Component {
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
     const dokuId = localStorage.getItem('dokuId');
     if (dokuId) this.setState({ dokuId });
-    if (params.accessToken && params.signupMethod) {
-      this.getUser(params.accessToken, params.signupMethod);
-    } else if (params.walletAddress) {
+    if (params.walletAddress) {
       this.getUser(params.walletAddress, 'web3');
     }
   }
 
-  // getUserInfoFromBlockchain = async (walletAddress) => {
-  //   try {
-  //     this.setState({ showLoader: true });
-  //     let details = navigator.userAgent;
-  //     let regexp = /android|iphone|kindle|ipad/i;
-  //     let isMobileDevice = regexp.test(details);
-  //     let provider;
-  //     if (isMobileDevice) {
-  //       const connector = await wc.connect();
-  //       let walletConnectProvider = await wc.getWeb3Provider({
-  //         rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
-  //       });
-  //       await walletConnectProvider.enable();
-  //       provider = walletConnectProvider;
-  //     } else {
-  //       provider = Web3.givenProvider;
-  //     }
-  //     const web3 = new Web3(provider);
-  //     const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
-  //     const response = await myContract.methods
-  //       .getUser(walletAddress)
-  //       .call();
-  //     if (response) {
-  //       let data = await GeneralFunctions.decrypt(response);
-  //       if (data) data = JSON.parse(data);
-  //       this.setState({
-  //         showLoader: false,
-  //         email: data.email,
-  //         password: data.password,
-  //         firstName: data.firstName,
-  //         lastName: data.lastName,
-  //         phone: data.phone,
-  //         displayUsername: data.displayUsername,
-  //         signupMethod: 'web3',
-  //         walletAddress: data.walletAddress,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     this.notificationSystem.addNotification({
-  //       message: error.message,
-  //       level: "error",
-  //     });
-  //     this.setState({ showLoader: false });
-  //   }
-  // };
-
-  getUser = async (accessToken, signupMethod) => {
+  getUser = async (walletAddress, signupMethod) => {
     try {
       this.setState({ showLoader: true });
       const chainId = localStorage.getItem('chainId');
       const membershipId = process.env.REACT_APP_MEMBERSHIP_ID;
       let response = await Server.request(
         {
-          url: `/user/detail?membershipId=${membershipId}&chainId=${chainId}`,
+          url: `/user/detail?membershipId=${membershipId}&chainId=${chainId}&walletAddress=${walletAddress}`,
           method: "GET",
-        },
-        accessToken
+        }
       );
       if (response.success) {
-        this.setState({
-          showLoader: false,
-          ...response.user,
-          signupMethod
-        });
+        if (response.userFound) {
+          this.setState({
+            showLoader: false,
+            ...response.user,
+            signupMethod
+          });
+        } else {
+          this.props.history.push({
+            pathname: '/profile-page',
+            state: {
+              signupMethod: 'web3',
+              walletAddress
+            }
+          });
+        }
       }
     } catch (error) {
       this.notificationSystem.addNotification({
