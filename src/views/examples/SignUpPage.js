@@ -15,12 +15,14 @@ import {
   Form,
   FormFeedback,
 } from "reactstrap";
+import { BottomSheet } from 'react-spring-bottom-sheet'
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import * as Server from "../../utils/Server";
 import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
+import 'react-spring-bottom-sheet/dist/style.css'
 
 const wc = new WalletConnect();
 
@@ -34,7 +36,10 @@ class SignUpPage extends Component {
       password: '',
       confirmPassword: '',
       invalidPassword: false,
-      showWalletConnectModal: false
+      showWalletConnectModal: false,
+      showSheet: false,
+      walletConnect: false,
+      connector: '',
     };
   }
 
@@ -44,7 +49,9 @@ class SignUpPage extends Component {
       .getUser(walletAddress)
       .call();
     if (response && response.metaData) {
-      this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}`);
+      this.props.history.push(
+        `/profile-detail-page?walletAddress=${walletAddress}`
+      );
     } else {
       this.props.history.push({
         pathname: '/profile-page',
@@ -56,9 +63,9 @@ class SignUpPage extends Component {
     }
   }
 
-  authenticate = async (walletConnect) => {
+  authenticate = async () => {
     try {
-      this.setState({ showLoader: true, showWalletConnectModal: false });
+      this.setState({ showLoader: true, showSheet: false });
       const signIn = localStorage.getItem('signIn');
       if (signIn) {
         const walletAddress = localStorage.getItem('walletAddress');
@@ -66,10 +73,9 @@ class SignUpPage extends Component {
         let regexp = /android|iphone|kindle|ipad/i;
         let isMobileDevice = regexp.test(details);
         let provider;
-        if (isMobileDevice || walletConnect) {
-          const connector = await wc.connect();
+        if (isMobileDevice || this.state.walletConnect) {
           let walletConnectProvider = await wc.getWeb3Provider({
-            rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+            rpc: { [this.state.connector.chainId]: await NetworkData.networks[this.state.connector.chainId] }
           });
           await walletConnectProvider.enable();
           provider = walletConnectProvider;
@@ -91,15 +97,14 @@ class SignUpPage extends Component {
         let regexp = /android|iphone|kindle|ipad/i;
         let isMobileDevice = regexp.test(details);
         let signature; let messageToSign; let web3; let chainId;
-        if (isMobileDevice || walletConnect) {
-          const connector = await wc.connect();
-          chainId = connector.chainId;
+        if (isMobileDevice || this.state.walletConnect) {
+          chainId = this.state.connector.chainId;
           let walletConnectProvider = await wc.getWeb3Provider({
             rpc: { [chainId]: await NetworkData.networks[chainId] }
           });
           await walletConnectProvider.enable();
           web3 = new Web3(walletConnectProvider);
-          const account = connector.accounts.length ? connector.accounts[0] : null;
+          const account = this.state.connector.accounts.length ? this.state.connector.accounts[0] : null;
           if (account) {
             const siwe = new SiweMessage({
               domain: window.location.hostname,
@@ -111,17 +116,11 @@ class SignUpPage extends Component {
               nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
             });
             messageToSign = siwe.prepareMessage();
-            await new Promise((resolve, reject) => {
-              setTimeout(async () => {
                 try {
-                  signature = await connector.signPersonalMessage([account, messageToSign]);
+                  signature = await this.state.connector.signPersonalMessage([account, messageToSign]);
                 } catch (error) {
-                  reject(new Error(error.message || error));
+                  throw(new Error(error.message || error));
                 }
-                clearTimeout();
-                resolve();
-              }, 5000);
-            });
           }
         } else {
           const accounts = await window.ethereum.request({
@@ -169,6 +168,22 @@ class SignUpPage extends Component {
     }
   };
 
+  connectWallet = async (walletConnect) => {
+    let details = navigator.userAgent;
+    let regexp = /android|iphone|kindle|ipad/i;
+    let isMobileDevice = regexp.test(details);
+    if (isMobileDevice || walletConnect) {
+    const connector = await wc.connect();
+    this.setState({walletConnect, connector, showWalletConnectModal: false})
+    }
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.setState({showSheet: true})
+        clearTimeout();
+        resolve();
+      }, 1000);
+    })
+  }
 
   toggleWalletConnectModal = () => {
     this.setState({ showWalletConnectModal: !this.state.showWalletConnectModal });
@@ -364,7 +379,7 @@ class SignUpPage extends Component {
               <Row>
                 <Col sm={12}>
                   <Button
-                    onClick={() => this.authenticate(false)}
+                    onClick={() => this.connectWallet(false)}
                     style={{
                       width: '100%',
                       padding: '10px 29px',
@@ -391,7 +406,7 @@ class SignUpPage extends Component {
                 </Col>
                 <Col sm={12}>
                   <Button
-                    onClick={() => this.authenticate(true)}
+                    onClick={() => this.connectWallet(true)}
                     style={{
                       width: '100%',
                       padding: '10px 29px',
@@ -495,6 +510,74 @@ class SignUpPage extends Component {
           </Modal >
         ) : null
         }
+        <BottomSheet
+          open={this.state.showSheet}
+          snapPoints={({ minHeight }) => minHeight}
+        >
+          <style>
+          {`[data-rsbs-overlay] {
+            background: #1434A4;
+          }`}
+          </style>
+          <Row style={{ justifyContent: 'center', margin: '0px 0px', marginTop: 20, }}>
+                    <div
+                      style={{
+                        color: 'white',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                      }}
+                    >Verify your account</div>
+                  </Row>
+                  <Row style={{ justifyContent: 'center', margin: '0px 30px', marginTop: 30, }}>
+                    <div
+                      style={{
+                        color: 'white',
+                        fontSize: '14px',
+                      }}
+                    >To finish connecting, sign a message in your wallet to verify that you are the owner of this account</div>
+                  </Row>
+                  <Row
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 30,
+                }}
+              >
+                <Button
+                  style={{
+                    width: "60%",
+                    padding: '13px 0px',
+                    fontSize: '15px',
+                    fontWeight: 'bold',
+                    backgroundColor: 'white',
+                    color: 'black',
+                  }}
+                  onClick={this.authenticate} className="btn-round" color="black" type="button" size="lg">
+                  Send Message
+                </Button>
+              </Row>
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                  <Button
+                    onClick={() => this.onDismiss()}
+                    style={{
+                      padding: '10px 29px',
+                      fontSize: '21px',
+                      fontWeight: 'bold',
+                      color: 'white',
+                    }}
+                    className="btn-round" color="info" type="button" size="lg" outline>
+                    <label
+                      style={{
+                        cursor: 'pointer',
+                        float: 'left',
+                        marginBottom: '0px'
+                      }}
+                    >
+                      Cancel
+                    </label>
+                  </Button>
+                  </Row>
+        </BottomSheet>
       </>
     );
   }
