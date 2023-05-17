@@ -199,29 +199,33 @@ class SignUpPage extends Component {
             // justifyContent: "center",
             flexDirection: "column",
             display: "flex",
-            marginTop: 20
+            marginTop: 20,
           }}
         >
           <Row style={{ justifyContent: "center", alignItems: "center" }}>
             <Col
               md="3"
               sm="4"
-              style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
+              style={{
+                width: "90%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Row
                 style={{
                   justifyContent: "start",
                   alignItems: "center",
-                  marginLeft: 0
+                  marginLeft: 0,
                 }}
               >
                 <FaChevronLeft
                   size="20"
                   style={{
-                    cursor: 'pointer',
-                    marginBottom: '30px'
+                    cursor: "pointer",
+                    marginBottom: "30px",
                   }}
-                  onClick={() => this.props.history.push('/login-page')}
+                  onClick={() => this.props.history.push("/login-page")}
                 />
               </Row>
               <Row
@@ -234,11 +238,16 @@ class SignUpPage extends Component {
                 <Button
                   style={{
                     width: "100%",
-                    padding: '13px 0px',
-                    fontSize: '15px',
-                    fontWeight: 'bold',
+                    padding: "13px 0px",
+                    fontSize: "15px",
+                    fontWeight: "bold",
                   }}
-                  onClick={this.toggleWalletConnectModal} className="btn-round" color="info" type="button" size="lg">
+                  onClick={this.toggleWalletConnectModal}
+                  className="btn-round"
+                  color="info"
+                  type="button"
+                  size="lg"
+                >
                   Connect Web3 Wallet
                 </Button>
               </Row>
@@ -261,9 +270,9 @@ class SignUpPage extends Component {
                   position: "absolute",
                   top: "29%",
                   left: "47%",
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center'
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
                 <h6 style={{ color: "white", marginBottom: 0 }}>OR</h6>
@@ -278,15 +287,17 @@ class SignUpPage extends Component {
                 <h3 style={{ color: "gray" }}>Sign up with email</h3>
               </Row>
               <Form
-                onSubmit={() => this.props.history.push({
-                  pathname: '/profile-page',
-                  state: {
-                    email: this.state.email,
-                    password: this.state.password,
-                    confirmPassword: this.state.confirmPassword,
-                    signupMethod: 'web2'
-                  }
-                })}
+                onSubmit={() =>
+                  this.props.history.push({
+                    pathname: "/profile-page",
+                    state: {
+                      email: this.state.email,
+                      password: this.state.password,
+                      confirmPassword: this.state.confirmPassword,
+                      signupMethod: "web2",
+                    },
+                  })
+                }
               >
                 <Row
                   style={{
@@ -297,56 +308,74 @@ class SignUpPage extends Component {
                 >
                   <FormGroup style={{ width: "100%" }}>
                     <Input
-                      style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
+                      style={{
+                        marginBottom: 10,
+                        width: "100%",
+                        borderColor: "gray",
+                      }}
                       value={this.state.email}
                       placeholder="Enter email"
                       type="email"
                       required
-                      onChange={(event) => this.setState({ email: event.target.value })}
+                      onChange={(event) =>
+                        this.setState({ email: event.target.value })
+                      }
                     ></Input>
                   </FormGroup>
                   <FormGroup style={{ width: "100%" }}>
                     <Input
-                      style={{ marginBottom: 10, width: "100%", borderColor: 'gray' }}
+                      style={{
+                        marginBottom: 10,
+                        width: "100%",
+                        borderColor: "gray",
+                      }}
                       value={this.state.password}
                       placeholder="create password"
                       type="password"
                       required
-                      onChange={(event) => this.setState({ password: event.target.value })}
+                      onChange={(event) =>
+                        this.setState({ password: event.target.value })
+                      }
                     ></Input>
                   </FormGroup>
                   <FormGroup style={{ width: "100%" }}>
                     <Input
-                      style={{ width: "100%", borderColor: 'gray' }}
+                      style={{ width: "100%", borderColor: "gray" }}
                       value={this.state.confirmPassword}
                       placeholder="confirm password"
                       type="password"
                       required
                       invalid={this.state.invalidPassword}
                       onChange={(event) => {
-                        this.setState({ confirmPassword: event.target.value }, () => {
-                          if (this.state.password !== this.state.confirmPassword) {
-                            this.setState({ invalidPassword: true })
-                          } else {
-                            this.setState({ invalidPassword: false })
+                        this.setState(
+                          { confirmPassword: event.target.value },
+                          () => {
+                            if (
+                              this.state.password !== this.state.confirmPassword
+                            ) {
+                              this.setState({ invalidPassword: true });
+                            } else {
+                              this.setState({ invalidPassword: false });
+                            }
                           }
-                        })
+                        );
                       }}
                     ></Input>
-                    <FormFeedback>
-                      Password mismatch
-                    </FormFeedback>
+                    <FormFeedback>Password mismatch</FormFeedback>
                   </FormGroup>
                 </Row>
                 <Row style={{ justifyContent: "center", alignItems: "center" }}>
                   <Button
                     style={{
                       width: "100%",
-                      padding: '13px 0px',
-                      fontSize: '15px',
-                      fontWeight: 'bold',
+                      padding: "13px 0px",
+                      fontSize: "15px",
+                      fontWeight: "bold",
                     }}
-                    className="btn-round" color="info" type="submit" size="lg"
+                    className="btn-round"
+                    color="info"
+                    type="submit"
+                    size="lg"
                     disabled={this.state.invalidPassword}
                   >
                     Sign up
@@ -370,9 +399,7 @@ class SignUpPage extends Component {
             style={{ width: "90%" }}
             centered
           >
-            <ModalHeader
-              toggle={(event) => this.toggleWalletConnectModal()}
-            >
+            <ModalHeader toggle={(event) => this.toggleWalletConnectModal()}>
               Connect Account
             </ModalHeader>
             <ModalBody>
@@ -381,23 +408,28 @@ class SignUpPage extends Component {
                   <Button
                     onClick={() => this.connectWallet(false)}
                     style={{
-                      width: '100%',
-                      padding: '10px 29px',
-                      fontSize: '21px',
-                      fontWeight: 'bold',
-                      color: 'gray',
+                      width: "100%",
+                      padding: "10px 29px",
+                      fontSize: "21px",
+                      fontWeight: "bold",
+                      color: "gray",
                     }}
-                    className="btn-round" color="info" type="button" size="lg" outline>
+                    className="btn-round"
+                    color="info"
+                    type="button"
+                    size="lg"
+                    outline
+                  >
                     <label
                       style={{
-                        float: 'left',
-                        marginBottom: '0px'
+                        float: "left",
+                        marginBottom: "0px",
                       }}
                     >
                       MetaMask
                     </label>
                     <img
-                      style={{ float: 'right', width: '30px' }}
+                      style={{ float: "right", width: "30px" }}
                       alt="..."
                       className="rounded-circle"
                       src="metamask.png"
@@ -408,23 +440,32 @@ class SignUpPage extends Component {
                   <Button
                     onClick={() => this.connectWallet(true)}
                     style={{
-                      width: '100%',
-                      padding: '10px 29px',
-                      fontSize: '21px',
-                      fontWeight: 'bold',
-                      color: 'gray',
+                      width: "100%",
+                      padding: "10px 29px",
+                      fontSize: "21px",
+                      fontWeight: "bold",
+                      color: "gray",
                     }}
-                    className="btn-round" color="info" type="button" size="lg" outline>
+                    className="btn-round"
+                    color="info"
+                    type="button"
+                    size="lg"
+                    outline
+                  >
                     <label
                       style={{
-                        float: 'left',
-                        marginBottom: '0px',
+                        float: "left",
+                        marginBottom: "0px",
                       }}
                     >
                       WalletConnect
                     </label>
                     <img
-                      style={{ float: 'right', width: '30px', marginTop: '5px' }}
+                      style={{
+                        float: "right",
+                        width: "30px",
+                        marginTop: "5px",
+                      }}
                       alt="..."
                       className="rounded-circle"
                       src="walletConnect.png"
@@ -432,73 +473,98 @@ class SignUpPage extends Component {
                   </Button>
                 </Col>
                 <Col sm={12}>
-                  <Row style={{ justifyContent: 'center', margin: '20px 0px' }}>
+                  <Row style={{ justifyContent: "center", margin: "20px 0px" }}>
                     <div
                       style={{
-                        color: 'gray',
-                        fontSize: '25px',
-                        fontWeight: 'bold',
+                        color: "gray",
+                        fontSize: "25px",
+                        fontWeight: "bold",
                       }}
-                    >What is a wallet?</div>
+                    >
+                      What is a wallet?
+                    </div>
                   </Row>
-                  <Row style={{ justifyContent: 'center', margin: '0px 0px' }}>
+                  <Row style={{ justifyContent: "center", margin: "0px 0px" }}>
                     <div
                       style={{
-                        color: 'black',
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        color: "black",
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
-                    >A Home for your Digital Assets</div>
+                    >
+                      A Home for your Digital Assets
+                    </div>
                   </Row>
-                  <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
+                  <Row style={{ justifyContent: "center", margin: "0px 30px" }}>
                     <div
                       style={{
-                        color: 'gray',
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        color: "gray",
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
-                    >Wallets are used to send, receive, store, and display digital assets like Ethereum and NFTS</div>
+                    >
+                      Wallets are used to send, receive, store, and display
+                      digital assets like Ethereum and NFTS
+                    </div>
                   </Row>
-                  <Row style={{ justifyContent: 'center', margin: '0px 0px', marginTop: '20px' }}>
+                  <Row
+                    style={{
+                      justifyContent: "center",
+                      margin: "0px 0px",
+                      marginTop: "20px",
+                    }}
+                  >
                     <div
                       style={{
-                        color: 'black',
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        color: "black",
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
-                    >A New Way to Log In</div>
+                    >
+                      A New Way to Log In
+                    </div>
                   </Row>
-                  <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
+                  <Row style={{ justifyContent: "center", margin: "0px 30px" }}>
                     <div
                       style={{
-                        color: 'gray',
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        color: "gray",
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
-                    >Instead of creating new accounts and passwords on every website, just connect your wallet</div>
+                    >
+                      Instead of creating new accounts and passwords on every
+                      website, just connect your wallet
+                    </div>
                   </Row>
                 </Col>
                 <Col sm={12}>
-                  <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
+                  <Row style={{ justifyContent: "center", margin: "0px 30px" }}>
                     <Button
                       style={{
                         width: "50%",
-                        padding: '13px 0px',
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        padding: "13px 0px",
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
-                      onClick={async () => await Server.sendDataToMobileApp(JSON.stringify({ message: 'getWallet' }))}
-                      className="btn-round" color="info" type="button" size="lg"
+                      onClick={async () =>
+                        await Server.sendDataToMobileApp(
+                          JSON.stringify({ message: "getWallet" })
+                        )
+                      }
+                      className="btn-round"
+                      color="info"
+                      type="button"
+                      size="lg"
                     >
                       Get a Wallet
                     </Button>
                   </Row>
-                  <Row style={{ justifyContent: 'center', margin: '0px 30px' }}>
+                  <Row style={{ justifyContent: "center", margin: "0px 30px" }}>
                     <div
                       style={{
-                        color: 'gray',
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        color: "gray",
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
                     >
                       Learn More
@@ -506,77 +572,116 @@ class SignUpPage extends Component {
                   </Row>
                 </Col>
               </Row>
-            </ModalBody >
-          </Modal >
-        ) : null
-        }
+            </ModalBody>
+          </Modal>
+        ) : null}
         <BottomSheet
           open={this.state.showSheet}
           snapPoints={({ minHeight }) => minHeight}
         >
           <style>
-          {`[data-rsbs-overlay] {
+            {`[data-rsbs-overlay] {
             background: #1434A4;
           }`}
           </style>
-          <Row style={{ justifyContent: 'center', margin: '0px 0px', marginTop: 20, }}>
-                    <div
-                      style={{
-                        color: 'white',
-                        fontSize: '18px',
-                        fontWeight: 'bold',
-                      }}
-                    >Verify your account</div>
-                  </Row>
-                  <Row style={{ justifyContent: 'center', margin: '0px 30px', marginTop: 30, }}>
-                    <div
-                      style={{
-                        color: 'white',
-                        fontSize: '14px',
-                      }}
-                    >To finish connecting, sign a message in your wallet to verify that you are the owner of this account</div>
-                  </Row>
-                  <Row
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 15,
+            }}
+          >
+            <img
+              style={{ height: "40px", width: "40px", marginTop: "5px" }}
+              alt="..."
+              src="nusantaraWhite.png"
+            ></img>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 20,
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Verify your account
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 30px",
+              marginTop: 30,
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "14px",
+              }}
+            >
+              To finish connecting, sign a message in your wallet to verify that
+              you are the owner of this account
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 30,
+            }}
+          >
+            <Button
+              style={{
+                width: "60%",
+                padding: "13px 0px",
+                fontSize: "15px",
+                fontWeight: "bold",
+                backgroundColor: "white",
+                color: "black",
+              }}
+              onClick={this.authenticate}
+              className="btn-round"
+              color="black"
+              type="button"
+              size="lg"
+            >
+              Send Message
+            </Button>
+          </Row>
+          <Row style={{ justifyContent: "center", alignItems: "center" }}>
+            <Button
+              onClick={() => this.onDismiss()}
+              style={{
+                padding: "10px 29px",
+                fontSize: "21px",
+                fontWeight: "bold",
+                color: "white",
+              }}
+              className="btn-round"
+              color="info"
+              type="button"
+              size="lg"
+              outline
+            >
+              <label
                 style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 30,
+                  cursor: "pointer",
+                  float: "left",
+                  marginBottom: "0px",
                 }}
               >
-                <Button
-                  style={{
-                    width: "60%",
-                    padding: '13px 0px',
-                    fontSize: '15px',
-                    fontWeight: 'bold',
-                    backgroundColor: 'white',
-                    color: 'black',
-                  }}
-                  onClick={this.authenticate} className="btn-round" color="black" type="button" size="lg">
-                  Send Message
-                </Button>
-              </Row>
-              <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                  <Button
-                    onClick={() => this.onDismiss()}
-                    style={{
-                      padding: '10px 29px',
-                      fontSize: '21px',
-                      fontWeight: 'bold',
-                      color: 'white',
-                    }}
-                    className="btn-round" color="info" type="button" size="lg" outline>
-                    <label
-                      style={{
-                        cursor: 'pointer',
-                        float: 'left',
-                        marginBottom: '0px'
-                      }}
-                    >
-                      Cancel
-                    </label>
-                  </Button>
-                  </Row>
+                Cancel
+              </label>
+            </Button>
+          </Row>
         </BottomSheet>
       </>
     );
