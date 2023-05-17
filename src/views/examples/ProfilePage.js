@@ -58,9 +58,11 @@ class ProfilePage extends Component {
       event.preventDefault();
       this.setState({ showLoader: true });
       let url; let data;
+      const tokenId = new Date().getTime();
       if (this.state.signupMethod === 'web3') {
         url = "/web3Auth/signup";
         data = {
+          tokenId,
           email: this.state.email,
           firstName: this.state.firstName,
           lastName: this.state.lastName,
@@ -73,6 +75,7 @@ class ProfilePage extends Component {
       } else {
         url = "/web2Auth/signup";
         data = {
+          tokenId,
           email: this.state.email,
           password: this.state.password,
           confirmPassword: this.state.confirmPassword,
@@ -84,74 +87,71 @@ class ProfilePage extends Component {
           ztiAppName: this.state.ztiAppName
         };
       }
-      let response = await Server.request({
-        url,
+      let verifyDataResponse = await Server.request({
+        url: "/web3Auth/verifyData",
         method: "POST",
         data
       });
-      if (response.success) {
-        if (this.state.signupMethod === 'web3') {
-          const hash = await GeneralFunctions.encrypt(JSON.stringify(data));
-          let details = navigator.userAgent;
-          let regexp = /android|iphone|kindle|ipad/i;
-          let isMobileDevice = regexp.test(details);
-          let provider;
-          if (isMobileDevice) {
-            const connector = await wc.connect();
-            let walletConnectProvider = await wc.getWeb3Provider({
-              rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
-            });
-            await walletConnectProvider.enable();
-            provider = walletConnectProvider;
-          } else {
-            provider = Web3.givenProvider;
-          }
-          const web3 = new Web3(provider);
-          const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
-          const blockchainResponse = await myContract.methods
-            .buyMembership(process.env.REACT_APP_MEMBERSHIP_ID, hash)
-            .send(
-              {
-                from: this.state.walletAddress
-              }
-            );
-          if (blockchainResponse.status) {
-            this.setState({ showLoader: false });
-            // await Server.sendDataToMobileApp(JSON.stringify(response));
-            this.props.history.push({
-              pathname: '/profile-detail-page',
-              state: {
-                email: this.state.email,
-                password: this.state.password,
-                confirmPassword: this.state.confirmPassword,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                phone: `${this.state.countryCode.value}${this.state.phone}`,
-                userName: `${this.state.countryCode.value}${this.state.phone}`,
-                displayUsername: this.state.displayUsername,
-                signupMethod: this.state.signupMethod,
-                walletAddress: this.state.walletAddress
-              }
-            });
-          };
-        } else {
-          this.setState({ showLoader: false });
-          // await Server.sendDataToMobileApp(JSON.stringify(response));
-          this.props.history.push({
-            pathname: '/profile-detail-page',
-            state: {
-              email: this.state.email,
-              password: this.state.password,
-              confirmPassword: this.state.confirmPassword,
-              firstName: this.state.firstName,
-              lastName: this.state.lastName,
-              phone: `${this.state.countryCode.value}${this.state.phone}`,
-              userName: `${this.state.countryCode.value}${this.state.phone}`,
-              displayUsername: this.state.displayUsername,
-              signupMethod: this.state.signupMethod,
-              walletAddress: this.state.walletAddress
+      if (verifyDataResponse.success) {
+        let uploadDataToIPFSResponse = await Server.request({
+          url: "/web3Auth/uploadData",
+          method: "POST",
+          data
+        });
+        if (uploadDataToIPFSResponse.success) {
+          const tokenUri = uploadDataToIPFSResponse.tokenUri;
+          if (this.state.signupMethod === 'web3') {
+            let details = navigator.userAgent;
+            let regexp = /android|iphone|kindle|ipad/i;
+            let isMobileDevice = regexp.test(details);
+            let provider;
+            if (isMobileDevice) {
+              const connector = await wc.connect();
+              let walletConnectProvider = await wc.getWeb3Provider({
+                rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+              });
+              await walletConnectProvider.enable();
+              provider = walletConnectProvider;
+            } else {
+              provider = Web3.givenProvider;
             }
-          });
+            const web3 = new Web3(provider);
+            const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
+            let blockchainResponse = await myContract.methods
+              .mintMembership(tokenUri, tokenId)
+              .send(
+                {
+                  from: this.state.walletAddress
+                }
+              );
+            if (blockchainResponse.status) {
+              let response = await Server.request({
+                url,
+                method: "POST",
+                data
+              });
+              if (response.success) {
+                this.setState({ showLoader: false });
+                localStorage.setItem('tokenId', tokenId);
+                // await Server.sendDataToMobileApp(JSON.stringify(response));
+                this.props.history.push({
+                  pathname: '/profile-detail-page',
+                  state: {
+                    email: this.state.email,
+                    password: this.state.password,
+                    confirmPassword: this.state.confirmPassword,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    phone: `${this.state.countryCode.value}${this.state.phone}`,
+                    userName: `${this.state.countryCode.value}${this.state.phone}`,
+                    displayUsername: this.state.displayUsername,
+                    signupMethod: this.state.signupMethod,
+                    walletAddress: this.state.walletAddress
+                  }
+                });
+              }
+            }
+          }
         }
       }
     } catch (error) {

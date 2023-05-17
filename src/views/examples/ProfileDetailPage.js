@@ -41,19 +41,18 @@ class ProfileDetailPage extends Component {
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
     const dokuId = localStorage.getItem('dokuId');
     if (dokuId) this.setState({ dokuId });
-    if (params.walletAddress) {
-      this.getUser(params.walletAddress, 'web3');
+    if (params.walletAddress && params.tokenId) {
+      this.getUser(params.walletAddress, params.tokenId, 'web3');
     }
   }
 
-  getUser = async (walletAddress, signupMethod) => {
+  getUser = async (walletAddress, tokenId, signupMethod) => {
     try {
       this.setState({ showLoader: true });
       const chainId = localStorage.getItem('chainId');
-      const membershipId = process.env.REACT_APP_MEMBERSHIP_ID;
       let response = await Server.request(
         {
-          url: `/user/detail?membershipId=${membershipId}&chainId=${chainId}&walletAddress=${walletAddress}`,
+          url: `/user/detail?chainId=${chainId}&walletAddress=${walletAddress}&tokenId=${tokenId}`,
           method: "GET",
         }
       );
@@ -307,7 +306,7 @@ class ProfileDetailPage extends Component {
               {this.state.signupMethod === 'web3'
                 ? <Button
                   onClick={() => {
-                    Server.sendDataToMobileApp(JSON.stringify({ message: 'myCredentialsPage' }));
+                    Server.sendDataToMobileApp(JSON.stringify({ message: 'My credentials' }));
                   }}
                   style={{
                     padding: '15px 30px',

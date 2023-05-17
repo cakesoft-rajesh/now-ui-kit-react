@@ -70,19 +70,49 @@ class LoginPage extends Component {
 
   checkIfDataStoredOnBlockchain = async (web3, walletAddress) => {
     const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
-    const response = await myContract.methods
-      .getUser(walletAddress)
-      .call();
-    if (response && response.metaData) {
-      this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}`);
-    } else {
-      this.props.history.push({
-        pathname: '/profile-page',
-        state: {
-          signupMethod: 'web3',
-          walletAddress
+    try {
+      let tokenId = localStorage.getItem('tokenId');
+      if (!tokenId) {
+        let response = await Server.request({
+          url: `/user/getTokenId?walletAddress=${walletAddress}`,
+          method: "GET"
+        });
+        if (response.success && response.tokenId) {
+          tokenId = response.tokenId;
+        } else {
+          tokenId = 1;
         }
-      });
+      }
+      const response = await myContract.methods
+        .ownerOf(tokenId)
+        .call();
+      if (response && response === walletAddress) {
+        this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
+      } else {
+        this.props.history.push({
+          pathname: '/profile-page',
+          state: {
+            signupMethod: 'web3',
+            walletAddress
+          }
+        });
+      }
+    } catch (error) {
+      let message = error.message || error.Error;
+      if (message.toLowerCase().includes('invalid token id')) {
+        this.props.history.push({
+          pathname: '/profile-page',
+          state: {
+            signupMethod: 'web3',
+            walletAddress
+          }
+        });
+      } else {
+        this.notificationSystem.addNotification({
+          message,
+          level: "error",
+        });
+      }
     }
   }
 
@@ -119,11 +149,11 @@ class LoginPage extends Component {
               nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
             });
             messageToSign = siwe.prepareMessage();
-                try {
-                  signature = await this.state.connector.signPersonalMessage([account, messageToSign]);
-                } catch (error) {
-                  throw(new Error(error.message || error));
-                }
+            try {
+              signature = await this.state.connector.signPersonalMessage([account, messageToSign]);
+            } catch (error) {
+              throw (new Error(error.message || error));
+            }
           }
         } else {
           const accounts = await window.ethereum.request({
@@ -177,12 +207,12 @@ class LoginPage extends Component {
     let regexp = /android|iphone|kindle|ipad/i;
     let isMobileDevice = regexp.test(details);
     if (isMobileDevice || walletConnect) {
-    const connector = await wc.connect();
-    this.setState({walletConnect, connector, showWalletConnectModal: false})
+      const connector = await wc.connect();
+      this.setState({ walletConnect, connector, showWalletConnectModal: false })
     }
     await new Promise((resolve, reject) => {
       setTimeout(() => {
-        this.setState({showSheet: true})
+        this.setState({ showSheet: true })
         clearTimeout();
         resolve();
       }, 1000);
