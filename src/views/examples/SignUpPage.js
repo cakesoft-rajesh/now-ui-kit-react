@@ -219,6 +219,10 @@ class SignUpPage extends Component {
     this.setState({ showWalletConnectModal: !this.state.showWalletConnectModal });
   };
 
+  onDismiss = () => {
+    this.setState({ showSheet: false });
+  }
+
   render() {
     return (
       <>
