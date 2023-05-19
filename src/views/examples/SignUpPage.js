@@ -40,6 +40,8 @@ class SignUpPage extends Component {
       showSheet: false,
       walletConnect: false,
       connector: '',
+      web3: '',
+      account: ''
     };
   }
 
@@ -153,23 +155,19 @@ class SignUpPage extends Component {
             }
           }
         } else {
-          const accounts = await window.ethereum.request({
-            method: "eth_requestAccounts",
-          });
-          web3 = new Web3(Web3.givenProvider);
-          const account = Web3.utils.toChecksumAddress(accounts[0]);
+          web3 = this.state.web3;
           chainId = await web3.eth.getChainId();
           const siwe = new SiweMessage({
             domain: window.location.hostname,
             uri: window.location.origin,
-            address: account,
+            address: this.state.account,
             chainId,
             version: '1',
             statement: message,
             nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
           });
           messageToSign = siwe.prepareMessage();
-          signature = await web3.eth.personal.sign(messageToSign, account);
+          signature = await web3.eth.personal.sign(messageToSign, this.state.account);
         }
         let signatureVerified = await Server.request({
           url: '/web3Auth/connectWallet',
@@ -205,6 +203,13 @@ class SignUpPage extends Component {
     if (isMobileDevice || walletConnect) {
       const connector = await wc.connect();
       this.setState({ walletConnect, connector, showWalletConnectModal: false })
+    } else {
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      let web3 = new Web3(Web3.givenProvider);
+      const account = Web3.utils.toChecksumAddress(accounts[0]);
+      this.setState({ walletConnect, web3, account, showWalletConnectModal: false });
     }
     await new Promise((resolve, reject) => {
       setTimeout(() => {

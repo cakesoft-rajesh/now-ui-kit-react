@@ -125,6 +125,12 @@ class ProfilePage extends Component {
                 }
               );
             if (blockchainResponse.status) {
+              if (this.state.signupMethod === 'web3') {
+                Object.assign(data, {
+                  transactionId: blockchainResponse.transactionHash,
+                  date: new Date(),
+                });
+              }
               let response = await Server.request({
                 url,
                 method: "POST",
