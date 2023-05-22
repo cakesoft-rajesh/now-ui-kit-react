@@ -1,4 +1,5 @@
 // import Web3 from "web3";
+import moment from 'moment';
 import { FaLink } from 'react-icons/fa';
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
@@ -33,7 +34,8 @@ class ProfileDetailPage extends Component {
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       membershipStatus: '',
-      dokuId: ''
+      dokuId: '',
+      expiryTime: ''
     };
   }
 
@@ -237,6 +239,25 @@ class ProfileDetailPage extends Component {
                   {this.state.membershipStatus || 'Pending'}
                 </h6>
               </Col>
+              {GeneralFunctions.getMembershipWithExpiry() &&
+                <Col xs={12}
+                  style={{
+                    display: "flex",
+                    justifyContent: 'center',
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                    Membership Expiry:
+                  </div>
+                  <h6 style={{ marginLeft: 5 }}>
+                    {this.state.expiryTime
+                      ? moment(Number(this.state.expiryTime) * 1000).local().format("MM/DD/YYYY hh:mm A")
+                      : ''
+                    }
+                  </h6>
+                </Col>
+              }
             </Row>
             <Row
               style={{
