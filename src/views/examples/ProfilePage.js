@@ -18,6 +18,7 @@ import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
 import CountryCode from "../../utils/CountryCode.json";
 import membershipABI from "../../contracts_abi/membership.json";
+import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import * as Server from "../../utils/Server";
 import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
@@ -53,7 +54,7 @@ class ProfilePage extends Component {
     this.setState({ countryCodesOptions });
   }
 
-  signup = async (event) => {
+  signupWithExpiry = async (event) => {
     try {
       event.preventDefault();
       this.setState({ showLoader: true });
@@ -62,6 +63,7 @@ class ProfilePage extends Component {
       if (this.state.signupMethod === 'web3') {
         url = "/web3Auth/signup";
         data = {
+          membershipWithExpiry: true,
           tokenId,
           email: this.state.email,
           firstName: this.state.firstName,
@@ -75,6 +77,138 @@ class ProfilePage extends Component {
       } else {
         url = "/web2Auth/signup";
         data = {
+          membershipWithExpiry: false,
+          tokenId,
+          email: this.state.email,
+          password: this.state.password,
+          confirmPassword: this.state.confirmPassword,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          phone: `${this.state.countryCode.value}${this.state.phone}`,
+          userName: `${this.state.countryCode.value}${this.state.phone}`,
+          displayUsername: this.state.displayUsername,
+          ztiAppName: this.state.ztiAppName
+        };
+      }
+      let verifyDataResponse = await Server.request({
+        url: "/web3Auth/verifyData",
+        method: "POST",
+        data
+      });
+      if (verifyDataResponse.success) {
+        let uploadDataToIPFSResponse = await Server.request({
+          url: "/web3Auth/uploadData",
+          method: "POST",
+          data
+        });
+        if (uploadDataToIPFSResponse.success) {
+          const tokenUri = uploadDataToIPFSResponse.tokenUri;
+          if (this.state.signupMethod === 'web3') {
+            let details = navigator.userAgent;
+            let regexp = /android|iphone|kindle|ipad/i;
+            let isMobileDevice = regexp.test(details);
+            let provider;
+            if (isMobileDevice) {
+              const connector = await wc.connect();
+              let walletConnectProvider = await wc.getWeb3Provider({
+                rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+              });
+              await walletConnectProvider.enable();
+              provider = walletConnectProvider;
+            } else {
+              provider = Web3.givenProvider;
+            }
+            const web3 = new Web3(provider);
+            const myContract = await new web3.eth.Contract(membershipWithExpiryABI, process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
+            let blockchainResponse = await myContract.methods
+              .mintMembership(tokenUri, tokenId, 0)
+              .send(
+                {
+                  from: this.state.walletAddress
+                }
+              );
+            if (blockchainResponse.status) {
+              const date = new Date();
+              let paymentResponse = await myContract.methods
+                .payment('0xC2E56AE0EFB206cEd1F27F54D983cD1270833144')
+                .send(
+                  {
+                    from: this.state.walletAddress,
+                    value: await web3.utils.toWei('0.00001', 'ether')
+                  }
+                );
+              if (paymentResponse.status) {
+                if (this.state.signupMethod === 'web3') {
+                  Object.assign(data, {
+                    paymentTransactionId: paymentResponse.transactionHash,
+                    transactionId: blockchainResponse.transactionHash,
+                    date,
+                    paymentTransactionDate: new Date(),
+                  });
+                }
+                let response = await Server.request({
+                  url,
+                  method: "POST",
+                  data
+                });
+                if (response.success) {
+                  this.setState({ showLoader: false });
+                  localStorage.setItem('tokenId', tokenId);
+                  // await Server.sendDataToMobileApp(JSON.stringify(response));
+                  this.props.history.push({
+                    pathname: '/profile-detail-page',
+                    state: {
+                      email: this.state.email,
+                      password: this.state.password,
+                      confirmPassword: this.state.confirmPassword,
+                      firstName: this.state.firstName,
+                      lastName: this.state.lastName,
+                      phone: `${this.state.countryCode.value}${this.state.phone}`,
+                      userName: `${this.state.countryCode.value}${this.state.phone}`,
+                      displayUsername: this.state.displayUsername,
+                      signupMethod: this.state.signupMethod,
+                      walletAddress: this.state.walletAddress
+                    }
+                  });
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
+
+  signup = async (event) => {
+    try {
+      event.preventDefault();
+      this.setState({ showLoader: true });
+      let url; let data;
+      const tokenId = new Date().getTime();
+      if (this.state.signupMethod === 'web3') {
+        url = "/web3Auth/signup";
+        data = {
+          membershipWithExpiry: false,
+          tokenId,
+          email: this.state.email,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          phone: `${this.state.countryCode.value}${this.state.phone}`,
+          userName: `${this.state.countryCode.value}${this.state.phone}`,
+          displayUsername: this.state.displayUsername,
+          walletAddress: this.state.walletAddress,
+          ztiAppName: this.state.ztiAppName
+        };
+      } else {
+        url = "/web2Auth/signup";
+        data = {
+          membershipWithExpiry: false,
           tokenId,
           email: this.state.email,
           password: this.state.password,
@@ -178,8 +312,9 @@ class ProfilePage extends Component {
       const connector = await wc.connect();
       await connector.killSession();
     }
+    const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
     await GeneralFunctions.clearFullLocalStorage();
-    this.props.history.push("/login-page")
+    this.props.history.push(`/login-page?membershipWithExpiry=${membershipWithExpiry}`)
   }
 
   render() {
@@ -307,7 +442,10 @@ class ProfilePage extends Component {
               </>
             }
             <Form
-              onSubmit={(event) => this.signup(event)}
+              onSubmit={(event) => GeneralFunctions.getMembershipWithExpiry()
+                ? this.signupWithExpiry(event)
+                : this.signup(event)
+              }
             >
               <Row
                 style={{

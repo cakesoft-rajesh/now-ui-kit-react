@@ -19,6 +19,7 @@ import { BottomSheet } from 'react-spring-bottom-sheet'
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
+import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import * as Server from "../../utils/Server";
 import * as NetworkData from 'utils/networks';
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
@@ -46,7 +47,14 @@ class SignUpPage extends Component {
   }
 
   checkIfDataStoredOnBlockchain = async (web3, walletAddress) => {
-    const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS);
+    const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
+    const contractAddress = membershipWithExpiry
+      ? process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY
+      : process.env.REACT_APP_CONTRACT_ADDRESS;
+    const membershipABI_JSON = membershipWithExpiry
+      ? membershipWithExpiryABI
+      : membershipABI;
+    const myContract = await new web3.eth.Contract(membershipABI_JSON, contractAddress);
     try {
       let tokenId = localStorage.getItem('tokenId');
       if (!tokenId) {

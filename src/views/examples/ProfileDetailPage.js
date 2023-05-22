@@ -52,7 +52,7 @@ class ProfileDetailPage extends Component {
       const chainId = localStorage.getItem('chainId');
       let response = await Server.request(
         {
-          url: `/user/detail?chainId=${chainId}&walletAddress=${walletAddress}&tokenId=${tokenId}`,
+          url: `/user/detail?chainId=${chainId}&walletAddress=${walletAddress}&tokenId=${tokenId}&membershipWithExpiry=${GeneralFunctions.getMembershipWithExpiry()}`,
           method: "GET",
         }
       );
@@ -91,8 +91,9 @@ class ProfileDetailPage extends Component {
       const connector = await wc.connect();
       await connector.killSession();
     }
+    const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
     await GeneralFunctions.clearFullLocalStorage();
-    this.props.history.push("/login-page")
+    this.props.history.push(`/login-page?membershipWithExpiry=${membershipWithExpiry}`)
   }
 
   render() {

@@ -147,3 +147,15 @@ export const setPageLimit = (limit) => {
 export const getPageLimit = () => {
   return localStorage.getItem("pageLimit");
 };
+
+
+export const getMembershipWithExpiry = () => {
+  switch (localStorage.getItem('membershipWithExpiry')) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    default:
+      return false;
+  };
+};
