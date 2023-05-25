@@ -186,7 +186,7 @@ class SignUpPage extends Component {
           }
         });
         if (signatureVerified.success) {
-          this.setState({ showLoader: false });
+          // this.setState({ showLoader: false });
           localStorage.setItem('signIn', true);
           localStorage.setItem('chainId', chainId);
           localStorage.setItem('walletAddress', signatureVerified.walletAddress);
