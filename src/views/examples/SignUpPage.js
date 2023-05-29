@@ -324,17 +324,7 @@ class SignUpPage extends Component {
               >
                 <h3 style={{ color: "gray" }}>Sign up with email</h3>
               </Row>
-              <Form
-                onSubmit={() => this.props.history.push({
-                  pathname: '/profile-page',
-                  state: {
-                    email: this.state.email,
-                    password: this.state.password,
-                    confirmPassword: this.state.confirmPassword,
-                    signupMethod: 'web2'
-                  }
-                })}
-              >
+              <Form>
                 <Row
                   style={{
                     justifyContent: "center",
@@ -395,6 +385,17 @@ class SignUpPage extends Component {
                     }}
                     className="btn-round" color="info" type="submit" size="lg"
                     disabled={this.state.invalidPassword}
+                    onClick={() => {
+                      this.props.history.push({
+                        pathname: '/profile-page',
+                        state: {
+                          email: this.state.email,
+                          password: this.state.password,
+                          confirmPassword: this.state.confirmPassword,
+                          signupMethod: 'web2'
+                        }
+                      })
+                    }}
                   >
                     Sign up
                   </Button>
