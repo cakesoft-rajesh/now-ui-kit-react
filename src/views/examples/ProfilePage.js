@@ -181,6 +181,7 @@ class ProfilePage extends Component {
         });
         if (response.success) {
           this.setState({ showLoader: false });
+          await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
             pathname: '/profile-detail-page',
             state: {
@@ -321,6 +322,7 @@ class ProfilePage extends Component {
         });
         if (response.success) {
           this.setState({ showLoader: false });
+          await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
             pathname: '/profile-detail-page',
             state: {
