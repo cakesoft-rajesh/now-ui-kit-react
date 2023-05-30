@@ -86,12 +86,14 @@ class ProfileDetailPage extends Component {
 
   logout = async () => {
     await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
-    let details = navigator.userAgent;
-    let regexp = /android|iphone|kindle|ipad/i;
-    let isMobileDevice = regexp.test(details);
-    if (isMobileDevice) {
-      const connector = await wc.connect();
-      await connector.killSession();
+    if (this.state.signupMethod === 'web3') {
+      let details = navigator.userAgent;
+      let regexp = /android|iphone|kindle|ipad/i;
+      let isMobileDevice = regexp.test(details);
+      if (isMobileDevice) {
+        const connector = await wc.connect();
+        await connector.killSession();
+      }
     }
     const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
     await GeneralFunctions.clearFullLocalStorage();
@@ -202,6 +204,11 @@ class ProfileDetailPage extends Component {
               </>
               : <Row style={{ justifyContent: "center", alignItems: "center" }}>
                 <h4 style={{ marginTop: 20, fontWeight: 'bold' }}>Welcome {`${this.state.firstName} ${this.state.lastName}`}</h4>
+                <MdExitToApp
+                  size="20"
+                  style={{ cursor: 'pointer', marginLeft: '7px' }}
+                  onClick={this.logout}
+                />
               </Row>
             }
             <Row

@@ -181,6 +181,8 @@ class ProfilePage extends Component {
         });
         if (response.success) {
           this.setState({ showLoader: false });
+          localStorage.setItem('signupOrLoginMethod', 'web2');
+          localStorage.setItem('user', JSON.stringify(response.user));
           await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
             pathname: '/profile-detail-page',
@@ -322,6 +324,8 @@ class ProfilePage extends Component {
         });
         if (response.success) {
           this.setState({ showLoader: false });
+          localStorage.setItem('signupOrLoginMethod', 'web2');
+          localStorage.setItem('user', JSON.stringify(response.user));
           await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
             pathname: '/profile-detail-page',

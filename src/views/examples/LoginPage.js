@@ -47,28 +47,56 @@ class LoginPage extends Component {
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
     localStorage.setItem('membershipWithExpiry', params.membershipWithExpiry ? params.membershipWithExpiry : false);
     if (params.dokuId) localStorage.setItem('dokuId', params.dokuId);
-    const signIn = localStorage.getItem('signIn');
-    if (signIn) {
-      this.setState({ showLoader: true });
-      const walletAddress = localStorage.getItem('walletAddress');
-      let details = navigator.userAgent;
-      let regexp = /android|iphone|kindle|ipad/i;
-      let isMobileDevice = regexp.test(details);
-      let provider;
-      if (isMobileDevice) {
-        const connector = await wc.connect();
-        let walletConnectProvider = await wc.getWeb3Provider({
-          rpc: {
-            [connector.chainId]: await NetworkData.networks[connector.chainId],
-          },
-        });
-        await walletConnectProvider.enable();
-        provider = walletConnectProvider;
-      } else {
-        provider = Web3.givenProvider;
+    const signupOrLoginMethod = localStorage.getItem('signupOrLoginMethod');
+    if (signupOrLoginMethod === 'web3') {
+      const signIn = localStorage.getItem('signIn');
+      if (signIn) {
+        this.setState({ showLoader: true });
+        const walletAddress = localStorage.getItem('walletAddress');
+        let details = navigator.userAgent;
+        let regexp = /android|iphone|kindle|ipad/i;
+        let isMobileDevice = regexp.test(details);
+        let provider;
+        if (isMobileDevice) {
+          const connector = await wc.connect();
+          let walletConnectProvider = await wc.getWeb3Provider({
+            rpc: {
+              [connector.chainId]: await NetworkData.networks[connector.chainId],
+            },
+          });
+          await walletConnectProvider.enable();
+          provider = walletConnectProvider;
+        } else {
+          provider = Web3.givenProvider;
+        }
+        const web3 = new Web3(provider);
+        this.checkIfDataStoredOnBlockchain(web3, walletAddress);
       }
-      const web3 = new Web3(provider);
-      this.checkIfDataStoredOnBlockchain(web3, walletAddress);
+    } else if (signupOrLoginMethod === 'web2') {
+      let user = localStorage.getItem('user');
+      if (user) {
+        user = JSON.parse(user);
+        this.props.history.push({
+          pathname: '/profile-detail-page',
+          state: {
+            email: user.emails[0].address,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            userName: user.username,
+            displayUsername: user.displayUsername,
+            signupMethod: 'web2',
+            walletAddress: user.walletAddress
+          }
+        });
+      } else {
+        this.props.history.push({
+          pathname: '/profile-page',
+          state: {
+            signupMethod: 'web2',
+          }
+        });
+      }
     }
   }
 
@@ -192,6 +220,7 @@ class LoginPage extends Component {
         if (signatureVerified.success) {
           this.setState({ showLoader: false });
           localStorage.setItem('signIn', true);
+          localStorage.setItem('signupOrLoginMethod', 'web3');
           localStorage.setItem('chainId', chainId);
           localStorage.setItem('walletAddress', signatureVerified.walletAddress);
           Object.assign(response, { signupMethod: 'web3' });
@@ -247,6 +276,8 @@ class LoginPage extends Component {
       });
       if (response.success) {
         this.setState({ showLoader: false });
+        localStorage.setItem('signupOrLoginMethod', 'web2');
+        localStorage.setItem('user', JSON.stringify(response.user));
         Object.assign(response, { signupMethod: 'web2' });
         Server.sendDataToMobileApp(JSON.stringify(response));
       }
