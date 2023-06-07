@@ -190,6 +190,7 @@ class SignUpPage extends Component {
           localStorage.setItem('signIn', true);
           localStorage.setItem('chainId', chainId);
           localStorage.setItem('walletAddress', signatureVerified.walletAddress);
+          localStorage.setItem('signupOrLoginMethod', 'web3');
           this.checkIfDataStoredOnBlockchain(web3, signatureVerified.walletAddress);
         } else {
           throw Error(signatureVerified.message);
