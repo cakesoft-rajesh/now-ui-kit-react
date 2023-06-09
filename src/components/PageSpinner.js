@@ -18,7 +18,7 @@ class PageSpinner extends React.Component {
                     right: 0,
                     bottom: 0,
                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: 2
+                    zIndex: 99999
                 }}
             >
                 <Spinner
