@@ -16,6 +16,7 @@ import { BottomSheet } from 'react-spring-bottom-sheet'
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
+import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import * as Server from "../../utils/Server";
 import 'react-spring-bottom-sheet/dist/style.css'
 
@@ -94,14 +95,23 @@ class EmailLoginPage extends Component {
       let walletAddress = localStorage.getItem('walletAddress');
       const web3 = new Web3(this.state.rpcUrl);
       await web3.eth.accounts.wallet.add(localStorage.getItem('privateKey'));
-      let blockchainResponse = await web3.eth.sendTransaction(
-        {
-          from: walletAddress,
-          to: this.state.toAddress,
-          value: await web3.utils.toWei(this.state.value.toString(), 'ether'),
-          gas: 21000
-        }
-      );
+      const myContract = await new web3.eth.Contract(membershipWithExpiryABI, process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
+      let blockchainResponse = await myContract.methods
+        .payment(this.state.toAddress)
+        .send(
+          {
+            from: walletAddress,
+            value: await web3.utils.toWei(this.state.value.toString(), 'ether'),
+          }
+        );
+      // let blockchainResponse = await web3.eth.sendTransaction(
+      //   {
+      //     from: walletAddress,
+      //     to: this.state.toAddress,
+      //     value: await web3.utils.toWei(this.state.value.toString(), 'ether'),
+      //     gas: 21000
+      //   }
+      // );
       if (blockchainResponse.status) {
         this.notificationSystem.addNotification({
           message: 'Transfer successful',
@@ -624,7 +634,7 @@ class EmailLoginPage extends Component {
                 {localStorage.getItem('walletAddress')}
               </a>
             </Col>
-            <Col xs={6}>{this.state.balance}</Col>
+            <Col xs={6} style={{ wordBreak: 'break-all' }}>{this.state.balance}</Col>
           </Row>
           <Row
             style={{
