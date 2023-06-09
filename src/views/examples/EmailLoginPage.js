@@ -188,6 +188,25 @@ class EmailLoginPage extends Component {
     });
   };
 
+  getWidth = () => {
+    let width = window.innerWidth;
+    if (width <= 220) {
+      return "20px";
+    }
+    else if (width > 220 && width <= 250) {
+      return "25px";
+    }
+    else if (width > 250 && width <= 350) {
+      return "30px";
+    }
+    else if (width > 350 && width <= 400) {
+      return "40px";
+    }
+    else if (width > 400) {
+      return "50px";
+    }
+  }
+
   render() {
     return (
       <>
@@ -426,8 +445,14 @@ class EmailLoginPage extends Component {
           </Modal>
         ) : null}
         <BottomSheet
+          expandOnContentDrag={true}
           open={this.state.showSheetForOTP}
-          snapPoints={({ minHeight }) => minHeight}
+          defaultSnap={({ maxHeight }) => maxHeight / 2}
+          snapPoints={({ maxHeight }) => [
+            maxHeight - maxHeight / 10,
+            maxHeight / 4,
+            maxHeight * 0.6,
+          ]}
         >
           <style>
             {`[data-rsbs-overlay] {
@@ -475,11 +500,11 @@ class EmailLoginPage extends Component {
               className="d-flex justify-content-center"
               inputStyle={{
                 color: "black",
-                width: "3rem",
-                height: "3rem",
-                margin: "0 1rem",
-                fontSize: "2rem",
-                borderRadius: "4px",
+                width: this.getWidth(),
+                height: "50px",
+                margin: "0 5px",
+                fontSize: "25px",
+                borderRadius: "5px",
                 border:
                   "1px solid rgba(0,0,0,0.3)",
                 outlineColor: "#17517b",
