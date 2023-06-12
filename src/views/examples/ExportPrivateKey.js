@@ -1,25 +1,4 @@
-import Web3 from "web3";
-import OtpInput from "react-otp-input";
 import React, { Component } from "react";
-import {
-  Button,
-  FormGroup,
-  Row,
-  Input,
-  Col,
-  Form,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Label,
-} from "reactstrap";
-import { BottomSheet } from "react-spring-bottom-sheet"
-import NotificationSystem from "react-notification-system";
-import PageSpinner from "../../components/PageSpinner";
-import membershipABI from "../../contracts_abi/membership.json";
-import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
-import * as Server from "../../utils/Server";
-import "react-spring-bottom-sheet/dist/style.css"
 
 class ExportPrivateKey extends Component {
 
