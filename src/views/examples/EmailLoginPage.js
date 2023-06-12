@@ -32,7 +32,7 @@ class EmailLoginPage extends Component {
       email: "",
       otp: "",
       balance: 0,
-      transcationHash: "123",
+      transcationHash: "",
       showSheetForOTP: false,
       showSheetForAccount: false,
       showSheetForAddress: false,
