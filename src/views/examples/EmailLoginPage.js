@@ -35,7 +35,7 @@ class EmailLoginPage extends Component {
       transcationHash: "123",
       showSheetForOTP: false,
       showSheetForAccount: false,
-      showSheetForAddress: false,
+      showSheetForAddress: true,
       showTokenTransferModal: false,
       rpcUrl1: "https://rpc-mumbai.maticvigil.com/",
       rpcUrl: "https://matic-mumbai.chainstacklabs.com",
@@ -189,23 +189,23 @@ class EmailLoginPage extends Component {
     }
   };
 
-  exportPrivateKey = () => {
-    // Create element with <a> tag
-    const link = document.createElement("a");
+  // exportPrivateKey = () => {
+  //   // Create element with <a> tag
+  //   const link = document.createElement("a");
 
-    // Create a blog object with the file content which you want to add to the file
-    const file = new Blob([localStorage.getItem("privateKey")], { type: "text/plain" });
+  //   // Create a blog object with the file content which you want to add to the file
+  //   const file = new Blob([localStorage.getItem("privateKey")], { type: "text/plain" });
 
-    // Add file content in the object URL
-    link.href = URL.createObjectURL(file);
+  //   // Add file content in the object URL
+  //   link.href = URL.createObjectURL(file);
 
-    // Add file name
-    link.download = "private_key.txt";
+  //   // Add file name
+  //   link.download = "private_key.txt";
 
-    // Add click event to <a> tag to save file.
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }
+  //   // Add click event to <a> tag to save file.
+  //   link.click();
+  //   URL.revokeObjectURL(link.href);
+  // }
 
   toggleTokenTransferModal = () => {
     this.setState({
@@ -706,13 +706,22 @@ class EmailLoginPage extends Component {
                 backgroundColor: "white",
                 color: "black",
               }}
-              onClick={this.exportPrivateKey}
+              // onClick={this.exportPrivateKey}
               className="btn-round mr-2"
               color="black"
               type="button"
               size="lg"
             >
-              Export Private Key
+              <a
+                style={{
+                  color: "black"
+                }}
+                rel="noreferrer"
+                href={`${window.location.origin}/exportPrivateKey`}
+                target="_blank"
+              >
+                Export Private Key
+              </a>
             </Button>
           </Row>
           {this.state.transcationHash

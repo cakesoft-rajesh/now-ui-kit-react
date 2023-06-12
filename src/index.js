@@ -15,6 +15,7 @@ import SignUpPage from "./views/examples/SignUpPage.js";
 // import LandingPage from "./views/examples/LandingPage.js";
 import ProfilePage from "./views/examples/ProfilePage.js";
 import EmailLoginPage from "views/examples/EmailLoginPage";
+import ExportPrivateKey from "views/examples/ExportPrivateKey";
 import ProfileDetailPage from "./views/examples/ProfileDetailPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -32,6 +33,10 @@ root.render(
           path="/landing-page"
           render={(props) => <LandingPage {...props} />}
         /> */}
+        <Route
+          path="/exportPrivateKey"
+          render={(props) => <ExportPrivateKey  {...props} />}
+        />
         <Route
           path="/email-login"
           render={(props) => <EmailLoginPage {...props} />}
