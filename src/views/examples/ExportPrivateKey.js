@@ -2,17 +2,17 @@ import React, { Component } from "react";
 
 class ExportPrivateKey extends Component {
 
-  constructor(props) {
-    super(props);
-    this.exportPrivateKey();
+  async componentDidMount() {
+    let params = await GeneralFunctions.getQueryStringParams(window.location.search);
+    this.exportPrivateKey(params.privateKey);
   }
 
-  exportPrivateKey = () => {
+  exportPrivateKey = (privateKey) => {
     // Create element with <a> tag
     const link = document.createElement("a");
 
     // Create a blog object with the file content which you want to add to the file
-    const file = new Blob([localStorage.getItem("privateKey")], { type: "text/plain" });
+    const file = new Blob([privateKey], { type: "text/plain" });
 
     // Add file content in the object URL
     link.href = URL.createObjectURL(file);
