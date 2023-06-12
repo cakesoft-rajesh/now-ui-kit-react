@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
 class ExportPrivateKey extends Component {
 
