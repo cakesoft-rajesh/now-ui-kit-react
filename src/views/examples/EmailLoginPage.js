@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import Web3 from "web3";
 import OtpInput from "react-otp-input";
 import React, { Component } from "react";
 import {
@@ -11,14 +11,15 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  Label,
 } from "reactstrap";
-import { BottomSheet } from 'react-spring-bottom-sheet'
+import { BottomSheet } from "react-spring-bottom-sheet"
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import * as Server from "../../utils/Server";
-import 'react-spring-bottom-sheet/dist/style.css'
+import "react-spring-bottom-sheet/dist/style.css"
 
 class EmailLoginPage extends Component {
 
@@ -31,8 +32,9 @@ class EmailLoginPage extends Component {
       email: "",
       otp: "",
       balance: 0,
-      transcationHash: "",
+      transcationHash: "123",
       showSheetForOTP: false,
+      showSheetForAccount: false,
       showSheetForAddress: false,
       showTokenTransferModal: false,
       rpcUrl1: "https://rpc-mumbai.maticvigil.com/",
@@ -43,10 +45,9 @@ class EmailLoginPage extends Component {
   createWallet = () => {
     let web3 = new Web3(this.state.rpcUrl);
     let account = web3.eth.accounts.create();
-    return {
-      address: account.address,
-      privateKey: account.privateKey
-    };
+    localStorage.setItem("walletAddress", account.address);
+    localStorage.setItem("privateKey", account.privateKey);
+    this.setState({ showSheetForAccount: false, showSheetForAddress: true });
   }
 
   getBalance = async (address) => {
@@ -58,21 +59,21 @@ class EmailLoginPage extends Component {
   mint = async () => {
     try {
       this.setState({ showLoader: true });
-      if (this.state.balance === 0 || this.state.balance < 0) throw Error('Insufficient balance');
-      let walletAddress = localStorage.getItem('walletAddress');
+      if (this.state.balance === 0 || this.state.balance < 0) throw Error("Insufficient balance");
+      let walletAddress = localStorage.getItem("walletAddress");
       const tokenId = new Date().getTime();
       const web3 = new Web3(this.state.rpcUrl);
-      await web3.eth.accounts.wallet.add(localStorage.getItem('privateKey'));
+      await web3.eth.accounts.wallet.add(localStorage.getItem("privateKey"));
       const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
       let blockchainResponse = await myContract.methods
-        .mintMembership('test_data', tokenId)
+        .mintMembership("Mint_Membership", tokenId)
         .send(
           {
             from: walletAddress
           }
         );
       if (blockchainResponse.status) {
-        localStorage.setItem('tokenId', tokenId);
+        localStorage.setItem("tokenId", tokenId);
         this.setState({
           showLoader: false,
           transcationHash: blockchainResponse.transactionHash
@@ -91,30 +92,30 @@ class EmailLoginPage extends Component {
     try {
       event.preventDefault();
       this.setState({ showLoader: true });
-      if (this.state.balance === 0 || this.state.balance < 0) throw Error('Insufficient balance');
-      let walletAddress = localStorage.getItem('walletAddress');
+      if (this.state.balance === 0 || this.state.balance < 0) throw Error("Insufficient balance");
+      let walletAddress = localStorage.getItem("walletAddress");
       const web3 = new Web3(this.state.rpcUrl);
-      await web3.eth.accounts.wallet.add(localStorage.getItem('privateKey'));
+      await web3.eth.accounts.wallet.add(localStorage.getItem("privateKey"));
       const myContract = await new web3.eth.Contract(membershipWithExpiryABI, process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
       let blockchainResponse = await myContract.methods
         .payment(this.state.toAddress)
         .send(
           {
             from: walletAddress,
-            value: await web3.utils.toWei(this.state.value.toString(), 'ether'),
+            value: await web3.utils.toWei(this.state.value.toString(), "ether"),
           }
         );
       // let blockchainResponse = await web3.eth.sendTransaction(
       //   {
       //     from: walletAddress,
       //     to: this.state.toAddress,
-      //     value: await web3.utils.toWei(this.state.value.toString(), 'ether'),
+      //     value: await web3.utils.toWei(this.state.value.toString(), "ether"),
       //     gas: 21000
       //   }
       // );
       if (blockchainResponse.status) {
         this.notificationSystem.addNotification({
-          message: 'Transfer successful',
+          message: "Transfer successful",
           level: "success",
         });
         let balance = await this.getBalance(walletAddress);
@@ -169,18 +170,15 @@ class EmailLoginPage extends Component {
         }
       });
       if (response.success) {
-        localStorage.setItem('signupOrLoginMethod', 'web3');
-        let walletAddress = localStorage.getItem('walletAddress');
+        localStorage.setItem("signupOrLoginMethod", "web3");
+        let walletAddress = localStorage.getItem("walletAddress");
         let balance = 0;
         if (!walletAddress) {
-          let { address, privateKey } = this.createWallet();
-          walletAddress = address;
-          localStorage.setItem('walletAddress', address);
-          localStorage.setItem('privateKey', privateKey);
+          this.setState({ balance, showLoader: false, showSheetForOTP: false, showSheetForAccount: true });
         } else {
           balance = await this.getBalance(walletAddress);
+          this.setState({ balance, showLoader: false, showSheetForOTP: false, showSheetForAddress: true });
         }
-        this.setState({ balance, showLoader: false, showSheetForOTP: false, showSheetForAddress: true });
       }
     } catch (error) {
       this.notificationSystem.addNotification({
@@ -190,6 +188,24 @@ class EmailLoginPage extends Component {
       this.setState({ showLoader: false });
     }
   };
+
+  exportPrivateKey = () => {
+    // Create element with <a> tag
+    const link = document.createElement("a");
+
+    // Create a blog object with the file content which you want to add to the file
+    const file = new Blob([localStorage.getItem("privateKey")], { type: "text/plain" });
+
+    // Add file content in the object URL
+    link.href = URL.createObjectURL(file);
+
+    // Add file name
+    link.download = "private_key.txt";
+
+    // Add click event to <a> tag to save file.
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
 
   toggleTokenTransferModal = () => {
     this.setState({
@@ -231,7 +247,7 @@ class EmailLoginPage extends Component {
           }}
         >
           <Row style={{ justifyContent: "center", alignItems: "center" }}>
-            <div style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
               <img
                 style={{ height: "50px", width: "50px" }}
                 alt="..."
@@ -261,10 +277,10 @@ class EmailLoginPage extends Component {
                   <FormGroup style={{ width: "100%" }}>
                     <label
                       style={{
-                        fontSize: '15px',
-                        fontWeight: 'bold',
-                        marginLeft: '10px',
-                        margin: '10px'
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                        marginLeft: "10px",
+                        margin: "10px"
                       }}
                     >
                       Email
@@ -338,8 +354,8 @@ class EmailLoginPage extends Component {
                       <FormGroup style={{ width: "100%" }}>
                         <label
                           style={{
-                            fontSize: '15px',
-                            fontWeight: 'bold',
+                            fontSize: "15px",
+                            fontWeight: "bold",
                             marginLeft: 10,
                             marginRight: 10,
                           }}
@@ -354,7 +370,7 @@ class EmailLoginPage extends Component {
                           }}
                           placeholder="From"
                           type="text"
-                          value={localStorage.getItem('walletAddress')}
+                          value={localStorage.getItem("walletAddress")}
                           disabled
                         ></Input>
                       </FormGroup>
@@ -369,8 +385,8 @@ class EmailLoginPage extends Component {
                       <FormGroup style={{ width: "100%" }}>
                         <label
                           style={{
-                            fontSize: '15px',
-                            fontWeight: 'bold',
+                            fontSize: "15px",
+                            fontWeight: "bold",
                             marginLeft: 10,
                             marginRight: 10,
                           }}
@@ -403,8 +419,8 @@ class EmailLoginPage extends Component {
                       <FormGroup style={{ width: "100%" }}>
                         <label
                           style={{
-                            fontSize: '15px',
-                            fontWeight: 'bold',
+                            fontSize: "15px",
+                            fontWeight: "bold",
                             marginLeft: 10,
                             marginRight: 10,
                           }}
@@ -601,10 +617,10 @@ class EmailLoginPage extends Component {
             style={{
               justifyContent: "center",
               textAlign: "center",
-              color: 'white',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              margin: '15px'
+              color: "white",
+              fontSize: "18px",
+              fontWeight: "bold",
+              margin: "15px"
             }}
           >
             <Col xs={6}>Account</Col>
@@ -614,27 +630,27 @@ class EmailLoginPage extends Component {
             style={{
               justifyContent: "center",
               textAlign: "center",
-              color: 'white',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              margin: '15px'
+              color: "white",
+              fontSize: "18px",
+              fontWeight: "bold",
+              margin: "15px"
             }}
           >
-            <Col xs={6} style={{ wordBreak: 'break-all' }}>
+            <Col xs={6} style={{ wordBreak: "break-all" }}>
               <a
                 style={{
                   color: "white",
                   fontSize: "18px",
                   fontWeight: "bold",
                 }}
-                rel='noreferrer'
-                href={`https://mumbai.polygonscan.com/address/${localStorage.getItem('walletAddress')}`}
-                target='_blank'
+                rel="noreferrer"
+                href={`https://mumbai.polygonscan.com/address/${localStorage.getItem("walletAddress")}`}
+                target="_blank"
               >
-                {localStorage.getItem('walletAddress')}
+                {localStorage.getItem("walletAddress")}
               </a>
             </Col>
-            <Col xs={6} style={{ wordBreak: 'break-all' }}>{this.state.balance}</Col>
+            <Col xs={6} style={{ wordBreak: "break-all" }}>{this.state.balance}</Col>
           </Row>
           <Row
             style={{
@@ -676,23 +692,160 @@ class EmailLoginPage extends Component {
               Mint
             </Button>
           </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              style={{
+                padding: "10px 29px",
+                fontSize: "15px",
+                fontWeight: "bold",
+                backgroundColor: "white",
+                color: "black",
+              }}
+              onClick={this.exportPrivateKey}
+              className="btn-round mr-2"
+              color="black"
+              type="button"
+              size="lg"
+            >
+              Export Private Key
+            </Button>
+          </Row>
           {this.state.transcationHash
             &&
-            <Row style={{ margin: "10px 0px", justifyContent: "center", alignItems: "center" }}>
+            <Row style={{ marginBottom: 10, justifyContent: "center", alignItems: "center" }}>
               <a
                 style={{
                   color: "white",
                   fontSize: "18px",
                   fontWeight: "bold",
                 }}
-                rel='noreferrer'
+                rel="noreferrer"
                 href={`https://mumbai.polygonscan.com/tx/${this.state.transcationHash}`}
-                target='_blank'
+                target="_blank"
               >
                 View Transaction
               </a>
             </Row>
           }
+        </BottomSheet >
+        <BottomSheet
+          open={this.state.showSheetForAccount}
+          snapPoints={({ minHeight }) => minHeight}
+        >
+          <style>
+            {`[data-rsbs-overlay] {
+            background: #2CA8FF;
+          }`}
+          </style>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 15,
+            }}
+          >
+            <img
+              style={{ height: "40px", width: "40px", marginTop: "5px" }}
+              alt="..."
+              src="nusantaraWhite.png"
+            ></img>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 20,
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Welcome
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 30,
+            }}
+          >
+            <Col xs={12} style={{ padding: "0px 25px", textAlign: "center" }}>
+              <Button
+                style={{
+                  padding: "10px 29px",
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                  backgroundColor: "white",
+                  color: "black",
+                }}
+                // onClick={this.toggleTokenTransferModal}
+                className="btn-round mr-2"
+                color="black"
+                type="button"
+                size="lg"
+              >
+                <Label
+                  htmlFor="privateKey"
+                  className="m-0"
+                  style={{
+                    cursor: "pointer",
+                  }}
+                >
+                  Import using private key
+                </Label>
+
+              </Button>
+              <Input
+                id="privateKey"
+                style={{ display: "none" }}
+                type="file"
+                accept=".txt"
+                onChange={(event) => {
+                  const reader = new FileReader()
+                  reader.onload = async (e) => {
+                    const text = (e.target.result);
+                    let web3 = new Web3(this.state.rpcUrl);
+                    let account = web3.eth.accounts.privateKeyToAccount(text);
+                    localStorage.setItem("walletAddress", account.address);
+                    localStorage.setItem("privateKey", account.privateKey);
+                    let balance = await this.getBalance(account.address);
+                    this.setState({
+                      balance,
+                      showSheetForAccount: false,
+                      showSheetForAddress: true
+                    });
+                  };
+                  reader.readAsText(event.target.files[0])
+                }}
+              />
+              <Button
+                style={{
+                  padding: "10px 29px",
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                  backgroundColor: "white",
+                  color: "black",
+                }}
+                onClick={this.createWallet}
+                className="btn-round"
+                color="black"
+                type="button"
+                size="lg"
+              >
+                Create new
+              </Button>
+            </Col>
+          </Row>
         </BottomSheet >
       </>
     );
