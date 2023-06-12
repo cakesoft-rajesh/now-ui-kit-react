@@ -35,7 +35,7 @@ class EmailLoginPage extends Component {
       transcationHash: "123",
       showSheetForOTP: false,
       showSheetForAccount: false,
-      showSheetForAddress: true,
+      showSheetForAddress: false,
       showTokenTransferModal: false,
       rpcUrl1: "https://rpc-mumbai.maticvigil.com/",
       rpcUrl: "https://matic-mumbai.chainstacklabs.com",
