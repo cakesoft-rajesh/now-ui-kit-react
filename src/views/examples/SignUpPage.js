@@ -182,7 +182,8 @@ class SignUpPage extends Component {
           method: "POST",
           data: {
             messageToSign,
-            signature
+            signature,
+            walletAddress: this.state.account
           }
         });
         if (signatureVerified.success) {
