@@ -36,13 +36,15 @@ class ProfilePage extends Component {
       phone: "",
       displayUsername: "",
       email: this.props.location.state ? this.props.location.state.email : "",
+      signUpByEmail: this.props.location.state ? this.props.location.state.signUpByEmail : false,
       password: this.props.location.state ? this.props.location.state.password : "",
       confirmPassword: this.props.location.state ? this.props.location.state.confirmPassword : "",
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       ztiAppName: 'zti',
       countryCode: "",
-      countryCodesOptions: []
+      countryCodesOptions: [],
+      rpcUrl: "https://matic-mumbai.chainstacklabs.com",
     };
   }
 
@@ -97,13 +99,11 @@ class ProfilePage extends Component {
           data
         });
         if (verifyDataResponse.success) {
-          let uploadDataToIPFSResponse = await Server.request({
-            url: "/web3Auth/uploadData",
-            method: "POST",
-            data
-          });
-          if (uploadDataToIPFSResponse.success) {
-            const tokenUri = uploadDataToIPFSResponse.tokenUri;
+          let web3;
+          if (this.state.signUpByEmail) {
+            web3 = new Web3(this.state.rpcUrl);
+            await web3.eth.accounts.wallet.add(localStorage.getItem("privateKey"));
+          } else {
             let details = navigator.userAgent;
             let regexp = /android|iphone|kindle|ipad/i;
             let isMobileDevice = regexp.test(details);
@@ -118,57 +118,57 @@ class ProfilePage extends Component {
             } else {
               provider = Web3.givenProvider;
             }
-            const web3 = new Web3(provider);
-            const myContract = await new web3.eth.Contract(membershipWithExpiryABI, process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
-            let blockchainResponse = await myContract.methods
-              .mintMembership(tokenUri, tokenId, 0)
+            web3 = new Web3(provider);
+          }
+          const myContract = await new web3.eth.Contract(membershipWithExpiryABI, process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
+          let blockchainResponse = await myContract.methods
+            .mintMembership("tokenUri", tokenId, 0)
+            .send(
+              {
+                from: this.state.walletAddress
+              }
+            );
+          if (blockchainResponse.status) {
+            const date = new Date();
+            let paymentResponse = await myContract.methods
+              .payment('0xC2E56AE0EFB206cEd1F27F54D983cD1270833144')
               .send(
                 {
-                  from: this.state.walletAddress
+                  from: this.state.walletAddress,
+                  value: await web3.utils.toWei('0.00001', 'ether')
                 }
               );
-            if (blockchainResponse.status) {
-              const date = new Date();
-              let paymentResponse = await myContract.methods
-                .payment('0xC2E56AE0EFB206cEd1F27F54D983cD1270833144')
-                .send(
-                  {
-                    from: this.state.walletAddress,
-                    value: await web3.utils.toWei('0.00001', 'ether')
+            if (paymentResponse.status) {
+              Object.assign(data, {
+                paymentTransactionId: paymentResponse.transactionHash,
+                transactionId: blockchainResponse.transactionHash,
+                date,
+                paymentTransactionDate: new Date(),
+              });
+              let response = await Server.request({
+                url,
+                method: "POST",
+                data
+              });
+              if (response.success) {
+                this.setState({ showLoader: false });
+                localStorage.setItem('tokenId', tokenId);
+                await Server.sendDataToMobileApp(JSON.stringify(response));
+                this.props.history.push({
+                  pathname: '/profile-detail-page',
+                  state: {
+                    email: this.state.email,
+                    password: this.state.password,
+                    confirmPassword: this.state.confirmPassword,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    phone: `${this.state.countryCode.value}${this.state.phone}`,
+                    userName: `${this.state.countryCode.value}${this.state.phone}`,
+                    displayUsername: this.state.displayUsername,
+                    signupMethod: this.state.signupMethod,
+                    walletAddress: this.state.walletAddress
                   }
-                );
-              if (paymentResponse.status) {
-                Object.assign(data, {
-                  paymentTransactionId: paymentResponse.transactionHash,
-                  transactionId: blockchainResponse.transactionHash,
-                  date,
-                  paymentTransactionDate: new Date(),
                 });
-                let response = await Server.request({
-                  url,
-                  method: "POST",
-                  data
-                });
-                if (response.success) {
-                  this.setState({ showLoader: false });
-                  localStorage.setItem('tokenId', tokenId);
-                  await Server.sendDataToMobileApp(JSON.stringify(response));
-                  this.props.history.push({
-                    pathname: '/profile-detail-page',
-                    state: {
-                      email: this.state.email,
-                      password: this.state.password,
-                      confirmPassword: this.state.confirmPassword,
-                      firstName: this.state.firstName,
-                      lastName: this.state.lastName,
-                      phone: `${this.state.countryCode.value}${this.state.phone}`,
-                      userName: `${this.state.countryCode.value}${this.state.phone}`,
-                      displayUsername: this.state.displayUsername,
-                      signupMethod: this.state.signupMethod,
-                      walletAddress: this.state.walletAddress
-                    }
-                  });
-                }
               }
             }
           }
@@ -253,17 +253,15 @@ class ProfilePage extends Component {
           data
         });
         if (verifyDataResponse.success) {
-          let uploadDataToIPFSResponse = await Server.request({
-            url: "/web3Auth/uploadData",
-            method: "POST",
-            data
-          });
-          if (uploadDataToIPFSResponse.success) {
-            const tokenUri = uploadDataToIPFSResponse.tokenUri;
+          let web3;
+          if (this.state.signUpByEmail) {
+            web3 = new Web3(this.state.rpcUrl);
+            await web3.eth.accounts.wallet.add(localStorage.getItem("privateKey"));
+          } else {
+            let provider;
             let details = navigator.userAgent;
             let regexp = /android|iphone|kindle|ipad/i;
             let isMobileDevice = regexp.test(details);
-            let provider;
             if (isMobileDevice) {
               const connector = await wc.connect();
               let walletConnectProvider = await wc.getWeb3Provider({
@@ -274,45 +272,45 @@ class ProfilePage extends Component {
             } else {
               provider = Web3.givenProvider;
             }
-            const web3 = new Web3(provider);
-            const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
-            let blockchainResponse = await myContract.methods
-              .mintMembership(tokenUri, tokenId)
-              .send(
-                {
-                  from: this.state.walletAddress
-                }
-              );
-            if (blockchainResponse.status) {
-              Object.assign(data, {
-                transactionId: blockchainResponse.transactionHash,
-                date: new Date(),
-              });
-              let response = await Server.request({
-                url,
-                method: "POST",
-                data
-              });
-              if (response.success) {
-                this.setState({ showLoader: false });
-                localStorage.setItem('tokenId', tokenId);
-                await Server.sendDataToMobileApp(JSON.stringify(response));
-                this.props.history.push({
-                  pathname: '/profile-detail-page',
-                  state: {
-                    email: this.state.email,
-                    password: this.state.password,
-                    confirmPassword: this.state.confirmPassword,
-                    firstName: this.state.firstName,
-                    lastName: this.state.lastName,
-                    phone: `${this.state.countryCode.value}${this.state.phone}`,
-                    userName: `${this.state.countryCode.value}${this.state.phone}`,
-                    displayUsername: this.state.displayUsername,
-                    signupMethod: this.state.signupMethod,
-                    walletAddress: this.state.walletAddress
-                  }
-                });
+            web3 = new Web3(provider);
+          }
+          const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
+          let blockchainResponse = await myContract.methods
+            .mintMembership('tokenURI', tokenId)
+            .send(
+              {
+                from: this.state.walletAddress
               }
+            );
+          if (blockchainResponse.status) {
+            Object.assign(data, {
+              transactionId: blockchainResponse.transactionHash,
+              date: new Date(),
+            });
+            let response = await Server.request({
+              url,
+              method: "POST",
+              data
+            });
+            if (response.success) {
+              this.setState({ showLoader: false });
+              localStorage.setItem('tokenId', tokenId);
+              await Server.sendDataToMobileApp(JSON.stringify(response));
+              this.props.history.push({
+                pathname: '/profile-detail-page',
+                state: {
+                  email: this.state.email,
+                  password: this.state.password,
+                  confirmPassword: this.state.confirmPassword,
+                  firstName: this.state.firstName,
+                  lastName: this.state.lastName,
+                  phone: `${this.state.countryCode.value}${this.state.phone}`,
+                  userName: `${this.state.countryCode.value}${this.state.phone}`,
+                  displayUsername: this.state.displayUsername,
+                  signupMethod: this.state.signupMethod,
+                  walletAddress: this.state.walletAddress
+                }
+              });
             }
           }
         }
@@ -355,12 +353,14 @@ class ProfilePage extends Component {
 
   logout = async () => {
     await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
-    let details = navigator.userAgent;
-    let regexp = /android|iphone|kindle|ipad/i;
-    let isMobileDevice = regexp.test(details);
-    if (isMobileDevice) {
-      const connector = await wc.connect();
-      await connector.killSession();
+    if (this.state.signupMethod === 'web3' && localStorage.getItem("signIn")) {
+      let details = navigator.userAgent;
+      let regexp = /android|iphone|kindle|ipad/i;
+      let isMobileDevice = regexp.test(details);
+      if (isMobileDevice) {
+        const connector = await wc.connect();
+        await connector.killSession();
+      }
     }
     const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
     await GeneralFunctions.clearFullLocalStorage();
@@ -589,6 +589,7 @@ class ProfilePage extends Component {
                     type="email"
                     required
                     value={this.state.email}
+                    disabled={this.state.signUpByEmail}
                     onChange={(event) => this.setState({ email: event.target.value })}
                   ></Input>
                 </FormGroup>

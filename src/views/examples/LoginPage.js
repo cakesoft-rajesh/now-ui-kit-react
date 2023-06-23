@@ -1,18 +1,23 @@
 import Web3 from 'web3';
 import { SiweMessage } from 'siwe';
+import OtpInput from "react-otp-input";
 import { Link } from "react-router-dom";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { BsFillCheckCircleFill } from "react-icons/bs";
 import {
-  Button,
-  FormGroup,
   Row,
-  Input,
   Col,
+  Input,
+  Form,
+  FormGroup,
+  Button,
   Modal,
   ModalHeader,
   ModalBody,
-  Form,
+  InputGroup,
+  InputGroupText
 } from "reactstrap";
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import NotificationSystem from "react-notification-system";
@@ -34,12 +39,19 @@ class LoginPage extends Component {
       showLoader: false,
       email: "",
       password: "",
+      showPassword: false,
+      setPassword: false,
       showWalletConnectModal: false,
       showSheet: false,
       walletConnect: false,
       connector: '',
       web3: '',
-      account: ''
+      account: '',
+      showOTPage: false,
+      reconstructKeyPage: false,
+      keyShare1: "",
+      keyShare2: "",
+      rpcUrl: "https://matic-mumbai.chainstacklabs.com",
     };
   }
 
@@ -71,6 +83,12 @@ class LoginPage extends Component {
         }
         const web3 = new Web3(provider);
         this.checkIfDataStoredOnBlockchain(web3, walletAddress);
+      } else {
+        const walletAddress = localStorage.getItem('walletAddress');
+        const tokenId = localStorage.getItem('tokenId');
+        if (walletAddress && tokenId) {
+          this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
+        }
       }
     } else if (signupOrLoginMethod === 'web2') {
       let user = localStorage.getItem('user');
@@ -239,6 +257,91 @@ class LoginPage extends Component {
     }
   };
 
+  sendOTP = async (event) => {
+    try {
+      event.preventDefault();
+      this.setState({ showLoader: true });
+      let response = await Server.request({
+        url: "/email/sendOTP",
+        method: "POST",
+        data: {
+          email: this.state.email
+        }
+      });
+      if (response.success) {
+        this.setState({ showLoader: false, showOTPage: true });
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
+
+  verifyOTP = async () => {
+    try {
+      this.setState({ showLoader: true });
+      let response = await Server.request({
+        url: "/email/verifyOTP",
+        method: "POST",
+        data: {
+          email: this.state.email,
+          otp: this.state.otp,
+          verifyOTPFrom: "login"
+        }
+      });
+      if (response.success) {
+        localStorage.setItem("signupOrLoginMethod", "web3");
+        if (response.privateKeyCreated) {
+          this.setState({
+            showLoader: false,
+            showOTPage: false,
+            reconstructKeyPage: true,
+            keyShare1: response.keyShare1
+          });
+        } else {
+          throw Error("User not found. Please register account first");
+        }
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
+
+  verifyPassword = async () => {
+    try {
+      this.setState({ showLoader: true });
+      let response = await Server.request({
+        url: "/web3Auth/verifyPassword",
+        method: "POST",
+        data: {
+          email: this.state.email,
+          password: this.state.password
+        }
+      });
+      if (response.success) {
+        this.setState({
+          showLoader: false,
+          password: "",
+          setPassword: true,
+          keyShare2: response.keyShare2
+        });
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
+
   connectWallet = async (walletConnect) => {
     let details = navigator.userAgent;
     let regexp = /android|iphone|kindle|ipad/i;
@@ -291,12 +394,65 @@ class LoginPage extends Component {
     }
   };
 
+  reconstructPrivateKey = async () => {
+    try {
+      this.setState({ showLoader: true });
+      const privateKey = await GeneralFunctions.decrypt(`${this.state.keyShare1}${this.state.keyShare2}`);
+      let web3 = new Web3(this.state.rpcUrl);
+      let account = web3.eth.accounts.privateKeyToAccount(privateKey);
+      localStorage.setItem("privateKey", privateKey);
+      localStorage.setItem("walletAddress", account.address);
+      let response = await Server.request({
+        url: '/web3Auth/loginWithEmail',
+        method: "POST",
+        data: {
+          walletAddress: account.address
+        }
+      });
+      if (response.success) {
+        this.setState({ showLoader: false });
+        localStorage.setItem('signupOrLoginMethod', 'web3');
+        localStorage.setItem('tokenId', response.user.tokenId);
+        localStorage.setItem('walletAddress', response.walletAddress);
+        Object.assign(response, { signupMethod: 'web3' });
+        Server.sendDataToMobileApp(JSON.stringify(response));
+      } else {
+        throw Error(response.message);
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  }
+
   toggleWalletConnectModal = () => {
     this.setState({ showWalletConnectModal: !this.state.showWalletConnectModal });
   };
 
   onDismiss = () => {
     this.setState({ showSheet: false });
+  }
+
+  getWidth = () => {
+    let width = window.innerWidth;
+    if (width <= 220) {
+      return "5px";
+    }
+    else if (width > 220 && width <= 300) {
+      return "10px";
+    }
+    else if (width > 300 && width <= 350) {
+      return "20px";
+    }
+    else if (width > 350 && width <= 400) {
+      return "30px";
+    }
+    else if (width > 400) {
+      return "50px";
+    }
   }
 
   render() {
@@ -311,47 +467,68 @@ class LoginPage extends Component {
             display: "flex",
             marginTop: 20,
           }}
-        >
-          <Row style={{ justifyContent: "center", alignItems: "center" }}>
+        >{this.state.showOTPage
+          ? <Row style={{ justifyContent: "center", alignItems: "center" }}>
             <Col
-              md="3"
-              sm="4"
-              style={{
-                width: "90%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              sm="12"
+              style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
             >
-              <Row
-                style={{
-                  justifyContent: "end",
-                  alignItems: "center",
-                }}
-              >
-                <Button
+              <Row style={{ justifyContent: "flex-start", margin: "20px 30px 5px 30px" }}>
+                <div
                   style={{
-                    padding: "13px 30px",
-                    fontSize: "15px",
-                    fontWeight: "bold",
-                    marginBottom: "30px",
+                    color: "gray",
+                    fontSize: "25px",
+                    fontWeight: "500",
                   }}
-                  className="btn-round"
-                  color="info"
-                  type="button"
-                  size="lg"
-                  outline
-                  to="/signup-page"
-                  tag={Link}
                 >
-                  Sign Up
-                </Button>
+                  A verification code will be sent to your email to reconstruct a wallet address for you.
+                </div>
               </Row>
-              <Row
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
+              <Row style={{ justifyContent: "flex-start", margin: "20px 30px 5px 30px" }}>
+                <div
+                  style={{
+                    color: "gray",
+                    fontSize: "25px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Enter the code here:
+                </div>
+              </Row>
+              <Row style={{ justifyContent: "flex-start", margin: "20px 30px 5px 30px" }}>
+                <div
+                  style={{
+                    color: "gray",
+                    fontSize: "25px",
+                    fontWeight: "500",
+                  }}
+                >
+                  <OtpInput
+                    className="d-flex justify-content-center"
+                    inputStyle={{
+                      color: "black",
+                      width: this.getWidth(),
+                      height: "50px",
+                      margin: "0 5px",
+                      fontSize: "25px",
+                      borderRadius: "5px",
+                      border:
+                        "1px solid rgba(0,0,0,0.3)",
+                      outlineColor: "#17517b",
+                    }}
+                    isInputNum={true}
+                    value={this.state.otp}
+                    onChange={(value) =>
+                      this.setState({
+                        otp: value,
+                      })
+                    }
+                    numInputs={6}
+                    separator={<span style={{ color: "black" }}>-</span>}
+                  />
+                </div>
+              </Row>
+              <Row style={{ justifyContent: "flex-start", margin: "20px 30px 5px 30px" }}>
                 <Button
                   style={{
                     width: "100%",
@@ -359,42 +536,332 @@ class LoginPage extends Component {
                     fontSize: "15px",
                     fontWeight: "bold",
                   }}
-                  onClick={this.toggleWalletConnectModal}
                   className="btn-round"
                   color="info"
-                  type="button"
+                  type="submit"
                   size="lg"
+                  onClick={this.verifyOTP}
                 >
-                  Log in with Web 3.0 Wallet
+                  Continue
                 </Button>
               </Row>
-              <hr
+              <Row style={{ justifyContent: "flex-start", margin: "100px 30px 5px 30px" }}>
+                <div
+                  style={{
+                    color: "gray",
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                  }}
+                >What is a wallet?</div>
+              </Row>
+              <Row style={{ justifyContent: "flex-start", margin: "20px 30px 5px 30px" }}>
+                <div
+                  style={{
+                    color: "black",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                  }}
+                >A Home for your Digital Assets</div>
+              </Row>
+              <Row style={{ justifyContent: "flex-start", margin: "0px 30px 5px 30px" }}>
+                <div
+                  style={{
+                    color: "gray",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                  }}
+                >Wallets are used to send, receive, store, and display digital assets like Ethereum and NFTS</div>
+              </Row>
+              <Row style={{ justifyContent: "flex-start", margin: "20px 30px 5px 30px" }}>
+                <div
+                  style={{
+                    color: "black",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                  }}
+                >A New Way to Log In</div>
+              </Row>
+              <Row style={{ justifyContent: "flex-start", margin: "0px 30px 5px 30px" }}>
+                <div
+                  style={{
+                    color: "gray",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                  }}
+                >Instead of creating new accounts and passwords on every website, just connect your wallet</div>
+              </Row>
+              <Row style={{ justifyContent: "center", margin: "30px 30px" }}>
+                <div
+                  style={{
+                    color: "gray",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Learn More
+                </div>
+              </Row>
+            </Col>
+          </Row>
+          : this.state.reconstructKeyPage
+            ? <Row style={{ justifyContent: "center", alignItems: "center" }}>
+              <Col
+                sm="12"
+                style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
+              >
+                <Row style={{ justifyContent: "center", margin: "20px" }}>
+                  <div
+                    style={{
+                      color: "gray",
+                      fontSize: "25px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Authentication factors
+                  </div>
+                </Row>
+                <Row style={{ justifyContent: "center", margin: "20px" }}>
+                  <div
+                    style={{
+                      color: "gray",
+                      fontSize: "25px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Pair key with an authentication factor.
+                  </div>
+                </Row>
+                <Row
+                  style={{
+                    justifyContent: "center",
+                    margin: "20px",
+                    border: "1px solid gray",
+                    borderRadius: "15px",
+                    padding: "20px 15px"
+                  }}
+                >
+                  <Col sm={12} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <BsFillCheckCircleFill
+                      size="35"
+                      color="#2ca8ff"
+                    />
+                  </Col>
+                  <Col sm={12} className="mt-2" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <h5 style={{ fontWeight: 700 }}>Pair with your google account</h5>
+                  </Col>
+                  <Col sm={12} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Input
+                      style={{ borderColor: "gray" }}
+                      value={this.state.email}
+                      disabled
+                    ></Input>
+                  </Col>
+                  <Col sm={12} className="mt-4" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Input
+                      style={{ borderColor: "gray" }}
+                      value={this.state.keyShare1}
+                      disabled
+                    ></Input>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    justifyContent: "center",
+                    margin: "20px",
+                    border: "1px solid gray",
+                    borderRadius: "15px",
+                    padding: "20px 15px"
+                  }}
+                >
+                  <Col sm={12} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    {this.state.setPassword
+                      ? <BsFillCheckCircleFill
+                        size="35"
+                        color="#2ca8ff"
+                      />
+                      : <img
+                        style={{ height: "85px", width: "85px" }}
+                        alt="..."
+                        src="set_password.png"
+                      />
+                    }
+                  </Col>
+                  <Col sm={12} className="mt-2" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <h5 style={{ fontWeight: 700 }}>Enter recovery password</h5>
+                  </Col>
+                  {this.state.setPassword
+                    ? <Col sm={12} className="mt-4" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                      <Input
+                        style={{ borderColor: "gray" }}
+                        value={this.state.keyShare2}
+                        disabled
+                      ></Input>
+                    </Col>
+                    : <>
+                      <Col sm={12} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <InputGroup>
+                          <Input
+                            style={{ borderColor: "gray" }}
+                            value={this.state.password}
+                            placeholder="create password"
+                            type={this.state.showPassword ? "text" : "password"}
+                            required
+                            onChange={(event) => this.setState({ password: event.target.value })}
+                          />
+                          <InputGroupText
+                            style={{
+                              borderColor: "gray",
+                              borderTopLeftRadius: "0px",
+                              borderBottomLeftRadius: "0px",
+                              backgroundColor: "#E3E3E3",
+                              padding: "0px 20px"
+                            }}
+                          >
+                            {this.state.showPassword
+                              ? <IoMdEyeOff
+                                size="20"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => this.setState({ showPassword: false })}
+                              />
+                              : <IoMdEye
+                                size="20"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => this.setState({ showPassword: true })}
+                              />
+                            }
+                          </InputGroupText>
+                        </InputGroup>
+                      </Col>
+                      <Col sm={12} className="mt-1" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <Button
+                          style={{
+                            width: "100%",
+                            padding: "13px 0px",
+                            fontSize: "15px",
+                            fontWeight: "bold",
+                          }}
+                          className="btn-round"
+                          color="info"
+                          size="lg"
+                          onClick={this.verifyPassword}
+                        >
+                          Enter password
+                        </Button>
+                      </Col>
+                    </>
+                  }
+                </Row>
+                {this.state.setPassword
+                  &&
+                  <Row
+                    style={{
+                      justifyContent: "center",
+                      margin: "20px"
+                    }}
+                  >
+                    <Button
+                      style={{
+                        width: "100%",
+                        padding: "13px 0px",
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                        margin: 0
+                      }}
+                      className="btn-round"
+                      color="info"
+                      size="lg"
+                      onClick={this.reconstructPrivateKey}
+                    >
+                      Reconstruct your key
+                    </Button>
+                  </Row>
+                }
+              </Col>
+            </Row >
+            : <Row style={{ justifyContent: "center", alignItems: "center" }}>
+              <Col
+                md="3"
+                sm="4"
                 style={{
-                  color: "gray",
-                  backgroundColor: "gray",
-                  height: 1,
-                  marginLeft: 40,
-                  marginRight: 40,
-                }}
-              />
-              <div
-                style={{
-                  backgroundColor: "gray",
-                  width: 26,
-                  height: 26,
-                  borderRadius: 20,
-                  padding: 2,
-                  position: "absolute",
-                  top: "42%",
-                  left: "47%",
-                  display: "flex",
+                  width: "90%",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                <h6 style={{ color: "white", marginBottom: 0 }}>OR</h6>
-              </div>
-              <Form onSubmit={(event) => this.login(event)}>
+                <Row
+                  style={{
+                    justifyContent: "end",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button
+                    style={{
+                      padding: "13px 30px",
+                      fontSize: "15px",
+                      fontWeight: "bold",
+                      marginBottom: "30px",
+                    }}
+                    className="btn-round"
+                    color="info"
+                    type="button"
+                    size="lg"
+                    outline
+                    to="/signup-page"
+                    tag={Link}
+                  >
+                    Sign Up
+                  </Button>
+                </Row>
+                <Row
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button
+                    style={{
+                      width: "100%",
+                      padding: "13px 0px",
+                      fontSize: "15px",
+                      fontWeight: "bold",
+                    }}
+                    onClick={this.toggleWalletConnectModal}
+                    className="btn-round"
+                    color="info"
+                    type="button"
+                    size="lg"
+                  >
+                    Log in with Web 3.0 Wallet
+                  </Button>
+                </Row>
+                <hr
+                  style={{
+                    color: "gray",
+                    backgroundColor: "gray",
+                    height: 1,
+                    marginLeft: 40,
+                    marginRight: 40,
+                  }}
+                />
+                <div
+                  style={{
+                    backgroundColor: "gray",
+                    width: 26,
+                    height: 26,
+                    borderRadius: 20,
+                    padding: 2,
+                    position: "absolute",
+                    top: "50.5%",
+                    left: "47%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <h6 style={{ color: "white", marginBottom: 0 }}>OR</h6>
+                </div>
+                {/* Web2 login with email and passowrd */}
+                {/* <Form onSubmit={(event) => this.login(event)}>
                 <Row
                   style={{
                     justifyContent: "center",
@@ -450,9 +917,55 @@ class LoginPage extends Component {
                     Log in with email
                   </Button>
                 </Row>
-              </Form>
-            </Col>
-          </Row>
+              </Form> */}
+
+                {/* Email login with OTP */}
+                <Form onSubmit={(event) => this.sendOTP(event)}>
+                  <Row
+                    style={{
+                      justifyContent: "center",
+                      marginLeft: 10,
+                      marginRight: 10,
+                      marginTop: 20,
+                    }}
+                  >
+                    <FormGroup style={{ width: "100%" }}>
+                      <Input
+                        style={{
+                          marginBottom: 10,
+                          width: "100%",
+                          borderColor: "gray",
+                        }}
+                        placeholder="Email"
+                        type="email"
+                        value={this.state.email}
+                        onChange={(event) =>
+                          this.setState({ email: event.target.value })
+                        }
+                        required
+                      ></Input>
+                    </FormGroup>
+                  </Row>
+                  <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                    <Button
+                      style={{
+                        width: "100%",
+                        padding: "13px 0px",
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                      }}
+                      className="btn-round"
+                      color="info"
+                      type="submit"
+                      size="lg"
+                    >
+                      Log in with email
+                    </Button>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          }
         </div>
         <NotificationSystem
           dismissible={false}
