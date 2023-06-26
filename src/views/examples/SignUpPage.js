@@ -426,7 +426,10 @@ class SignUpPage extends Component {
     else if (width > 350 && width <= 400) {
       return "30px";
     }
-    else if (width > 400) {
+    else if (width > 400 && width <= 480) {
+      return "40px";
+    }
+    else if (width > 480) {
       return "50px";
     }
   }
