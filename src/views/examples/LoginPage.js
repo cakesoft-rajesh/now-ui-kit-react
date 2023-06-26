@@ -47,7 +47,7 @@ class LoginPage extends Component {
       connector: '',
       web3: '',
       account: '',
-      showOTPage: true,
+      showOTPage: false,
       reconstructKeyPage: false,
       keyShare1: "",
       keyShare2: "",
