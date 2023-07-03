@@ -492,7 +492,7 @@ class SignUpPage extends Component {
                         width: this.getWidth(),
                         height: "50px",
                         margin: "0 5px",
-                        fontSize: "25px",
+                        fontSize: "2vh",
                         borderRadius: "5px",
                         border:
                           "1px solid rgba(0,0,0,0.3)",
