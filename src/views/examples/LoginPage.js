@@ -436,28 +436,6 @@ class LoginPage extends Component {
     this.setState({ showSheet: false });
   }
 
-  getWidth = () => {
-    let width = window.innerWidth;
-    if (width <= 220) {
-      return "5px";
-    }
-    else if (width > 220 && width <= 300) {
-      return "10px";
-    }
-    else if (width > 300 && width <= 350) {
-      return "20px";
-    }
-    else if (width > 350 && width <= 400) {
-      return "30px";
-    }
-    else if (width > 400 && width <= 480) {
-      return "40px";
-    }
-    else if (width > 480) {
-      return "50px";
-    }
-  }
-
   render() {
     return (
       <>
@@ -498,38 +476,30 @@ class LoginPage extends Component {
                   Enter the code here:
                 </div>
               </Row>
-              <Row style={{ justifyContent: "flex-start", margin: "20px 30px 5px 30px" }}>
-                <div
-                  style={{
-                    color: "gray",
-                    fontSize: "25px",
-                    fontWeight: "500",
+              <Row style={{ justifyContent: "flex-start", margin: "20px 15px" }}>
+                <OtpInput
+                  className="d-flex justify-content-center"
+                  inputStyle={{
+                    color: "black",
+                    width: "10vw",
+                    height: "10vw",
+                    margin: "0 5px",
+                    fontSize: "6vw",
+                    borderRadius: "5px",
+                    border:
+                      "1px solid rgba(0,0,0,0.3)",
+                    outlineColor: "#17517b",
                   }}
-                >
-                  <OtpInput
-                    className="d-flex justify-content-center"
-                    inputStyle={{
-                      color: "black",
-                      width: this.getWidth(),
-                      height: "50px",
-                      margin: "0 5px",
-                      fontSize: "2vh",
-                      borderRadius: "5px",
-                      border:
-                        "1px solid rgba(0,0,0,0.3)",
-                      outlineColor: "#17517b",
-                    }}
-                    isInputNum={true}
-                    value={this.state.otp}
-                    onChange={(value) =>
-                      this.setState({
-                        otp: value,
-                      })
-                    }
-                    numInputs={6}
-                    separator={<span style={{ color: "black" }}>-</span>}
-                  />
-                </div>
+                  isInputNum={true}
+                  value={this.state.otp}
+                  onChange={(value) =>
+                    this.setState({
+                      otp: value,
+                    })
+                  }
+                  numInputs={6}
+                  separator={<span style={{ color: "black" }}>-</span>}
+                />
               </Row>
               <Row style={{ justifyContent: "flex-start", margin: "20px 30px 5px 30px" }}>
                 <Button
