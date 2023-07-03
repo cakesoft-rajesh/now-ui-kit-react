@@ -1,10 +1,11 @@
 import Web3 from 'web3';
 import Select from 'react-select';
-import { FaLink } from 'react-icons/fa';
+import Copy from 'copy-to-clipboard';
 import React, { Component } from "react";
 import WalletConnect from 'walletconnect';
 import { MdExitToApp } from 'react-icons/md';
 import { RiPencilLine } from 'react-icons/ri';
+import { FaLink, FaCopy } from 'react-icons/fa';
 import {
   Button,
   FormGroup,
@@ -13,6 +14,7 @@ import {
   Col,
   Form,
   Alert,
+  Tooltip,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
@@ -45,6 +47,8 @@ class ProfilePage extends Component {
       countryCode: "",
       countryCodesOptions: [],
       rpcUrl: "https://matic-mumbai.chainstacklabs.com",
+      showCopyToClipboardToolTip: false,
+      walletBalance: 0
     };
   }
 
@@ -53,7 +57,14 @@ class ProfilePage extends Component {
       label: `${code.emoji} +${code.dialingCode}`,
       value: code.dialingCode
     }))
-    this.setState({ countryCodesOptions });
+    let walletBalance = await this.getBalance(this.state.walletAddress);
+    this.setState({ countryCodesOptions, walletBalance });
+  }
+
+  getBalance = async (address) => {
+    let web3 = new Web3(this.state.rpcUrl);
+    let balance = web3.utils.fromWei(await web3.eth.getBalance(address));
+    return balance;
   }
 
   signupWithExpiry = async (event) => {
@@ -483,12 +494,42 @@ class ProfilePage extends Component {
                       GeneralFunctions._getFormatAddress(this.state.walletAddress)
                       : '0x0000...0000'}
                   </h6>
+                  <FaCopy
+                    id="copyToClipboard"
+                    size="16"
+                    style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px', marginRight: '10px' }}
+                    onClick={() => {
+                      Copy(this.state.walletAddress);
+                      this.setState({ showCopyToClipboardToolTip: true });
+                      setTimeout(() => this.setState({ showCopyToClipboardToolTip: false }), 3000);
+                    }}
+                  />
+                  <Tooltip
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "bold",
+                      background: "rgb(80 84 86)",
+                      borderRadius: "5px",
+                      padding: "5px",
+                      color: "white",
+                    }}
+                    placement="right"
+                    isOpen={this.state.showCopyToClipboardToolTip}
+                    target="copyToClipboard"
+                  >
+                    Copied
+                  </Tooltip>
                   <MdExitToApp
                     size="20"
                     style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px' }}
                     onClick={this.logout}
                   />
                 </Row>
+                <h6 style={{ marginTop: 5, marginBottom: 0 }}>Balance : {this.state.walletBalance} MATIC </h6>
+                {
+                  (this.state.walletBalance === 0 || this.state.walletBalance === "0") &&
+                  <h6 style={{ marginTop: 5, color: "red", lineHeight: "18px", marginBottom: 0 }}>Please recharge your wallet to mint the profile</h6>
+                }
               </>
             }
             <Form

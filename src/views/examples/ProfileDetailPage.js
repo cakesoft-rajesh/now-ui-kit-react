@@ -1,15 +1,17 @@
 // import Web3 from "web3";
 import moment from 'moment';
-import { FaLink } from 'react-icons/fa';
+import Copy from 'copy-to-clipboard';
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import { MdExitToApp } from 'react-icons/md';
+import { FaLink, FaCopy } from 'react-icons/fa';
 import {
   Button,
   FormGroup,
   Row,
   Input,
   Col,
+  Tooltip,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
@@ -35,7 +37,8 @@ class ProfileDetailPage extends Component {
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       membershipStatus: '',
       dokuId: '',
-      expiryTime: ''
+      expiryTime: '',
+      showCopyToClipboardToolTip: false,
     };
   }
 
@@ -195,6 +198,31 @@ class ProfileDetailPage extends Component {
                       GeneralFunctions._getFormatAddress(this.state.walletAddress)
                       : '0x0000...0000'}
                   </h6>
+                  <FaCopy
+                    id="copyToClipboard"
+                    size="16"
+                    style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px', marginRight: '10px' }}
+                    onClick={() => {
+                      Copy(this.state.walletAddress);
+                      this.setState({ showCopyToClipboardToolTip: true });
+                      setTimeout(() => this.setState({ showCopyToClipboardToolTip: false }), 3000);
+                    }}
+                  />
+                  <Tooltip
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "bold",
+                      background: "rgb(80 84 86)",
+                      borderRadius: "5px",
+                      padding: "5px",
+                      color: "white",
+                    }}
+                    placement="right"
+                    isOpen={this.state.showCopyToClipboardToolTip}
+                    target="copyToClipboard"
+                  >
+                    Copied
+                  </Tooltip>
                   <MdExitToApp
                     size="20"
                     style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px' }}
