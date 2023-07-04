@@ -1,22 +1,23 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 // styles for this kit
 import "./assets/css/bootstrap.min.css";
 import "./assets/scss/now-ui-kit.scss?v=1.5.0";
 import "./assets/demo/demo.css?v=1.5.0";
 import "./assets/demo/nucleo-icons-page-styles.css?v=1.5.0";
+
 // pages for this kit
-// import Index from "./views/Index.js";
-// import NucleoIcons from "./views/NucleoIcons.js";
-import LoginPage from "./views/examples/LoginPage";
-import SignUpPage from "./views/examples/SignUpPage.js";
-// import LandingPage from "./views/examples/LandingPage.js";
-import ProfilePage from "./views/examples/ProfilePage.js";
-import EmailLoginPage from "views/examples/EmailLoginPage";
-import ExportPrivateKey from "views/examples/ExportPrivateKey";
-import ProfileDetailPage from "./views/examples/ProfileDetailPage";
+const LoginPage = lazy(() => import("./views/examples/LoginPage"));
+const SignUpPage = lazy(() => import("./views/examples/SignUpPage"));
+const ProfilePage = lazy(() => import("./views/examples/ProfilePage"));
+const EmailLoginPage = lazy(() => import("./views/examples/EmailLoginPage"));
+const ExportPrivateKey = lazy(() => import("./views/examples/ExportPrivateKey"));
+const ProfileDetailPage = lazy(() => import("./views/examples/ProfileDetailPage"));
+const PageSpinner = lazy(() => import("./components/PageSpinner"));
+
+const fallbackFunction = <PageSpinner showLoader />;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -24,40 +25,34 @@ root.render(
   <BrowserRouter>
     <Switch>
       <Switch>
-        {/* <Route path="/index" render={(props) => <Index {...props} />} />
-        <Route
-          path="/nucleo-icons"
-          render={(props) => <NucleoIcons {...props} />}
-        />
-        <Route
-          path="/landing-page"
-          render={(props) => <LandingPage {...props} />}
-        /> */}
         <Route
           path="/exportPrivateKey"
-          render={(props) => <ExportPrivateKey  {...props} />}
+          render={(props) => <Suspense fallback={fallbackFunction}><ExportPrivateKey  {...props} /></Suspense>}
         />
         <Route
           path="/email-login"
-          render={(props) => <EmailLoginPage {...props} />}
+          render={(props) => <Suspense fallback={fallbackFunction}><EmailLoginPage {...props} /></Suspense>}
         />
         <Route
           path="/profile-page"
-          render={(props) => <ProfilePage {...props} />}
+          render={(props) => <Suspense fallback={fallbackFunction}><ProfilePage {...props} /></Suspense>}
         />
         <Route
           path="/profile-detail-page"
-          render={(props) => <ProfileDetailPage {...props} />}
+          render={(props) => <Suspense fallback={fallbackFunction}><ProfileDetailPage {...props} /></Suspense>}
         />
         <Route
           path="/signup-page"
-          render={(props) => <SignUpPage {...props} />}
+          render={(props) => <Suspense fallback={fallbackFunction}><SignUpPage {...props} /></Suspense>}
         />
         <Route
           path="/login-page"
-          render={(props) => <LoginPage {...props} />}
+          render={(props) => <Suspense fallback={fallbackFunction}><LoginPage {...props} /></Suspense>}
         />
-        <Redirect from="/" to="/login-page" />
+        <Route
+          path="/"
+          render={(props) => <Suspense fallback={fallbackFunction}><LoginPage {...props} /></Suspense>}
+        />
       </Switch>
     </Switch>
   </BrowserRouter>
