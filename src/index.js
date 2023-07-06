@@ -9,12 +9,12 @@ import "./assets/demo/demo.css?v=1.5.0";
 import "./assets/demo/nucleo-icons-page-styles.css?v=1.5.0";
 
 // pages for this kit
-const LoginPage = lazy(() => import("./views/examples/LoginPage"));
-const SignUpPage = lazy(() => import("./views/examples/SignUpPage"));
-const ProfilePage = lazy(() => import("./views/examples/ProfilePage"));
-const EmailLoginPage = lazy(() => import("./views/examples/EmailLoginPage"));
-const ExportPrivateKey = lazy(() => import("./views/examples/ExportPrivateKey"));
-const ProfileDetailPage = lazy(() => import("./views/examples/ProfileDetailPage"));
+const LoginPage = lazy(() => import("./views/pages/LoginPage"));
+const SignUpPage = lazy(() => import("./views/pages/SignUpPage"));
+const ProfilePage = lazy(() => import("./views/pages/ProfilePage"));
+const EmailLoginPage = lazy(() => import("./views/pages/EmailLoginPage"));
+const ExportPrivateKey = lazy(() => import("./views/pages/ExportPrivateKey"));
+const ProfileDetailPage = lazy(() => import("./views/pages/ProfileDetailPage"));
 const PageSpinner = lazy(() => import("./components/PageSpinner"));
 
 const fallbackFunction = <PageSpinner showLoader />;
