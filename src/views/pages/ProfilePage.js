@@ -1,11 +1,11 @@
-import Web3 from 'web3';
-import Select from 'react-select';
-import Copy from 'copy-to-clipboard';
+import Web3 from "web3";
+import Select from "react-select";
+import Copy from "copy-to-clipboard";
 import React, { Component } from "react";
-import WalletConnect from 'walletconnect';
-import { MdExitToApp } from 'react-icons/md';
-import { RiPencilLine } from 'react-icons/ri';
-import { FaLink, FaCopy } from 'react-icons/fa';
+import WalletConnect from "walletconnect";
+import { MdExitToApp } from "react-icons/md";
+import { RiPencilLine } from "react-icons/ri";
+import { FaLink, FaCopy } from "react-icons/fa";
 import {
   Button,
   FormGroup,
@@ -15,6 +15,8 @@ import {
   Form,
   Alert,
   Tooltip,
+  Modal,
+  ModalBody,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
@@ -22,7 +24,7 @@ import CountryCode from "../../utils/CountryCode.json";
 import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import * as Server from "../../utils/Server";
-import * as NetworkData from 'utils/networks';
+import * as NetworkData from "utils/networks";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
 const wc = new WalletConnect();
@@ -43,12 +45,14 @@ class ProfilePage extends Component {
       confirmPassword: this.props.location.state ? this.props.location.state.confirmPassword : "",
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
-      ztiAppName: 'zti',
+      ztiAppName: "zti",
       countryCode: "",
       countryCodesOptions: [],
       rpcUrl: "https://matic-mumbai.chainstacklabs.com",
       showCopyToClipboardToolTip: false,
-      walletBalance: 0
+      walletBalance: 0,
+      confirmationModal: false,
+      walletConnectAlert: true
     };
   }
 
@@ -59,6 +63,10 @@ class ProfilePage extends Component {
     }))
     let walletBalance = await this.getBalance(this.state.walletAddress);
     this.setState({ countryCodesOptions, walletBalance });
+    setTimeout(() => {
+      this.setState({ walletConnectAlert: false });
+      clearTimeout();
+    }, 5000);
   }
 
   getBalance = async (address) => {
@@ -73,7 +81,7 @@ class ProfilePage extends Component {
       this.setState({ showLoader: true });
       let url; let data;
       const tokenId = new Date().getTime();
-      if (this.state.signupMethod === 'web3') {
+      if (this.state.signupMethod === "web3") {
         url = "/web3Auth/signup";
         data = {
           membershipWithExpiry: true,
@@ -103,7 +111,7 @@ class ProfilePage extends Component {
           ztiAppName: this.state.ztiAppName
         };
       }
-      if (this.state.signupMethod === 'web3') {
+      if (this.state.signupMethod === "web3") {
         let verifyDataResponse = await Server.request({
           url: "/web3Auth/verifyData",
           method: "POST",
@@ -113,7 +121,10 @@ class ProfilePage extends Component {
           let web3;
           if (this.state.signUpByEmail) {
             web3 = new Web3(this.state.rpcUrl);
-            await web3.eth.accounts.wallet.add(localStorage.getItem("privateKey"));
+            const keyShare1 = localStorage.getItem('keyShare1');
+            const keyShare2 = localStorage.getItem('keyShare2');
+            const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
+            await web3.eth.accounts.wallet.add(privateKey);
           } else {
             let details = navigator.userAgent;
             let regexp = /android|iphone|kindle|ipad/i;
@@ -142,11 +153,11 @@ class ProfilePage extends Component {
           if (blockchainResponse.status) {
             const date = new Date();
             let paymentResponse = await myContract.methods
-              .payment('0xC2E56AE0EFB206cEd1F27F54D983cD1270833144')
+              .payment("0xC2E56AE0EFB206cEd1F27F54D983cD1270833144")
               .send(
                 {
                   from: this.state.walletAddress,
-                  value: await web3.utils.toWei('0.00001', 'ether')
+                  value: await web3.utils.toWei("0.00001", "ether")
                 }
               );
             if (paymentResponse.status) {
@@ -163,10 +174,10 @@ class ProfilePage extends Component {
               });
               if (response.success) {
                 this.setState({ showLoader: false });
-                localStorage.setItem('tokenId', tokenId);
+                localStorage.setItem("tokenId", tokenId);
                 await Server.sendDataToMobileApp(JSON.stringify(response));
                 this.props.history.push({
-                  pathname: '/profile-detail-page',
+                  pathname: "/profile-detail-page",
                   state: {
                     email: this.state.email,
                     password: this.state.password,
@@ -177,14 +188,14 @@ class ProfilePage extends Component {
                     userName: `${this.state.countryCode.value}${this.state.phone}`,
                     displayUsername: this.state.displayUsername,
                     signupMethod: this.state.signupMethod,
-                    walletAddress: this.state.walletAddress
+                    walletAddress: this.state.walletAddress,
                   }
                 });
               }
             }
           }
         }
-      } else if (this.state.signupMethod === 'web2') {
+      } else if (this.state.signupMethod === "web2") {
         let response = await Server.request({
           url,
           method: "POST",
@@ -192,11 +203,11 @@ class ProfilePage extends Component {
         });
         if (response.success) {
           this.setState({ showLoader: false });
-          localStorage.setItem('signupOrLoginMethod', 'web2');
-          localStorage.setItem('user', JSON.stringify(response.user));
+          localStorage.setItem("signupOrLoginMethod", "web2");
+          localStorage.setItem("user", JSON.stringify(response.user));
           await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
-            pathname: '/profile-detail-page',
+            pathname: "/profile-detail-page",
             state: {
               email: this.state.email,
               password: this.state.password,
@@ -227,7 +238,7 @@ class ProfilePage extends Component {
       this.setState({ showLoader: true });
       let url; let data;
       const tokenId = new Date().getTime();
-      if (this.state.signupMethod === 'web3') {
+      if (this.state.signupMethod === "web3") {
         url = "/web3Auth/signup";
         data = {
           membershipWithExpiry: false,
@@ -257,7 +268,7 @@ class ProfilePage extends Component {
           ztiAppName: this.state.ztiAppName
         };
       }
-      if (this.state.signupMethod === 'web3') {
+      if (this.state.signupMethod === "web3") {
         let verifyDataResponse = await Server.request({
           url: "/web3Auth/verifyData",
           method: "POST",
@@ -267,7 +278,10 @@ class ProfilePage extends Component {
           let web3;
           if (this.state.signUpByEmail) {
             web3 = new Web3(this.state.rpcUrl);
-            await web3.eth.accounts.wallet.add(localStorage.getItem("privateKey"));
+            const keyShare1 = localStorage.getItem('keyShare1');
+            const keyShare2 = localStorage.getItem('keyShare2');
+            const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
+            await web3.eth.accounts.wallet.add(privateKey);
           } else {
             let provider;
             let details = navigator.userAgent;
@@ -287,7 +301,7 @@ class ProfilePage extends Component {
           }
           const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
           let blockchainResponse = await myContract.methods
-            .mintMembership('tokenURI', tokenId)
+            .mintMembership("tokenURI", tokenId)
             .send(
               {
                 from: this.state.walletAddress
@@ -305,10 +319,10 @@ class ProfilePage extends Component {
             });
             if (response.success) {
               this.setState({ showLoader: false });
-              localStorage.setItem('tokenId', tokenId);
+              localStorage.setItem("tokenId", tokenId);
               await Server.sendDataToMobileApp(JSON.stringify(response));
               this.props.history.push({
-                pathname: '/profile-detail-page',
+                pathname: "/profile-detail-page",
                 state: {
                   email: this.state.email,
                   password: this.state.password,
@@ -325,7 +339,7 @@ class ProfilePage extends Component {
             }
           }
         }
-      } else if (this.state.signupMethod === 'web2') {
+      } else if (this.state.signupMethod === "web2") {
         let response = await Server.request({
           url,
           method: "POST",
@@ -333,11 +347,11 @@ class ProfilePage extends Component {
         });
         if (response.success) {
           this.setState({ showLoader: false });
-          localStorage.setItem('signupOrLoginMethod', 'web2');
-          localStorage.setItem('user', JSON.stringify(response.user));
+          localStorage.setItem("signupOrLoginMethod", "web2");
+          localStorage.setItem("user", JSON.stringify(response.user));
           await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
-            pathname: '/profile-detail-page',
+            pathname: "/profile-detail-page",
             state: {
               email: this.state.email,
               password: this.state.password,
@@ -362,9 +376,14 @@ class ProfilePage extends Component {
     }
   };
 
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.toggleConfirmationModal();
+  }
+
   logout = async () => {
-    await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
-    if (this.state.signupMethod === 'web3' && localStorage.getItem("signIn")) {
+    // await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
+    if (this.state.signupMethod === "web3" && localStorage.getItem("signIn")) {
       let details = navigator.userAgent;
       let regexp = /android|iphone|kindle|ipad/i;
       let isMobileDevice = regexp.test(details);
@@ -378,37 +397,48 @@ class ProfilePage extends Component {
     this.props.history.push(`/login-page?membershipWithExpiry=${membershipWithExpiry}`)
   }
 
+  toggleConfirmationModal = () => {
+    this.setState({ confirmationModal: !this.state.confirmationModal });
+  };
+
   render() {
     return (
       <>
         <PageSpinner showLoader={this.state.showLoader} />
         <Row>
           <Col
-            sm="6"
+            sm="12"
             style={{ marginTop: 40, marginLeft: 10, marginRight: 0 }}
           >
             {
               this.state.walletAddress
               &&
-              <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
                 <Alert
+                  isOpen={this.state.walletConnectAlert}
                   style={{
-                    fontSize: '15px',
-                    fontWeight: 'bold',
-                    background: '#919799',
-                    borderRadius: '30px',
-                    padding: '5px 20px',
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                    background: "#919799",
+                    borderRadius: "30px",
+                    padding: "5px 20px",
                   }}
                 >
                   Success! Your Wallet is Connected
                 </Alert>
               </Row>
             }
-            <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <h6 style={{ color: '#275996' }}>Welcome! Set up your profile:</h6>
+            <Row style={{ justifyContent: "center", alignItems: "center" }}>
+              <Col sm={12} style={{ textAlign: "center" }}>
+                <h2 style={{ color: "#275996", margin: 0, fontWeight: 600 }}>Welcome!</h2>
+              </Col>
+              <Col sm={12} style={{ textAlign: "center" }}>
+                <h5 style={{ color: "#275996", margin: 0, fontWeight: 600 }}>Let"s set up your profile</h5>
+              </Col>
             </Row>
             <Row
               style={{
+                marginTop: 20,
                 marginLeft: 0,
                 marginRight: 0,
                 justifyContent: "space-between",
@@ -436,7 +466,7 @@ class ProfilePage extends Component {
                 >
                   <div
                     className="alert-icon"
-                    style={{ marginLeft: 0, marginRight: 0, display: 'flex' }}
+                    style={{ marginLeft: 0, marginRight: 0, display: "flex" }}
                   >
                     <i
                       className="now-ui-icons users_single-02"
@@ -449,25 +479,21 @@ class ProfilePage extends Component {
                   <RiPencilLine />
                 </div>
               </Row>
-              {/* <Button className="btn-round" color="info" type="button" size="sm">
-                Save
-              </Button> */}
             </Row>
           </Col>
           <Col
-            sm={6}
+            sm={12}
             style={{
               marginTop: 10,
-              marginLeft: 10,
               backgroundColor: "#e0e0e0",
               borderTopLeftRadius: 30,
               borderTopRightRadius: 30,
               height: "100vh",
             }}
           >
-            {this.state.signupMethod === 'web3'
+            {this.state.signupMethod === "web3"
               && <>
-                <h6 style={{ marginTop: 20 }}>Connected Web3 Wallet</h6>
+                <h6 style={{ marginTop: 20, color: "gray" }}>Connected Web3 Wallet</h6>
                 <Row
                   style={{
                     marginLeft: 0,
@@ -479,25 +505,25 @@ class ProfilePage extends Component {
                   <div style={{
                     marginRight: 0,
                     marginBottom: 10,
-                    border: '1px solid #275996',
-                    borderRadius: ' 15px',
-                    padding: '6px',
-                    background: '#275996',
-                    display: 'flex',
-                    justifyContent: ' center',
-                    alignItems: ' center',
+                    border: "1px solid #275996",
+                    borderRadius: " 15px",
+                    padding: "6px",
+                    background: "#275996",
+                    display: "flex",
+                    justifyContent: " center",
+                    alignItems: " center",
                   }}>
                     <FaLink color="white" />
                   </div>
                   <h6 style={{ marginLeft: 5, color: "gray" }}>
                     {this.state.walletAddress ?
                       GeneralFunctions._getFormatAddress(this.state.walletAddress)
-                      : '0x0000...0000'}
+                      : "0x0000...0000"}
                   </h6>
                   <FaCopy
                     id="copyToClipboard"
                     size="16"
-                    style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px', marginRight: '10px' }}
+                    style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px", marginRight: "10px" }}
                     onClick={() => {
                       Copy(this.state.walletAddress);
                       this.setState({ showCopyToClipboardToolTip: true });
@@ -521,7 +547,7 @@ class ProfilePage extends Component {
                   </Tooltip>
                   <MdExitToApp
                     size="20"
-                    style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px' }}
+                    style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px" }}
                     onClick={this.logout}
                   />
                 </Row>
@@ -532,12 +558,7 @@ class ProfilePage extends Component {
                 }
               </>
             }
-            <Form
-              onSubmit={(event) => GeneralFunctions.getMembershipWithExpiry()
-                ? this.signupWithExpiry(event)
-                : this.signup(event)
-              }
-            >
+            <Form onSubmit={this.handleSubmit}>
               <Row
                 style={{
                   justifyContent: "center",
@@ -574,24 +595,24 @@ class ProfilePage extends Component {
                   ></Input>
                   <h6>Telephone number</h6>
                   <Row>
-                    <Col xs={4} className='pr-0'>
+                    <Col xs={4} className="pr-0 pl-0">
                       <Select
                         styles={{
                           control: (baseStyles) => ({
                             ...baseStyles,
-                            borderRadius: '30px',
-                            fontSize: '0.8571em',
-                            color: '#E3E3E3'
+                            borderRadius: "30px",
+                            fontSize: "0.8571em",
+                            color: "#E3E3E3"
                           })
                         }}
                         value={this.state.countryCode}
                         onChange={(result) => this.setState({ countryCode: result })}
                         options={this.state.countryCodesOptions}
                         required
-                        placeholder='Code'
+                        placeholder="Code"
                       />
                     </Col>
-                    <Col xs={8}>
+                    <Col xs={8} className="pr-0">
                       <Input
                         style={{
                           marginBottom: 10,
@@ -637,7 +658,16 @@ class ProfilePage extends Component {
               </Row>
               <Row style={{ justifyContent: "center", alignItems: "center" }}>
                 <Button
-                  className="btn-round" color="info" type="submit" size="lg">
+                  size="lg"
+                  color="info"
+                  className="btn-round"
+                  style={{
+                    padding: '15px 70px',
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                  }}
+                  type="submit"
+                >
                   Done
                 </Button>
               </Row>
@@ -650,6 +680,81 @@ class ProfilePage extends Component {
             (this.notificationSystem = notificationSystem)
           }
         />
+        {this.state.confirmationModal
+          && <Modal
+            size="sm"
+            modalClassName="modal-mini modal-info"
+            style={{ marginTop: "20%" }}
+            toggle={this.toggleConfirmationModal}
+            isOpen={this.state.confirmationModal}
+          >
+            <ModalBody>
+              <label
+                style={{
+                  color: "gray",
+                  fontSize: "17px",
+                  fontWeight: 500
+                }}
+              >
+                Your Profile information will be shared with:
+              </label>
+              <label
+                style={{
+                  marginTop: 20,
+                  color: "gray",
+                  fontSize: "17px",
+                  fontWeight: 600
+                }}
+              >
+                ZTI to verify your digital membership credential
+              </label>
+              <label
+                style={{
+                  marginTop: 20,
+                  color: "gray",
+                  fontSize: "17px",
+                  fontWeight: 600
+                }}
+              >
+                Payment Technology DOKU to establish a digital gateway credential
+              </label>
+              <div>
+                <Button
+                  style={{
+                    color: "gray",
+                    background: "transparent",
+                    fontWeight: 500,
+                    fontSize: "25px",
+                    float: "left",
+                    padding: 0,
+                    margin: "25px 0px 0px 0px",
+                    boxShadow: "unset"
+                  }}
+                  onClick={this.toggleConfirmationModal}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  style={{
+                    color: "gray",
+                    background: "transparent",
+                    fontWeight: 500,
+                    fontSize: "25px",
+                    float: "right",
+                    margin: "25px 0px 0px 0px",
+                    boxShadow: "unset"
+                  }}
+                  onClick={(event) => GeneralFunctions.getMembershipWithExpiry()
+                    ? this.signupWithExpiry(event)
+                    : this.signup(event)
+                  }
+                >
+                  OK
+                </Button>
+              </div>
+            </ModalBody>
+          </Modal>
+        }
       </>
     );
   }
