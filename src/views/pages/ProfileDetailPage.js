@@ -85,7 +85,7 @@ class ProfileDetailPage extends Component {
   };
 
   logout = async () => {
-    // await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
+    await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
     if (this.state.signupMethod === 'web3' && localStorage.getItem("signIn")) {
       let details = navigator.userAgent;
       let regexp = /android|iphone|kindle|ipad/i;
