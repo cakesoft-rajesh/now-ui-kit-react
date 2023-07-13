@@ -333,7 +333,7 @@ class ConnectWalletPage extends Component {
                 margin: "10px 15px"
               }}
             >
-              <h5 style={{ color: "gray", margin: 0, fontWeight: 600 }}>Recommended</h5>
+              <h5 style={{ color: "gray", margin: 0, fontSize: "15px", fontWeight: 600 }}>Recommended</h5>
             </Row>
             <Row
               style={{
@@ -349,8 +349,6 @@ class ConnectWalletPage extends Component {
                   margin: 0,
                   padding: 0,
                   border: 0,
-                  fontSize: "21px",
-                  fontWeight: "bold",
                   color: "black",
                   display: 'flex',
                   alignItems: "center"
@@ -363,7 +361,7 @@ class ConnectWalletPage extends Component {
                 <img
                   style={{
                     cursor: "pointer",
-                    width: "50px",
+                    width: "35px",
                   }}
                   alt="..."
                   className="rounded-circle"
@@ -374,7 +372,8 @@ class ConnectWalletPage extends Component {
                     cursor: "pointer",
                     marginLeft: "10px",
                     marginBottom: 0,
-                    fontSize: "25px"
+                    fontSize: "20px",
+                    fontWeight: 600
                   }}
                 >
                   MetaMask
@@ -395,8 +394,6 @@ class ConnectWalletPage extends Component {
                   margin: 0,
                   padding: 0,
                   border: 0,
-                  fontSize: "21px",
-                  fontWeight: "bold",
                   color: "black",
                   display: 'flex',
                   alignItems: "center"
@@ -409,7 +406,7 @@ class ConnectWalletPage extends Component {
                 <img
                   style={{
                     cursor: "pointer",
-                    width: "50px",
+                    width: "35px",
                   }}
                   alt="..."
                   className="rounded-circle"
@@ -420,7 +417,8 @@ class ConnectWalletPage extends Component {
                     cursor: "pointer",
                     marginLeft: "10px",
                     marginBottom: 0,
-                    fontSize: "25px"
+                    fontSize: "20px",
+                    fontWeight: 600
                   }}
                 >
                   WalletConnect
