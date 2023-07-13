@@ -8,9 +8,7 @@ import {
   Button,
   Row,
   Col,
-  Tooltip,
-  Modal,
-  ModalBody,
+  Tooltip
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
