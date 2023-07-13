@@ -75,6 +75,7 @@ class OTPPage extends Component {
                 signUpByEmail: true,
                 email: this.state.email,
                 walletAddress: response.walletAddress,
+                privateKeyCreated: response.privateKeyCreated
               }
             });
           } else {

@@ -1,7 +1,7 @@
 import Web3 from "web3";
 import React, { Component } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { BsFillCheckCircleFill } from "react-icons/bs";
+import { MdVerified } from "react-icons/md";
 import {
   Row,
   Col,
@@ -136,8 +136,8 @@ class ReconstructKeyPage extends Component {
               }}
             >
               <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <BsFillCheckCircleFill
-                  size="35"
+                <MdVerified
+                  size="45"
                   color="#2ca8ff"
                 />
               </Col>
@@ -171,12 +171,12 @@ class ReconstructKeyPage extends Component {
             >
               <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
                 {this.state.setPassword
-                  ? <BsFillCheckCircleFill
-                    size="35"
+                  ? <MdVerified
+                    size="45"
                     color="#2ca8ff"
                   />
                   : <img
-                    style={{ height: "85px", width: "85px" }}
+                    style={{ width: "80px" }}
                     alt="..."
                     src="set_password.png"
                   />

@@ -19,6 +19,7 @@ import {
   ModalBody,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
+import GenerateKeyPage from "./GenerateKeyPage";
 import PageSpinner from "components/PageSpinner";
 import CountryCode from "../../utils/CountryCode.json";
 import membershipABI from "../../contracts_abi/membership.json";
@@ -45,6 +46,7 @@ class ProfilePage extends Component {
       confirmPassword: this.props.location.state ? this.props.location.state.confirmPassword : "",
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
+      privateKeyCreated: this.props.location.state ? this.props.location.state.privateKeyCreated : false,
       ztiAppName: "zti",
       countryCode: "",
       countryCodesOptions: [],
@@ -52,7 +54,9 @@ class ProfilePage extends Component {
       showCopyToClipboardToolTip: false,
       walletBalance: 0,
       confirmationModal: false,
-      walletConnectAlert: true
+      walletConnectAlert: true,
+      generateKeyPage: false,
+      learnMoreDetailModal: false,
     };
   }
 
@@ -401,279 +405,335 @@ class ProfilePage extends Component {
     this.setState({ confirmationModal: !this.state.confirmationModal });
   };
 
+  toggleGenerateKeyPage = () => {
+    this.setState({ generateKeyPage: !this.state.generateKeyPage });
+  };
+
+  toggleLearnMoreDetailModal = () => {
+    this.setState({ learnMoreDetailModal: !this.state.learnMoreDetailModal });
+  };
+
+  updateStateValue = (value) => this.setState(value);
+
   render() {
     return (
       <>
         <PageSpinner showLoader={this.state.showLoader} />
-        <Row>
-          <Col
-            sm="12"
-            style={{ marginTop: 40, marginLeft: 10, marginRight: 0 }}
-          >
-            {
-              this.state.walletAddress
-              &&
-              <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                <Alert
-                  isOpen={this.state.walletConnectAlert}
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: "bold",
-                    background: "#919799",
-                    borderRadius: "30px",
-                    padding: "5px 20px",
-                  }}
-                >
-                  Success! Your Wallet is Connected
-                </Alert>
-              </Row>
-            }
-            <Row style={{ justifyContent: "center", alignItems: "center" }}>
-              <Col sm={12} style={{ textAlign: "center" }}>
-                <h2 style={{ color: "#275996", margin: 0, fontWeight: 600 }}>Welcome!</h2>
-              </Col>
-              <Col sm={12} style={{ textAlign: "center" }}>
-                <h5 style={{ color: "#275996", margin: 0, fontWeight: 600 }}>Let"s set up your profile</h5>
-              </Col>
-            </Row>
-            <Row
-              style={{
-                marginTop: 20,
-                marginLeft: 0,
-                marginRight: 0,
-                justifyContent: "space-between",
-              }}
+        {this.state.generateKeyPage &&
+          <GenerateKeyPage
+            {...this.props}
+            email={this.state.email}
+            walletAddress={this.state.walletAddress}
+            updateStateValue={this.updateStateValue}
+          />
+        }
+        {!this.state.generateKeyPage &&
+          <Row>
+            <Col
+              sm="12"
+              style={{ marginTop: 40, marginLeft: 10, marginRight: 0 }}
             >
+              {
+                this.state.walletAddress
+                &&
+                <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                  <Alert
+                    isOpen={this.state.walletConnectAlert}
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "bold",
+                      background: "#919799",
+                      borderRadius: "30px",
+                      padding: "5px 20px",
+                    }}
+                  >
+                    Success! Your Wallet is Connected
+                  </Alert>
+                </Row>
+              }
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                <Col sm={12} style={{ textAlign: "center" }}>
+                  <h2 style={{ color: "#275996", margin: 0, fontWeight: 600 }}>Welcome!</h2>
+                </Col>
+                <Col sm={12} style={{ textAlign: "center" }}>
+                  <h5 style={{ color: "#275996", margin: 0, fontWeight: 600 }}>Let"s set up your profile</h5>
+                </Col>
+              </Row>
               <Row
                 style={{
+                  marginTop: 20,
                   marginLeft: 0,
                   marginRight: 0,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
-                <div
-                  style={{
-                    width: 45,
-                    height: 45,
-                    borderRadius: 40,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#2CA8FF",
-                  }}
-                >
-                  <div
-                    className="alert-icon"
-                    style={{ marginLeft: 0, marginRight: 0, display: "flex" }}
-                  >
-                    <i
-                      className="now-ui-icons users_single-02"
-                      style={{ color: "white", fontSize: "24px" }}
-                    ></i>
-                  </div>
-                </div>
-                <h6 style={{ color: "gray", marginLeft: 5, marginBottom: 0 }}>Add Avatar</h6>
-                <div style={{ marginLeft: 5, marginRight: 0, marginBottom: 0 }}>
-                  <RiPencilLine />
-                </div>
-              </Row>
-            </Row>
-          </Col>
-          <Col
-            sm={12}
-            style={{
-              marginTop: 10,
-              backgroundColor: "#e0e0e0",
-              borderTopLeftRadius: 30,
-              borderTopRightRadius: 30,
-              height: "100vh",
-            }}
-          >
-            {this.state.signupMethod === "web3"
-              && <>
-                <h6 style={{ marginTop: 20, color: "gray" }}>Connected Web3 Wallet</h6>
                 <Row
                   style={{
                     marginLeft: 0,
                     marginRight: 0,
                     display: "flex",
+                    justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <div style={{
-                    marginRight: 0,
-                    marginBottom: 10,
-                    border: "1px solid #275996",
-                    borderRadius: " 15px",
-                    padding: "6px",
-                    background: "#275996",
-                    display: "flex",
-                    justifyContent: " center",
-                    alignItems: " center",
-                  }}>
-                    <FaLink color="white" />
-                  </div>
-                  <h6 style={{ marginLeft: 5, color: "gray" }}>
-                    {this.state.walletAddress ?
-                      GeneralFunctions._getFormatAddress(this.state.walletAddress)
-                      : "0x0000...0000"}
-                  </h6>
-                  <FaCopy
-                    id="copyToClipboard"
-                    size="16"
-                    style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px", marginRight: "10px" }}
-                    onClick={() => {
-                      Copy(this.state.walletAddress);
-                      this.setState({ showCopyToClipboardToolTip: true });
-                      setTimeout(() => this.setState({ showCopyToClipboardToolTip: false }), 3000);
-                    }}
-                  />
-                  <Tooltip
+                  <div
                     style={{
-                      fontSize: "15px",
-                      fontWeight: "bold",
-                      background: "rgb(80 84 86)",
-                      borderRadius: "5px",
-                      padding: "5px",
-                      color: "white",
+                      width: 45,
+                      height: 45,
+                      borderRadius: 40,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "#2CA8FF",
                     }}
-                    placement="right"
-                    isOpen={this.state.showCopyToClipboardToolTip}
-                    target="copyToClipboard"
                   >
-                    Copied
-                  </Tooltip>
-                  <MdExitToApp
-                    size="20"
-                    style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px" }}
-                    onClick={this.logout}
-                  />
+                    <div
+                      className="alert-icon"
+                      style={{ marginLeft: 0, marginRight: 0, display: "flex" }}
+                    >
+                      <i
+                        className="now-ui-icons users_single-02"
+                        style={{ color: "white", fontSize: "24px" }}
+                      ></i>
+                    </div>
+                  </div>
+                  <h6 style={{ color: "gray", marginLeft: 5, marginBottom: 0 }}>Add Avatar</h6>
+                  <div style={{ marginLeft: 5, marginRight: 0, marginBottom: 0 }}>
+                    <RiPencilLine />
+                  </div>
                 </Row>
-                <h6 style={{ marginTop: 5, marginBottom: 0 }}>Balance : {this.state.walletBalance} MATIC </h6>
-                {
-                  (this.state.walletBalance === 0 || this.state.walletBalance === "0") &&
-                  <h6 style={{ marginTop: 5, color: "red", lineHeight: "18px", marginBottom: 0 }}>Please recharge your wallet to mint the profile</h6>
-                }
-              </>
-            }
-            <Form onSubmit={this.handleSubmit}>
-              <Row
-                style={{
-                  justifyContent: "center",
-                  marginLeft: 0,
-                  marginRight: 10,
-                }}
-              >
-                <FormGroup style={{ width: "100%", marginTop: 15 }}>
-                  <h6>First Name(individual or business)</h6>
-                  <Input
+              </Row>
+            </Col>
+            <Col
+              sm={12}
+              style={{
+                marginTop: 10,
+                backgroundColor: "#e0e0e0",
+                borderTopLeftRadius: 30,
+                borderTopRightRadius: 30
+              }}
+            >
+              {this.state.signupMethod === "web3"
+                && <>
+                  <h6 style={{ marginTop: 20, color: "gray" }}>Connected Web3 Wallet</h6>
+                  <Row
                     style={{
-                      marginBottom: 10,
-                      width: "100%",
-                      backgroundColor: "white",
+                      marginLeft: 0,
+                      marginRight: 0,
+                      display: "flex",
+                      alignItems: "center",
                     }}
-                    placeholder="Enter first name"
-                    type="text"
-                    required
-                    value={this.state.firstName}
-                    onChange={(event) => this.setState({ firstName: event.target.value })}
-                  ></Input>
-                  <h6>Last Name(individual or business)</h6>
-                  <Input
-                    style={{
+                  >
+                    <div style={{
+                      marginRight: 0,
                       marginBottom: 10,
-                      width: "100%",
-                      backgroundColor: "white",
-                    }}
-                    placeholder="Enter last name"
-                    type="text"
-                    required
-                    value={this.state.lastName}
-                    onChange={(event) => this.setState({ lastName: event.target.value })}
-                  ></Input>
-                  <h6>Telephone number</h6>
-                  <Row>
-                    <Col xs={4} className="pr-0 pl-0">
-                      <Select
-                        styles={{
-                          control: (baseStyles) => ({
-                            ...baseStyles,
-                            borderRadius: "30px",
-                            fontSize: "0.8571em",
-                            color: "#E3E3E3"
-                          })
-                        }}
-                        value={this.state.countryCode}
-                        onChange={(result) => this.setState({ countryCode: result })}
-                        options={this.state.countryCodesOptions}
-                        required
-                        placeholder="Code"
-                      />
-                    </Col>
-                    <Col xs={8} className="pr-0">
-                      <Input
-                        style={{
-                          marginBottom: 10,
-                          width: "100%",
-                          backgroundColor: "white",
-                        }}
-                        placeholder="Enter telephone number"
-                        type="text"
-                        required
-                        value={this.state.phone}
-                        onChange={(event) => this.setState({ phone: event.target.value })}
-                      ></Input>
-                    </Col>
+                      border: "1px solid #275996",
+                      borderRadius: " 15px",
+                      padding: "6px",
+                      background: "#275996",
+                      display: "flex",
+                      justifyContent: " center",
+                      alignItems: " center",
+                    }}>
+                      <FaLink color="white" />
+                    </div>
+                    <h6 style={{ marginLeft: 5, color: "gray" }}>
+                      {this.state.walletAddress ?
+                        GeneralFunctions._getFormatAddress(this.state.walletAddress)
+                        : "0x0000...0000"}
+                    </h6>
+                    <FaCopy
+                      id="copyToClipboard"
+                      size="16"
+                      style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px", marginRight: "10px" }}
+                      onClick={() => {
+                        Copy(this.state.walletAddress);
+                        this.setState({ showCopyToClipboardToolTip: true });
+                        setTimeout(() => this.setState({ showCopyToClipboardToolTip: false }), 3000);
+                      }}
+                    />
+                    <Tooltip
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                        background: "rgb(80 84 86)",
+                        borderRadius: "5px",
+                        padding: "5px",
+                        color: "white",
+                      }}
+                      placement="right"
+                      isOpen={this.state.showCopyToClipboardToolTip}
+                      target="copyToClipboard"
+                    >
+                      Copied
+                    </Tooltip>
+                    <MdExitToApp
+                      size="20"
+                      style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px" }}
+                      onClick={this.logout}
+                    />
                   </Row>
-                  <h6>User name</h6>
-                  <Input
-                    style={{
-                      marginBottom: 10,
-                      width: "100%",
-                      backgroundColor: "white",
-                    }}
-                    placeholder="Enter username"
-                    type="text"
-                    required
-                    value={this.state.displayUsername}
-                    onChange={(event) => this.setState({ displayUsername: event.target.value })}
-                  ></Input>
-                  <h6>Email</h6>
-                  <Input
-                    style={{
-                      marginBottom: 30,
-                      width: "100%",
-                      backgroundColor: "white",
-                    }}
-                    placeholder="Enter email"
-                    type="email"
-                    required
-                    value={this.state.email}
-                    disabled={this.state.signUpByEmail}
-                    onChange={(event) => this.setState({ email: event.target.value })}
-                  ></Input>
-                </FormGroup>
-              </Row>
-              <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                <Button
-                  size="lg"
-                  color="info"
-                  className="btn-round"
+                  <h6 style={{ marginTop: 5, marginBottom: 0 }}>Balance : {this.state.walletBalance} MATIC </h6>
+                  {
+                    (this.state.walletBalance === 0 || this.state.walletBalance === "0") &&
+                    <h6 style={{ marginTop: 5, color: "red", lineHeight: "18px", marginBottom: 0 }}>Please recharge your wallet to mint the profile</h6>
+                  }
+                </>
+              }
+              <Form onSubmit={this.handleSubmit}>
+                <Row
                   style={{
-                    padding: '15px 70px',
-                    fontSize: "15px",
-                    fontWeight: "bold",
+                    justifyContent: "center",
+                    marginLeft: 0,
+                    marginRight: 10,
                   }}
-                  type="submit"
                 >
-                  Done
-                </Button>
-              </Row>
-            </Form>
-          </Col>
-        </Row >
+                  <FormGroup style={{ width: "100%", marginTop: 15 }}>
+                    <h6>First Name(individual or business)</h6>
+                    <Input
+                      style={{
+                        marginBottom: 10,
+                        width: "100%",
+                        backgroundColor: "white",
+                      }}
+                      placeholder="Enter first name"
+                      type="text"
+                      required
+                      value={this.state.firstName}
+                      onChange={(event) => this.setState({ firstName: event.target.value })}
+                    ></Input>
+                    <h6>Last Name(individual or business)</h6>
+                    <Input
+                      style={{
+                        marginBottom: 10,
+                        width: "100%",
+                        backgroundColor: "white",
+                      }}
+                      placeholder="Enter last name"
+                      type="text"
+                      required
+                      value={this.state.lastName}
+                      onChange={(event) => this.setState({ lastName: event.target.value })}
+                    ></Input>
+                    <h6>Telephone number</h6>
+                    <Row>
+                      <Col xs={4} className="pr-0 pl-0">
+                        <Select
+                          styles={{
+                            control: (baseStyles) => ({
+                              ...baseStyles,
+                              borderRadius: "30px",
+                              fontSize: "0.8571em",
+                              color: "#E3E3E3"
+                            })
+                          }}
+                          value={this.state.countryCode}
+                          onChange={(result) => this.setState({ countryCode: result })}
+                          options={this.state.countryCodesOptions}
+                          required
+                          placeholder="Code"
+                        />
+                      </Col>
+                      <Col xs={8} className="pr-0">
+                        <Input
+                          style={{
+                            marginBottom: 10,
+                            width: "100%",
+                            backgroundColor: "white",
+                          }}
+                          placeholder="Enter telephone number"
+                          type="text"
+                          required
+                          value={this.state.phone}
+                          onChange={(event) => this.setState({ phone: event.target.value })}
+                        ></Input>
+                      </Col>
+                    </Row>
+                    <h6>User name</h6>
+                    <Input
+                      style={{
+                        marginBottom: 10,
+                        width: "100%",
+                        backgroundColor: "white",
+                      }}
+                      placeholder="Enter username"
+                      type="text"
+                      required
+                      value={this.state.displayUsername}
+                      onChange={(event) => this.setState({ displayUsername: event.target.value })}
+                    ></Input>
+                    <h6>Email</h6>
+                    <Input
+                      style={{
+                        marginBottom: 30,
+                        width: "100%",
+                        backgroundColor: "white",
+                      }}
+                      placeholder="Enter email"
+                      type="email"
+                      required
+                      value={this.state.email}
+                      disabled={this.state.signUpByEmail}
+                      onChange={(event) => this.setState({ email: event.target.value })}
+                    ></Input>
+                  </FormGroup>
+                </Row>
+                {!this.state.privateKeyCreated &&
+                  <>
+                    <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                      <Col sm={12}>
+                        <Button
+                          style={{
+                            width: "100%",
+                            fontSize: '15px',
+                            fontWeight: 'bold',
+                          }}
+                          outline
+                          color="info"
+                          type="button"
+                          className="btn-round"
+                          onClick={this.toggleGenerateKeyPage}
+                        >
+                          Set authentication factors to seamlessly switch devices
+                        </Button>
+                      </Col>
+                    </Row>
+                    <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                      <label
+                        style={{
+                          color: "gray",
+                          margin: 0,
+                          fontWeight: 600,
+                          cursor: "pointer"
+                        }}
+                        onClick={this.toggleLearnMoreDetailModal}
+                      >
+                        Learn More
+                      </label>
+                    </Row>
+                  </>
+                }
+                <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                  <Col sm={12}>
+                    <Button
+                      style={{
+                        width: "100%",
+                        fontSize: '15px',
+                        fontWeight: 'bold',
+                      }}
+                      color="info"
+                      type="submit"
+                      className="btn-round"
+                      disabled={!this.state.privateKeyCreated}
+                    >
+                      Done
+                    </Button>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+          </Row >
+        }
         <NotificationSystem
           dismissible={false}
           ref={(notificationSystem) =>
@@ -692,7 +752,7 @@ class ProfilePage extends Component {
               <label
                 style={{
                   color: "gray",
-                  fontSize: "17px",
+                  fontSize: "15px",
                   fontWeight: 500
                 }}
               >
@@ -700,20 +760,20 @@ class ProfilePage extends Component {
               </label>
               <label
                 style={{
-                  marginTop: 20,
                   color: "gray",
-                  fontSize: "17px",
-                  fontWeight: 600
+                  marginTop: 20,
+                  fontWeight: 600,
+                  fontSize: "15px",
                 }}
               >
                 ZTI to verify your digital membership credential
               </label>
               <label
                 style={{
-                  marginTop: 20,
                   color: "gray",
-                  fontSize: "17px",
-                  fontWeight: 600
+                  marginTop: 20,
+                  fontWeight: 600,
+                  fontSize: "15px",
                 }}
               >
                 Payment Technology DOKU to establish a digital gateway credential
@@ -721,14 +781,14 @@ class ProfilePage extends Component {
               <div>
                 <Button
                   style={{
-                    color: "gray",
-                    background: "transparent",
-                    fontWeight: 500,
-                    fontSize: "25px",
-                    float: "left",
                     padding: 0,
+                    float: "left",
+                    color: "gray",
+                    fontWeight: 500,
+                    fontSize: "20px",
+                    boxShadow: "unset",
+                    background: "transparent",
                     margin: "25px 0px 0px 0px",
-                    boxShadow: "unset"
                   }}
                   onClick={this.toggleConfirmationModal}
                 >
@@ -736,18 +796,57 @@ class ProfilePage extends Component {
                 </Button>
                 <Button
                   style={{
+                    padding: 0,
                     color: "gray",
-                    background: "transparent",
-                    fontWeight: 500,
-                    fontSize: "25px",
                     float: "right",
+                    fontWeight: 500,
+                    fontSize: "20px",
+                    boxShadow: "unset",
                     margin: "25px 0px 0px 0px",
-                    boxShadow: "unset"
+                    background: "transparent",
                   }}
                   onClick={(event) => GeneralFunctions.getMembershipWithExpiry()
                     ? this.signupWithExpiry(event)
                     : this.signup(event)
                   }
+                >
+                  OK
+                </Button>
+              </div>
+            </ModalBody>
+          </Modal>
+        }
+        {this.state.learnMoreDetailModal
+          && <Modal
+            size="sm"
+            modalClassName="modal-mini modal-info"
+            style={{ marginTop: "20%" }}
+            toggle={this.toggleLearnMoreDetailModal}
+            isOpen={this.state.learnMoreDetailModal}
+          >
+            <ModalBody>
+              <label
+                style={{
+                  color: "gray",
+                  fontSize: "17px",
+                  fontWeight: 500
+                }}
+              >
+                Setting Authentication Factors allows you to switch to a new device seamlessly
+              </label>
+              <div>
+                <Button
+                  style={{
+                    color: "gray",
+                    background: "transparent",
+                    fontWeight: 500,
+                    fontSize: "20px",
+                    float: "right",
+                    padding: 0,
+                    margin: "20px 0px 0px 0px",
+                    boxShadow: "unset"
+                  }}
+                  onClick={this.toggleLearnMoreDetailModal}
                 >
                   OK
                 </Button>
