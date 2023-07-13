@@ -337,9 +337,13 @@ class ConnectWalletPage extends Component {
             </Row>
             <Row
               style={{
-                justifyContent: "flex-start",
+                marginBottom: "5px",
+                padding: "15px",
                 alignItems: "center",
-                margin: "15px"
+                justifyContent: "flex-start",
+                background: "rgb(245, 246, 252)",
+                borderTopLeftRadius: "10px",
+                borderTopRightRadius: "10px"
               }}
             >
               <Button
@@ -360,11 +364,12 @@ class ConnectWalletPage extends Component {
               >
                 <img
                   style={{
+                    width: "40px",
                     cursor: "pointer",
-                    width: "35px",
+                    border: "1px solid rgb(210, 217, 238)",
+                    borderRadius: "8px"
                   }}
                   alt="..."
-                  className="rounded-circle"
                   src="metamask.png"
                 />
                 <label
@@ -382,9 +387,13 @@ class ConnectWalletPage extends Component {
             </Row>
             <Row
               style={{
-                justifyContent: "flex-start",
+                marginBottom: "5px",
+                padding: "15px",
                 alignItems: "center",
-                margin: "15px"
+                justifyContent: "flex-start",
+                background: "rgb(245, 246, 252)",
+                borderBottomLeftRadius: "10px",
+                borderBottomRightRadius: "10px"
               }}
             >
               <Button
@@ -405,11 +414,12 @@ class ConnectWalletPage extends Component {
               >
                 <img
                   style={{
+                    width: "40px",
                     cursor: "pointer",
-                    width: "35px",
+                    border: "1px solid rgb(210, 217, 238)",
+                    borderRadius: "8px"
                   }}
                   alt="..."
-                  className="rounded-circle"
                   src="walletConnect.png"
                 />
                 <label
