@@ -257,13 +257,13 @@ class ConnectWalletPage extends Component {
           }
         });
         if (signatureVerified.success) {
-          this.setState({ showLoader: false });
           localStorage.setItem('signIn', true);
           localStorage.setItem('signupOrLoginMethod', 'web3');
           localStorage.setItem('chainId', chainId);
           localStorage.setItem('walletAddress', signatureVerified.walletAddress);
           Object.assign(response, { signupMethod: 'web3' });
           Server.sendDataToMobileApp(JSON.stringify(signatureVerified));
+          this.setState({ showLoader: false });
         } else {
           throw Error(signatureVerified.message);
         }
