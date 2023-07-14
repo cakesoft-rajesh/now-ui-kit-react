@@ -104,7 +104,7 @@ class ProfileDetailPage extends Component {
     return (
       <>
         <PageSpinner showLoader={this.state.showLoader} />
-        <Row>
+        <Row style={{height: '100%'}}>
           <Col
             sm={12}
             style={{ marginTop: 40, marginLeft: 10, marginRight: 0 }}
