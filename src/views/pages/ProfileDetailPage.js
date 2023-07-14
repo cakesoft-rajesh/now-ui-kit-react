@@ -107,7 +107,7 @@ class ProfileDetailPage extends Component {
         <Row style={{height: '100%'}}>
           <Col
             sm={12}
-            style={{ marginTop: 40, marginLeft: 10, marginRight: 0 }}
+            style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flex:1, marginLeft: 10, marginRight: 0 }}
           >
             <Row
               style={{
@@ -128,9 +128,9 @@ class ProfileDetailPage extends Component {
               >
                 <div
                   style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 40,
+                    width: '13vh',
+                    height: '13vh',
+                    borderRadius: '20vh',
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -143,7 +143,7 @@ class ProfileDetailPage extends Component {
                   >
                     <i
                       className="now-ui-icons users_single-02"
-                      style={{ color: "white", fontSize: "35px" }}
+                      style={{ color: "white", fontSize: "6vh" }}
                     ></i>
                   </div>
                 </div>
