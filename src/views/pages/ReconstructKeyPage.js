@@ -132,7 +132,8 @@ class ReconstructKeyPage extends Component {
                 border: "1px solid gray",
                 borderRadius: "15px",
                 padding: "20px 15px",
-                background: "rgb(224, 224, 224)"
+                background: "rgb(224, 224, 224)",
+                minHeight: "200px"
               }}
             >
               <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -166,7 +167,8 @@ class ReconstructKeyPage extends Component {
                 border: "1px solid gray",
                 borderRadius: "15px",
                 padding: "20px 15px",
-                background: "rgb(224, 224, 224)"
+                background: "rgb(224, 224, 224)",
+                minHeight: "200px"
               }}
             >
               <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
