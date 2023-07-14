@@ -104,10 +104,18 @@ class ProfileDetailPage extends Component {
     return (
       <>
         <PageSpinner showLoader={this.state.showLoader} />
-        <Row style={{height: '100%'}}>
+        <Row style={{ height: "100vh" }}>
           <Col
             sm={12}
-            style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flex:1, marginLeft: 10, marginRight: 0 }}
+            style={
+              {
+                marginTop: 40,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                maxHeight: "60px"
+              }
+            }
           >
             <Row
               style={{
@@ -128,9 +136,9 @@ class ProfileDetailPage extends Component {
               >
                 <div
                   style={{
-                    width: '13vh',
-                    height: '13vh',
-                    borderRadius: '20vh',
+                    width: 60,
+                    height: 60,
+                    borderRadius: 40,
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -143,7 +151,7 @@ class ProfileDetailPage extends Component {
                   >
                     <i
                       className="now-ui-icons users_single-02"
-                      style={{ color: "white", fontSize: "6vh" }}
+                      style={{ color: "white", fontSize: "35px" }}
                     ></i>
                   </div>
                 </div>
@@ -157,6 +165,7 @@ class ProfileDetailPage extends Component {
               backgroundColor: "#e0e0e0",
               borderTopLeftRadius: 30,
               borderTopRightRadius: 30,
+              height: "calc(100vh - 110px)"
             }}
           >
             {this.state.signupMethod === 'web3'
