@@ -192,7 +192,6 @@ class LoginPage extends Component {
         <PageSpinner showLoader={this.state.showLoader} />
         <div
           style={{
-            height: "100vh",
             flexDirection: "column",
             display: "flex",
             marginTop: 20,
