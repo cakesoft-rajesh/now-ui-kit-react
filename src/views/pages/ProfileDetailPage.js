@@ -421,7 +421,7 @@ class ProfileDetailPage extends Component {
                     </Button>
                   </Col>
                 </Row>
-                <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                {/* <Row style={{ justifyContent: "center", alignItems: "center" }}>
                   <Col sm={12}>
                     <Button
                       onClick={() => { }}
@@ -448,11 +448,9 @@ class ProfileDetailPage extends Component {
                       Set up biometric authentication
                     </Button>
                   </Col>
-                </Row>
-
+                </Row> */}
               </>
-              :
-              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+              : <Row style={{ justifyContent: "center", alignItems: "center" }}>
                 <Col sm={12}>
                   <Button
                     onClick={() => {
