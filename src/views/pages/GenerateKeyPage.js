@@ -35,6 +35,7 @@ class GenerateKeyPage extends Component {
   setPassword = async () => {
     try {
       this.setState({ showLoader: true });
+      if (!this.state.password) throw Error('Password is required');
       if (this.state.password !== this.state.confirmPassword) throw Error('Password mismatch');
       let response = await Server.request({
         url: "/web3Auth/setPassword",
@@ -52,6 +53,11 @@ class GenerateKeyPage extends Component {
           confirmPassword: "",
           setPassword: true
         });
+        if (this.props.editKeyFactor) {
+          this.props.updateStateValue({
+            editKeyFactorPage: false
+          });
+        }
       }
     } catch (error) {
       this.notificationSystem.addNotification({
@@ -266,20 +272,57 @@ class GenerateKeyPage extends Component {
                     </InputGroup>
                   </Col>
                   <Col sm={12} className="mt-1" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <Button
-                      style={{
-                        width: "100%",
-                        padding: "13px 0px",
-                        fontSize: "15px",
-                        fontWeight: "bold",
-                      }}
-                      className="btn-round"
-                      color="info"
-                      size="lg"
-                      onClick={this.setPassword}
-                    >
-                      Set password
-                    </Button>
+                    {this.props.editKeyFactor
+                      ? <>
+                        <Button
+                          style={{
+                            width: "100%",
+                            padding: "13px 0px",
+                            fontSize: "15px",
+                            fontWeight: "bold",
+                            marginRight: "10px"
+                          }}
+                          className="btn-round"
+                          color="info"
+                          size="lg"
+                          onClick={() => this.props.updateStateValue({
+                            editKeyFactorPage: false
+                          })}
+                          outline
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          style={{
+                            width: "100%",
+                            padding: "13px 0px",
+                            fontSize: "15px",
+                            fontWeight: "bold",
+                            marginLeft: "10px"
+                          }}
+                          className="btn-round"
+                          color="info"
+                          size="lg"
+                          onClick={this.setPassword}
+                        >
+                          Save
+                        </Button>
+                      </>
+                      : <Button
+                        style={{
+                          width: "100%",
+                          padding: "13px 0px",
+                          fontSize: "15px",
+                          fontWeight: "bold",
+                        }}
+                        className="btn-round"
+                        color="info"
+                        size="lg"
+                        onClick={this.setPassword}
+                      >
+                        Set password
+                      </Button>
+                    }
                   </Col>
                 </>
               }
