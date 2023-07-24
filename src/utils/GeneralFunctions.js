@@ -158,3 +158,11 @@ export const getMembershipWithExpiry = () => {
       return false;
   };
 };
+
+export const setZTIAppNameData = (data) => {
+  localStorage.setItem("ztiAppNameData", JSON.stringify(data));
+};
+
+export const getZTIAppNameData = () => {
+  return JSON.parse(localStorage.getItem("ztiAppNameData"));
+};

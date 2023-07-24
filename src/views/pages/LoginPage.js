@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import Web3 from "web3";
 import { Link } from "react-router-dom";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
@@ -11,16 +11,17 @@ import {
   Button,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
-import ConnectWalletPage from './ConnectWalletPage';
+import ConnectWalletPage from "./ConnectWalletPage";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import * as Server from "../../utils/Server";
-import * as NetworkData from 'utils/networks';
+import * as NetworkData from "utils/networks";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
-import 'react-spring-bottom-sheet/dist/style.css'
-import OTPPage from './OTPPage';
-import ReconstructKeyPage from './ReconstructKeyPage';
+import "react-spring-bottom-sheet/dist/style.css"
+import OTPPage from "./OTPPage";
+import ReconstructKeyPage from "./ReconstructKeyPage";
+import SelectedCommunityPage from "./SelectedCommunityPage";
 
 const wc = new WalletConnect();
 
@@ -31,24 +32,27 @@ class LoginPage extends Component {
     this.state = {
       showLoader: false,
       email: "",
-      ztiAppName: "zti",
+      ztiAppNameData: {},
       showOTPage: false,
       reconstructKeyPage: false,
       showConnectWalletPage: false,
-      rpcUrl: "https://matic-mumbai.chainstacklabs.com",
+      selectCommunityPage: true,
+      rpcUrl: "https://rpc-mumbai.maticvigil.com",
     };
   }
 
   async componentDidMount() {
+    const ztiAppNameData = GeneralFunctions.getZTIAppNameData();
+    if (ztiAppNameData) this.setState({ ztiAppNameData, selectCommunityPage: false });
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
-    localStorage.setItem('membershipWithExpiry', params.membershipWithExpiry ? params.membershipWithExpiry : false);
-    if (params.dokuId) localStorage.setItem('dokuId', params.dokuId);
-    const signupOrLoginMethod = localStorage.getItem('signupOrLoginMethod');
-    if (signupOrLoginMethod === 'web3') {
-      const signIn = localStorage.getItem('signIn');
+    localStorage.setItem("membershipWithExpiry", params.membershipWithExpiry ? params.membershipWithExpiry : false);
+    if (params.dokuId) localStorage.setItem("dokuId", params.dokuId);
+    const signupOrLoginMethod = localStorage.getItem("signupOrLoginMethod");
+    if (signupOrLoginMethod === "web3") {
+      const signIn = localStorage.getItem("signIn");
       if (signIn) {
         this.setState({ showLoader: true });
-        const walletAddress = localStorage.getItem('walletAddress');
+        const walletAddress = localStorage.getItem("walletAddress");
         let details = navigator.userAgent;
         let regexp = /android|iphone|kindle|ipad/i;
         let isMobileDevice = regexp.test(details);
@@ -68,18 +72,18 @@ class LoginPage extends Component {
         const web3 = new Web3(provider);
         this.checkIfDataStoredOnBlockchain(web3, walletAddress);
       } else {
-        const walletAddress = localStorage.getItem('walletAddress');
-        const tokenId = localStorage.getItem('tokenId');
+        const walletAddress = localStorage.getItem("walletAddress");
+        const tokenId = localStorage.getItem("tokenId");
         if (walletAddress && tokenId) {
           this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
         }
       }
-    } else if (signupOrLoginMethod === 'web2') {
-      let user = localStorage.getItem('user');
+    } else if (signupOrLoginMethod === "web2") {
+      let user = localStorage.getItem("user");
       if (user) {
         user = JSON.parse(user);
         this.props.history.push({
-          pathname: '/profile-detail-page',
+          pathname: "/profile-detail-page",
           state: {
             email: user.emails[0].address,
             firstName: user.firstName,
@@ -87,15 +91,15 @@ class LoginPage extends Component {
             phone: user.phone,
             userName: user.username,
             displayUsername: user.displayUsername,
-            signupMethod: 'web2',
+            signupMethod: "web2",
             walletAddress: user.walletAddress
           }
         });
       } else {
         this.props.history.push({
-          pathname: '/profile-page',
+          pathname: "/profile-page",
           state: {
-            signupMethod: 'web2',
+            signupMethod: "web2",
           }
         });
       }
@@ -112,7 +116,7 @@ class LoginPage extends Component {
       : membershipABI
     const myContract = await new web3.eth.Contract(membershipABI_JSON, contractAddress);
     try {
-      let tokenId = localStorage.getItem('tokenId');
+      let tokenId = localStorage.getItem("tokenId");
       if (!tokenId) {
         let response = await Server.request({
           url: `/user/getTokenId?walletAddress=${walletAddress}`,
@@ -131,20 +135,20 @@ class LoginPage extends Component {
         this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
       } else {
         this.props.history.push({
-          pathname: '/profile-page',
+          pathname: "/profile-page",
           state: {
-            signupMethod: 'web3',
+            signupMethod: "web3",
             walletAddress
           }
         });
       }
     } catch (error) {
       let message = error.message || error.Error;
-      if (message.toLowerCase().includes('invalid token id')) {
+      if (message.toLowerCase().includes("invalid token id")) {
         this.props.history.push({
-          pathname: '/profile-page',
+          pathname: "/profile-page",
           state: {
-            signupMethod: 'web3',
+            signupMethod: "web3",
             walletAddress
           }
         });
@@ -219,9 +223,16 @@ class LoginPage extends Component {
             />
           }
           {
+            this.state.selectCommunityPage &&
+            <SelectedCommunityPage
+              updateStateValue={this.updateStateValue}
+            />
+          }
+          {
             !this.state.showOTPage &&
             !this.state.reconstructKeyPage &&
             !this.state.showConnectWalletPage &&
+            !this.state.selectCommunityPage &&
             <Row style={{ justifyContent: "center", alignItems: "center" }}>
               <Col
                 sm="12"
@@ -249,7 +260,7 @@ class LoginPage extends Component {
                     type="button"
                     size="lg"
                     outline
-                    to={`/signup-page?ztiAppName=${this.state.ztiAppName}`}
+                    to="/signup-page"
                     tag={Link}
                   >
                     Sign Up
@@ -262,8 +273,8 @@ class LoginPage extends Component {
                   }}
                 >
                   <img
-                    alt=''
-                    src='/logos/zti.png'
+                    alt=""
+                    src={`/logos/${this.state.ztiAppNameData.logo}`}
                     width="30%"
                     style={{ marginTop: 40 }}
                   />
@@ -274,7 +285,7 @@ class LoginPage extends Component {
                     alignItems: "center",
                   }}
                 >
-                  <h3 style={{ color: "gray", marginTop: 15, fontWeight: 600 }}>{this.state.ztiAppName.toUpperCase()}</h3>
+                  <h3 style={{ color: "gray", marginTop: 15, fontWeight: 600 }}>{this.state.ztiAppNameData.label}</h3>
                 </Row>
                 <Row
                   style={{

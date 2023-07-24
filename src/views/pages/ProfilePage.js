@@ -47,10 +47,10 @@ class ProfilePage extends Component {
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       privateKeyCreated: this.props.location.state ? this.props.location.state.privateKeyCreated : false,
-      ztiAppName: "zti",
+      ztiAppName: "",
       countryCode: "",
       countryCodesOptions: [],
-      rpcUrl: "https://matic-mumbai.chainstacklabs.com",
+      rpcUrl: "https://rpc-mumbai.maticvigil.com",
       showCopyToClipboardToolTip: false,
       walletBalance: 0,
       confirmationModal: false,
@@ -61,12 +61,13 @@ class ProfilePage extends Component {
   }
 
   async componentDidMount() {
-    const countryCodesOptions = CountryCode.map(code => ({
+    const ztiAppNameData = await GeneralFunctions.getZTIAppNameData();
+    const countryCodesOptions = await CountryCode.map(code => ({
       label: `${code.emoji} +${code.dialingCode}`,
       value: code.dialingCode
     }))
     let walletBalance = await this.getBalance(this.state.walletAddress);
-    this.setState({ countryCodesOptions, walletBalance });
+    this.setState({ countryCodesOptions, walletBalance, ztiAppName: ztiAppNameData.value });
     setTimeout(() => {
       this.setState({ walletConnectAlert: false });
       clearTimeout();

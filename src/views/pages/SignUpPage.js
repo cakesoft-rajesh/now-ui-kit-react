@@ -23,15 +23,15 @@ class SignUpPage extends Component {
     this.state = {
       showLoader: false,
       email: "",
-      ztiAppName: "",
+      ztiAppNameData: {},
       showOTPage: false,
       showConnectWalletPage: false,
     };
   }
 
   async componentDidMount() {
-    let params = await GeneralFunctions.getQueryStringParams(window.location.search);
-    if (params.ztiAppName) this.setState({ ztiAppName: params.ztiAppName });
+    const ztiAppNameData = GeneralFunctions.getZTIAppNameData();
+    if (ztiAppNameData) this.setState({ ztiAppNameData });
   }
 
   sendOTP = async (event) => {
@@ -130,7 +130,7 @@ class SignUpPage extends Component {
                 >
                   <img
                     alt=''
-                    src='/logos/zti.png'
+                    src={`/logos/${this.state.ztiAppNameData.logo}`}
                     width="30%"
                     style={{ marginTop: 40 }}
                   />
@@ -141,7 +141,7 @@ class SignUpPage extends Component {
                     alignItems: "center",
                   }}
                 >
-                  <h3 style={{ color: "gray", marginTop: 15, fontWeight: 600 }}>{this.state.ztiAppName.toUpperCase()}</h3>
+                  <h3 style={{ color: "gray", marginTop: 15, fontWeight: 600 }}>{this.state.ztiAppNameData.label}</h3>
                 </Row>
                 <Row
                   style={{

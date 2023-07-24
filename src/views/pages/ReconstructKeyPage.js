@@ -28,7 +28,7 @@ class ReconstructKeyPage extends Component {
       setPassword: false,
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: "",
-      rpcUrl: "https://matic-mumbai.chainstacklabs.com",
+      rpcUrl: "https://rpc-mumbai.maticvigil.com",
     };
   }
 

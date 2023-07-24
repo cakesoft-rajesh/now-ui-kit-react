@@ -37,8 +37,7 @@ class EmailLoginPage extends Component {
       showSheetForAccount: false,
       showSheetForAddress: false,
       showTokenTransferModal: false,
-      rpcUrl1: "https://rpc-mumbai.maticvigil.com/",
-      rpcUrl: "https://matic-mumbai.chainstacklabs.com",
+      rpcUrl: "https://rpc-mumbai.maticvigil.com"
     };
   }
 
