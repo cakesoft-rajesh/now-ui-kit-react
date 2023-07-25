@@ -54,6 +54,8 @@ class SelectedCommunityPage extends Component {
                 width: "100%",
                 marginRight: 10,
                 borderColor: "gray",
+                padding: "10px 12px",
+                fontSize: "13px"
               }}
               placeholder="Search for your community"
               type="ztiAppName"
@@ -64,7 +66,7 @@ class SelectedCommunityPage extends Component {
                 this.setState({ ztiAppName: event.target.value, communityList: communityList ? communityList : this.state.allCommunityList })
               }}
             />
-            <BiSearch size="25" />
+            <BiSearch size="30" />
           </Col>
         </Row>
         {this.state.communityList.map((appName, index) =>
