@@ -48,7 +48,10 @@ class ProfilePage extends Component {
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       privateKeyCreated: this.props.location.state ? this.props.location.state.privateKeyCreated : false,
       ztiAppName: "",
-      countryCode: "",
+      countryCode: {
+        label: "🇮🇩 +62",
+        value: "62"
+      },
       countryCodesOptions: [],
       rpcUrl: "https://rpc-mumbai.maticvigil.com",
       showCopyToClipboardToolTip: false,
@@ -426,6 +429,7 @@ class ProfilePage extends Component {
             email={this.state.email}
             walletAddress={this.state.walletAddress}
             updateStateValue={this.updateStateValue}
+            getBalance={this.getBalance}
           />
         }
         {!this.state.generateKeyPage &&
