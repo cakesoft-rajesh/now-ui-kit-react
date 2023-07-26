@@ -31,7 +31,6 @@ class SelectedCommunityPage extends Component {
     this.state = {
       showLoader: false,
       ztiAppName: "",
-      selectedAppName: "",
       allCommunityList: intialValue,
       communityList: intialValue,
     };
@@ -81,8 +80,10 @@ class SelectedCommunityPage extends Component {
                 cursor: "pointer"
               }}
               onClick={() => {
-                GeneralFunctions.setZTIAppNameData(appName);
-                this.props.updateStateValue({ selectCommunityPage: false, ztiAppNameData: appName });
+                if (appName.value === "zti") {
+                  GeneralFunctions.setZTIAppNameData(appName);
+                  this.props.updateStateValue({ selectCommunityPage: false, ztiAppNameData: appName });
+                }
               }}
             >
               <img
