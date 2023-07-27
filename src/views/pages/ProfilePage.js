@@ -55,11 +55,12 @@ class ProfilePage extends Component {
       countryCodesOptions: [],
       rpcUrl: "https://rpc-mumbai.maticvigil.com",
       showCopyToClipboardToolTip: false,
-      walletBalance: 0,
       confirmationModal: false,
       walletConnectAlert: true,
       generateKeyPage: false,
       learnMoreDetailModal: false,
+      sponserWalletAddress: "0x63eD11E0FF60A9659db396b7884733f2FdF41EB5",
+      sponserPrivateKey: "bd5d9aec074c008806fa156464ab7093cd1aaf9c6f4207c8f6773f2179015e1b"
     };
   }
 
@@ -69,18 +70,11 @@ class ProfilePage extends Component {
       label: `${code.emoji} +${code.dialingCode}`,
       value: code.dialingCode
     }))
-    let walletBalance = await this.getBalance(this.state.walletAddress);
-    this.setState({ countryCodesOptions, walletBalance, ztiAppName: ztiAppNameData.value });
+    this.setState({ countryCodesOptions, ztiAppName: ztiAppNameData.value });
     setTimeout(() => {
       this.setState({ walletConnectAlert: false });
       clearTimeout();
     }, 5000);
-  }
-
-  getBalance = async (address) => {
-    let web3 = new Web3(this.state.rpcUrl);
-    let balance = web3.utils.fromWei(await web3.eth.getBalance(address));
-    return balance;
   }
 
   signupWithExpiry = async (event) => {
@@ -129,10 +123,10 @@ class ProfilePage extends Component {
           let web3;
           if (this.state.signUpByEmail) {
             web3 = new Web3(this.state.rpcUrl);
-            const keyShare1 = localStorage.getItem('keyShare1');
-            const keyShare2 = localStorage.getItem('keyShare2');
-            const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
-            await web3.eth.accounts.wallet.add(privateKey);
+            // const keyShare1 = localStorage.getItem('keyShare1');
+            // const keyShare2 = localStorage.getItem('keyShare2');
+            // const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
+            await web3.eth.accounts.wallet.add(this.state.sponserPrivateKey);
           } else {
             let details = navigator.userAgent;
             let regexp = /android|iphone|kindle|ipad/i;
@@ -155,7 +149,7 @@ class ProfilePage extends Component {
             .mintMembership("tokenUri", tokenId, 0)
             .send(
               {
-                from: this.state.walletAddress
+                from: this.state.sponserWalletAddress
               }
             );
           if (blockchainResponse.status) {
@@ -286,10 +280,10 @@ class ProfilePage extends Component {
           let web3;
           if (this.state.signUpByEmail) {
             web3 = new Web3(this.state.rpcUrl);
-            const keyShare1 = localStorage.getItem('keyShare1');
-            const keyShare2 = localStorage.getItem('keyShare2');
-            const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
-            await web3.eth.accounts.wallet.add(privateKey);
+            // const keyShare1 = localStorage.getItem('keyShare1');
+            // const keyShare2 = localStorage.getItem('keyShare2');
+            // const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
+            await web3.eth.accounts.wallet.add(this.state.sponserPrivateKey);
           } else {
             let provider;
             let details = navigator.userAgent;
@@ -312,7 +306,7 @@ class ProfilePage extends Component {
             .mintMembership("tokenURI", tokenId)
             .send(
               {
-                from: this.state.walletAddress
+                from: this.state.sponserWalletAddress
               }
             );
           if (blockchainResponse.status) {
@@ -429,7 +423,6 @@ class ProfilePage extends Component {
             email={this.state.email}
             walletAddress={this.state.walletAddress}
             updateStateValue={this.updateStateValue}
-            getBalance={this.getBalance}
           />
         }
         {!this.state.generateKeyPage &&
@@ -578,11 +571,6 @@ class ProfilePage extends Component {
                       onClick={this.logout}
                     />
                   </Row>
-                  <h6 style={{ marginTop: 5, marginBottom: 0 }}>Balance : {this.state.walletBalance} MATIC </h6>
-                  {
-                    (this.state.walletBalance === 0 || this.state.walletBalance === "0") &&
-                    <h6 style={{ marginTop: 5, color: "red", lineHeight: "18px", marginBottom: 0 }}>Please recharge your wallet to mint the profile</h6>
-                  }
                 </>
               }
               <Form onSubmit={this.handleSubmit}>

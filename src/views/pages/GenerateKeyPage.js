@@ -1,4 +1,3 @@
-import Web3 from "web3";
 import React, { Component } from "react";
 import { MdVerified } from "react-icons/md";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
@@ -14,7 +13,6 @@ import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import * as Server from "../../utils/Server";
 import "react-spring-bottom-sheet/dist/style.css"
-import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 
 class GenerateKeyPage extends Component {
 
@@ -31,25 +29,8 @@ class GenerateKeyPage extends Component {
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: localStorage.getItem("keyShare2"),
       walletAddress: props.walletAddress,
-      rpcUrl: "https://rpc-mumbai.maticvigil.com",
-      defaultWalletAddress: "0xBdB838000c0E8e6Af97b2233c9B4F89ace121c29",
-      defaultPrivateKey: "65ccdb468967a7dc960156fd74ae79810d26903780f87cd5e7c35c500babac9f"
+      rpcUrl: "https://rpc-mumbai.maticvigil.com"
     };
-  }
-
-  transferAmount = async () => {
-    const web3 = new Web3(this.state.rpcUrl);
-    await web3.eth.accounts.wallet.add(this.state.defaultPrivateKey);
-    const myContract = await new web3.eth.Contract(membershipWithExpiryABI, process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
-    let blockchainResponse = await myContract.methods
-      .payment(this.state.walletAddress)
-      .send(
-        {
-          from: this.state.defaultWalletAddress,
-          value: await web3.utils.toWei("0.1", "ether"),
-        }
-      );
-    return blockchainResponse.status;
   }
 
   setPassword = async () => {
@@ -91,8 +72,6 @@ class GenerateKeyPage extends Component {
   registerPrivateKey = async () => {
     try {
       this.setState({ showLoader: true });
-      const transferAmountResponse = await this.transferAmount();
-      if (!transferAmountResponse) throw Error('Insufficient funds');
       if (this.state.password !== this.state.confirmPassword) throw Error('Password mismatch');
       let response = await Server.request({
         url: "/web3Auth/registerPrivateKey",
@@ -109,11 +88,9 @@ class GenerateKeyPage extends Component {
         this.setState({
           showLoader: false,
         });
-        let walletBalance = await this.props.getBalance(this.state.walletAddress);
         this.props.updateStateValue({
           generateKeyPage: false,
-          privateKeyCreated: true,
-          walletBalance
+          privateKeyCreated: true
         });
       }
     } catch (error) {
