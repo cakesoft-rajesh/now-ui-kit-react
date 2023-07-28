@@ -48,7 +48,7 @@ class OTPPage extends Component {
       if (response.success) {
         localStorage.setItem("signupOrLoginMethod", "web3");
         if (this.state.fromPage === "loginPage") {
-          if (response.privateKeyCreated) {
+          if (response.privateKeyCreated && response.userRegistered) {
             this.setState({ showLoader: false });
             this.props.updateStateValue({
               showOTPage: false,
