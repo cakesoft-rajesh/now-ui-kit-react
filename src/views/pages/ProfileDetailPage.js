@@ -249,11 +249,11 @@ class ProfileDetailPage extends Component {
                       >
                         Copied
                       </Tooltip>
-                      <MdExitToApp
+                      {/* <MdExitToApp
                         size="20"
                         style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px' }}
                         onClick={this.logout}
-                      />
+                      /> */}
                     </Col>
                   </Row>
                   <Row
@@ -508,6 +508,22 @@ class ProfileDetailPage extends Component {
                     }}
                     className="btn-round" color="info" type="button" size="lg">
                     Done
+                  </Button>
+                </Col>
+              </Row>
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                <Col sm={12}>
+                  <Button
+                    onClick={this.logout}
+                    style={{
+                      width: "100%",
+                      fontSize: '15px',
+                      fontWeight: 'bold',
+                    }}
+                    className="btn-round" color="info" type="button" size="lg"
+                    outline
+                  >
+                    Logout
                   </Button>
                 </Col>
               </Row>

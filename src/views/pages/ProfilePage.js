@@ -565,11 +565,11 @@ class ProfilePage extends Component {
                     >
                       Copied
                     </Tooltip>
-                    <MdExitToApp
+                    {/* <MdExitToApp
                       size="20"
                       style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px" }}
                       onClick={this.logout}
-                    />
+                    /> */}
                   </Row>
                 </>
               }
