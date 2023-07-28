@@ -3,7 +3,7 @@ import Select from "react-select";
 import Copy from "copy-to-clipboard";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
-import { MdExitToApp } from "react-icons/md";
+// import { MdExitToApp } from "react-icons/md";
 import { RiPencilLine } from "react-icons/ri";
 import { FaLink, FaCopy } from "react-icons/fa";
 import {

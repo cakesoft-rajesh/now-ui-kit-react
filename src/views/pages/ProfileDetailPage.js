@@ -2,7 +2,7 @@ import moment from 'moment';
 import Copy from 'copy-to-clipboard';
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
-import { MdExitToApp } from 'react-icons/md';
+// import { MdExitToApp } from 'react-icons/md';
 import { FaLink, FaCopy } from 'react-icons/fa';
 import {
   Button,
@@ -412,11 +412,11 @@ class ProfileDetailPage extends Component {
                 </>
                 : <Row style={{ justifyContent: "center", alignItems: "center" }}>
                   <h4 style={{ marginTop: 20, fontWeight: 'bold' }}>Welcome {`${this.state.firstName} ${this.state.lastName}`}</h4>
-                  <MdExitToApp
+                  {/* <MdExitToApp
                     size="20"
                     style={{ cursor: 'pointer', marginLeft: '7px' }}
                     onClick={this.logout}
-                  />
+                  /> */}
                 </Row>
               }
               {this.state.signupMethod === 'web3'
