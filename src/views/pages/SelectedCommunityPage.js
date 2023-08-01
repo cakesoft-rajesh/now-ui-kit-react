@@ -14,14 +14,14 @@ const intialValue = [
     logo: "zti.png"
   },
   {
-    label: "E-Istiqlal",
-    value: "istiqlal",
-    logo: "istiqlal.png"
+    label: "OWN",
+    value: "own",
+    logo: "own.png"
   },
   {
-    label: "Purworejo",
-    value: "purworejo",
-    logo: "purworejo.png"
+    label: "Kentungan",
+    value: "kentungan",
+    logo: "kentungan.png"
   }
 ];
 
