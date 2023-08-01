@@ -46,7 +46,6 @@ class LoginPage extends Component {
     if (ztiAppNameData) this.setState({ ztiAppNameData, selectCommunityPage: false });
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
     localStorage.setItem("membershipWithExpiry", params.membershipWithExpiry ? params.membershipWithExpiry : false);
-    if (params.dokuId) localStorage.setItem("dokuId", params.dokuId);
     const signupOrLoginMethod = localStorage.getItem("signupOrLoginMethod");
     if (signupOrLoginMethod === "web3") {
       const signIn = localStorage.getItem("signIn");

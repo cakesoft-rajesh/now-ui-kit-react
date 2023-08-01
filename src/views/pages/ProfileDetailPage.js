@@ -41,8 +41,7 @@ class ProfileDetailPage extends Component {
 
   async componentDidMount() {
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
-    const dokuId = localStorage.getItem('dokuId');
-    if (dokuId) this.setState({ dokuId });
+    if (params.dokuId) this.setState({ dokuId: params.dokuId });
     if (params.walletAddress && params.tokenId) {
       this.getUser(params.walletAddress, params.tokenId, 'web3');
     }
