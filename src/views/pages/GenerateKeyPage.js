@@ -55,9 +55,16 @@ class GenerateKeyPage extends Component {
           setPassword: true
         });
         if (this.props.editKeyFactor) {
-          this.props.updateStateValue({
-            editKeyFactorPage: false
-          });
+          if (this.props.fromPage === "loginPage") {
+            this.props.updateStateValue({
+              editKeyFactorPage: false,
+              reconstructKeyPage: true
+            });
+          } else {
+            this.props.updateStateValue({
+              editKeyFactorPage: false
+            });
+          }
         }
       }
     } catch (error) {

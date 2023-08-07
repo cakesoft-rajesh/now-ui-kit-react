@@ -20,6 +20,7 @@ import * as NetworkData from "utils/networks";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import "react-spring-bottom-sheet/dist/style.css"
 import OTPPage from "./OTPPage";
+import GenerateKeyPage from "./GenerateKeyPage";
 import ReconstructKeyPage from "./ReconstructKeyPage";
 import SelectedCommunityPage from "./SelectedCommunityPage";
 
@@ -37,6 +38,7 @@ class LoginPage extends Component {
       reconstructKeyPage: false,
       showConnectWalletPage: false,
       selectCommunityPage: true,
+      editKeyFactorPage: false,
       rpcUrl: "https://rpc-mumbai.maticvigil.com",
     };
   }
@@ -213,6 +215,17 @@ class LoginPage extends Component {
             this.state.reconstructKeyPage &&
             <ReconstructKeyPage
               email={this.state.email}
+              updateStateValue={this.updateStateValue}
+            />
+          }
+          {this.state.editKeyFactorPage &&
+            <GenerateKeyPage
+              {...this.props}
+              email={this.state.email}
+              walletAddress={localStorage.getItem("walletAddress")}
+              updateStateValue={this.updateStateValue}
+              editKeyFactor={true}
+              fromPage="loginPage"
             />
           }
           {
@@ -233,6 +246,7 @@ class LoginPage extends Component {
             !this.state.reconstructKeyPage &&
             !this.state.showConnectWalletPage &&
             !this.state.selectCommunityPage &&
+            !this.state.editKeyFactorPage &&
             <Row style={{ justifyContent: "center", alignItems: "center" }}>
               <Col
                 sm="12"

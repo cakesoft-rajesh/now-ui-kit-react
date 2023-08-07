@@ -231,6 +231,21 @@ class ReconstructKeyPage extends Component {
                     </InputGroup>
                   </Col>
                   <Col sm={12} className="mt-1" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <label
+                      style={{
+                        cursor: "pointer",
+                        fontWeight: 600,
+                        fontSize: "15px"
+                      }}
+                      onClick={() => this.props.updateStateValue({
+                        editKeyFactorPage: true,
+                        reconstructKeyPage: false
+                      })}
+                    >
+                      Forgot Password?
+                    </label>
+                  </Col>
+                  <Col sm={12} className="mt-1" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <Button
                       style={{
                         width: "100%",
