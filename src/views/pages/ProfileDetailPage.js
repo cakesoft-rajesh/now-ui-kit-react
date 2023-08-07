@@ -181,7 +181,7 @@ class ProfileDetailPage extends Component {
                 backgroundColor: "#e0e0e0",
                 borderTopLeftRadius: 30,
                 borderTopRightRadius: 30,
-                height: "calc(100vh - 110px)"
+                height: "calc(100vh - 90px)"
               }}
             >
               {this.state.signupMethod === 'web3'
