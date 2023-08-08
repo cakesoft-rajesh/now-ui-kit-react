@@ -193,6 +193,7 @@ class SignUpPage extends Component {
                   style={{
                     alignItems: "center",
                     justifyContent: "center",
+                    textAlign: "center"
                   }}
                 >
                   <label
