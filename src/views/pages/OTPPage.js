@@ -33,6 +33,34 @@ class OTPPage extends Component {
     };
   }
 
+  verifyOTPForPhone = async () => {
+    try {
+      this.setState({ showLoader: true });
+      let response = await Server.request(
+        {
+          url: "/phone/verifyOTP",
+          method: "POST",
+          data: {
+            otp: this.state.otp
+          }
+        },
+        localStorage.getItem("accessToken")
+      );
+      if (response.success) {
+        this.setState({ showLoader: false });
+        this.props.updateStateValue({
+          showOTPage: false
+        });
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
+
   verifyOTP = async () => {
     try {
       this.setState({ showLoader: true });
@@ -129,7 +157,11 @@ class OTPPage extends Component {
                   fontWeight: "500",
                 }}
               >
-                A verification code will be sent to your email.
+                {
+                  this.props.fromPage === "profileDetailPage"
+                    ? "A verification code will be sent to your phone."
+                    : "A verification code will be sent to your email."
+                }
               </div>
             </Row>
             <Row style={{ justifyContent: "flex-start", marginTop: 5 }}>
@@ -180,9 +212,16 @@ class OTPPage extends Component {
                 color="info"
                 type="submit"
                 size="lg"
-                onClick={this.verifyOTP}
+                onClick={this.props.fromPage === "profileDetailPage"
+                  ? this.verifyOTPForPhone
+                  : this.verifyOTP
+                }
               >
-                Continue
+                {
+                  this.props.fromPage === "profileDetailPage"
+                    ? "Verify OTP"
+                    : "Continue"
+                }
               </Button>
             </Row>
             <Row style={{ justifyContent: "flex-start", marginTop: 50 }}>
@@ -193,7 +232,10 @@ class OTPPage extends Component {
                   fontWeight: "500",
                 }}
               >
-                A blockchain connected wallet address will be created for you to protect your identity, enable passwordless sign in, and allow access to new benefits and rewards
+                {
+                  this.props.fromPage !== "profileDetailPage" &&
+                  "A blockchain connected wallet address will be created for you to protect your identity, enable passwordless sign in, and allow access to new benefits and rewards"
+                }
               </div>
             </Row>
           </Col>

@@ -177,6 +177,7 @@ class ProfilePage extends Component {
               if (response.success) {
                 this.setState({ showLoader: false });
                 localStorage.setItem("tokenId", tokenId);
+                localStorage.setItem("accessToken", response.accessToken);
                 await Server.sendDataToMobileApp(JSON.stringify(response));
                 this.props.history.push({
                   pathname: "/profile-detail-page",
@@ -206,6 +207,7 @@ class ProfilePage extends Component {
         if (response.success) {
           this.setState({ showLoader: false });
           localStorage.setItem("signupOrLoginMethod", "web2");
+          localStorage.setItem("accessToken", response.accessToken);
           localStorage.setItem("user", JSON.stringify(response.user));
           await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
@@ -322,6 +324,7 @@ class ProfilePage extends Component {
             if (response.success) {
               this.setState({ showLoader: false });
               localStorage.setItem("tokenId", tokenId);
+              localStorage.setItem("accessToken", response.accessToken);
               await Server.sendDataToMobileApp(JSON.stringify(response));
               this.props.history.push({
                 pathname: "/profile-detail-page",
@@ -350,6 +353,7 @@ class ProfilePage extends Component {
         if (response.success) {
           this.setState({ showLoader: false });
           localStorage.setItem("signupOrLoginMethod", "web2");
+          localStorage.setItem("accessToken", response.accessToken);
           localStorage.setItem("user", JSON.stringify(response.user));
           await Server.sendDataToMobileApp(JSON.stringify(response));
           this.props.history.push({
@@ -687,7 +691,7 @@ class ProfilePage extends Component {
                           className="btn-round"
                           onClick={this.toggleGenerateKeyPage}
                         >
-                          Set authentication factors to seamlessly switch devices
+                          Set authentication factors for future login and to seamlessly switch devices
                         </Button>
                       </Col>
                     </Row>

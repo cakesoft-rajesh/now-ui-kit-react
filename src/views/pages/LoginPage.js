@@ -368,7 +368,7 @@ class LoginPage extends Component {
                     }}
                     onClick={this.toggleConnectWalletPage}
                   >
-                    OR login with a Connected Wallet
+                    OR login with an existing connected wallet
                   </label>
                 </Row>
               </Col>

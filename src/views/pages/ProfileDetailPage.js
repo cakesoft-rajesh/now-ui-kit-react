@@ -15,6 +15,7 @@ import GenerateKeyPage from './GenerateKeyPage';
 import PageSpinner from "components/PageSpinner";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
+import OTPPage from './OTPPage';
 
 const wc = new WalletConnect();
 
@@ -35,7 +36,8 @@ class ProfileDetailPage extends Component {
       dokuId: '',
       expiryTime: '',
       showCopyToClipboardToolTip: false,
-      editKeyFactorPage: false
+      editKeyFactorPage: false,
+      showOTPage: true
     };
   }
 
@@ -46,6 +48,7 @@ class ProfileDetailPage extends Component {
     if (params.walletAddress && params.tokenId) {
       this.getUser(params.walletAddress, params.tokenId, 'web3');
     }
+    this.sendOTP();
   }
 
   getUser = async (walletAddress, tokenId, signupMethod) => {
@@ -84,6 +87,29 @@ class ProfileDetailPage extends Component {
     }
   };
 
+  sendOTP = async () => {
+    try {
+      this.setState({ showLoader: true });
+      let response = await Server.request(
+        {
+          url: "/phone/sendOTP",
+          method: "POST",
+          data: {}
+        },
+        localStorage.getItem("accessToken")
+      );
+      if (response.success) {
+        this.setState({ showLoader: false });
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
+
   logout = async () => {
     await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
     if (this.state.signupMethod === 'web3' && localStorage.getItem("signIn")) {
@@ -110,7 +136,25 @@ class ProfileDetailPage extends Component {
     return (
       <>
         <PageSpinner showLoader={this.state.showLoader} />
-        {this.state.editKeyFactorPage &&
+        {
+          this.state.showOTPage &&
+          <div
+            style={{
+              flexDirection: "column",
+              display: "flex",
+              marginTop: 20,
+              overflow: "hidden",
+              overflowY: "auto"
+            }}
+          >
+            <OTPPage
+              fromPage="profileDetailPage"
+              updateStateValue={this.updateStateValue}
+            />
+          </div>
+        }
+        {
+          this.state.editKeyFactorPage &&
           <GenerateKeyPage
             {...this.props}
             email={this.state.email}
@@ -119,7 +163,9 @@ class ProfileDetailPage extends Component {
             editKeyFactor={true}
           />
         }
-        {!this.state.editKeyFactorPage &&
+        {
+          !this.state.editKeyFactorPage &&
+          !this.state.showOTPage &&
           <Row style={{ height: "100vh" }}>
             <Col
               sm={12}
