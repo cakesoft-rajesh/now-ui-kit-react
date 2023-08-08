@@ -38,7 +38,7 @@ class ProfileDetailPage extends Component {
       expiryTime: "",
       showCopyToClipboardToolTip: false,
       editKeyFactorPage: false,
-      showOTPage: false
+      showOTPage: true
     };
   }
 
@@ -49,7 +49,7 @@ class ProfileDetailPage extends Component {
     if (params.walletAddress && params.tokenId) {
       this.getUser(params.walletAddress, params.tokenId, "web3");
     }
-    // this.sendOTP();
+    this.sendOTP();
   }
 
   getUser = async (walletAddress, tokenId, signupMethod) => {
