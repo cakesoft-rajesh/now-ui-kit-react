@@ -504,12 +504,33 @@ class ProfilePage extends Component {
                     <RiPencilLine />
                   </div>
                 </Row>
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginTop: 5,
+                    marginRight: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%"
+                  }}
+                >
+                  <label
+                    style={{
+                      marginBottom: 0,
+                      color: "gray",
+                      fontSize: "10px",
+                      fontWeight: 500
+                    }}
+                  >
+                    Hidden for anonymous transactions
+                  </label>
+                </Row>
               </Row>
             </Col>
             <Col
               sm={12}
               style={{
-                marginTop: 10,
+                marginTop: 5,
                 backgroundColor: "#e0e0e0",
                 borderTopLeftRadius: 30,
                 borderTopRightRadius: 30

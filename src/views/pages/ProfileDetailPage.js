@@ -1,9 +1,10 @@
-import moment from 'moment';
-import Copy from 'copy-to-clipboard';
+import moment from "moment";
+import Copy from "copy-to-clipboard";
+import { MdEdit } from "react-icons/md";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
-// import { MdExitToApp } from 'react-icons/md';
-import { FaLink, FaCopy } from 'react-icons/fa';
+// import { MdExitToApp } from "react-icons/md";
+import { FaLink, FaCopy } from "react-icons/fa";
 import {
   Button,
   Row,
@@ -11,11 +12,11 @@ import {
   Tooltip
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
-import GenerateKeyPage from './GenerateKeyPage';
+import OTPPage from "./OTPPage";
+import GenerateKeyPage from "./GenerateKeyPage";
 import PageSpinner from "components/PageSpinner";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
-import OTPPage from './OTPPage';
 
 const wc = new WalletConnect();
 
@@ -32,29 +33,29 @@ class ProfileDetailPage extends Component {
       displayUsername: this.props.location.state ? this.props.location.state.displayUsername : "",
       signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
-      membershipStatus: '',
-      dokuId: '',
-      expiryTime: '',
+      membershipStatus: "",
+      dokuId: "",
+      expiryTime: "",
       showCopyToClipboardToolTip: false,
       editKeyFactorPage: false,
-      showOTPage: true
+      showOTPage: false
     };
   }
 
   async componentDidMount() {
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
-    const dokuId = localStorage.getItem('dokuId');
+    const dokuId = localStorage.getItem("dokuId");
     if (dokuId) this.setState({ dokuId });
     if (params.walletAddress && params.tokenId) {
-      this.getUser(params.walletAddress, params.tokenId, 'web3');
+      this.getUser(params.walletAddress, params.tokenId, "web3");
     }
-    this.sendOTP();
+    // this.sendOTP();
   }
 
   getUser = async (walletAddress, tokenId, signupMethod) => {
     try {
       this.setState({ showLoader: true });
-      const chainId = localStorage.getItem('chainId');
+      const chainId = localStorage.getItem("chainId");
       let response = await Server.request(
         {
           url: `/user/detail?chainId=${chainId}&walletAddress=${walletAddress}&tokenId=${tokenId}&membershipWithExpiry=${GeneralFunctions.getMembershipWithExpiry()}`,
@@ -70,9 +71,9 @@ class ProfileDetailPage extends Component {
           });
         } else {
           this.props.history.push({
-            pathname: '/profile-page',
+            pathname: "/profile-page",
             state: {
-              signupMethod: 'web3',
+              signupMethod: "web3",
               walletAddress
             }
           });
@@ -112,7 +113,7 @@ class ProfileDetailPage extends Component {
 
   logout = async () => {
     await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
-    if (this.state.signupMethod === 'web3' && localStorage.getItem("signIn")) {
+    if (this.state.signupMethod === "web3" && localStorage.getItem("signIn")) {
       let details = navigator.userAgent;
       let regexp = /android|iphone|kindle|ipad/i;
       let isMobileDevice = regexp.test(details);
@@ -209,7 +210,7 @@ class ProfileDetailPage extends Component {
                   >
                     <div
                       className="alert-icon"
-                      style={{ marginLeft: 0, marginRight: 0, display: 'flex' }}
+                      style={{ marginLeft: 0, marginRight: 0, display: "flex" }}
                     >
                       <i
                         className="now-ui-icons users_single-02"
@@ -217,6 +218,26 @@ class ProfileDetailPage extends Component {
                       ></i>
                     </div>
                   </div>
+                </Row>
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%"
+                  }}
+                >
+                  <label
+                    style={{
+                      color: "gray",
+                      fontSize: "10px",
+                      fontWeight: 500
+                    }}
+                  >
+                    Hidden for anonymous transactions
+                  </label>
                 </Row>
               </Row>
             </Col>
@@ -230,15 +251,30 @@ class ProfileDetailPage extends Component {
                 height: "calc(100vh - 90px)"
               }}
             >
-              {this.state.signupMethod === 'web3'
+              {this.state.signupMethod === "web3"
                 ? <>
                   <Row style={{ marginTop: 10, justifyContent: "center", alignItems: "center" }}>
                     <Col
-                      sm={5}
-                      className='d-flex align-items-center ml-2'
+                      xs={8}
+                      style={{ marginTop: 15 }}
+                      className="d-flex align-items-center"
                     >
-                      <h6 style={{ marginTop: 15 }}>
+                      <h6>
                         {this.state.firstName ? `${this.state.firstName} ${this.state.lastName}` : null}
+                      </h6>
+                    </Col>
+                    <Col
+                      xs={4}
+                      style={{ marginTop: 15, color: "gray" }}
+                      className="d-flex align-items-center justify-content-end"
+                    >
+                      <h6>
+                        Edit
+                        <MdEdit
+                          style={{
+                            marginLeft: "5px"
+                          }}
+                        />
                       </h6>
                     </Col>
                   </Row>
@@ -247,33 +283,33 @@ class ProfileDetailPage extends Component {
                       marginLeft: 0,
                       marginRight: 0,
                       display: "flex",
-                      justifyContent: 'center',
+                      // justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
-                    <Col sm={5} className='d-flex align-items-center'>
+                    <Col sm={5} className="d-flex align-items-center">
                       <div style={{
                         marginRight: 0,
                         marginBottom: 10,
-                        border: '1px solid #275996',
-                        borderRadius: ' 15px',
-                        padding: '6px',
-                        background: '#275996',
-                        display: 'flex',
-                        justifyContent: ' center',
-                        alignItems: ' center',
+                        border: "1px solid #275996",
+                        borderRadius: "15px",
+                        padding: "6px",
+                        background: "#275996",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}>
                         <FaLink color="white" />
                       </div>
                       <h6 style={{ marginLeft: 5, color: "gray" }}>
                         {this.state.walletAddress ?
                           GeneralFunctions._getFormatAddress(this.state.walletAddress)
-                          : '0x0000...0000'}
+                          : "0x0000...0000"}
                       </h6>
                       <FaCopy
                         id="copyToClipboard"
                         size="16"
-                        style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px', marginRight: '10px' }}
+                        style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px", marginRight: "10px" }}
                         onClick={() => {
                           Copy(this.state.walletAddress);
                           this.setState({ showCopyToClipboardToolTip: true });
@@ -297,7 +333,7 @@ class ProfileDetailPage extends Component {
                       </Tooltip>
                       {/* <MdExitToApp
                         size="20"
-                        style={{ cursor: 'pointer', marginBottom: '7px', marginLeft: '7px' }}
+                        style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px" }}
                         onClick={this.logout}
                       /> */}
                     </Col>
@@ -307,20 +343,20 @@ class ProfileDetailPage extends Component {
                       marginLeft: 0,
                       marginRight: 0,
                       display: "flex",
-                      justifyContent: 'center',
+                      // justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <Col
                       sm={5}
-                      className='d-flex align-items-center'
+                      className="d-flex align-items-center"
                       style={{ color: "gray" }}
                     >
-                      <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                      <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
                         Payment Id :
                       </div>
                       <h6 style={{ marginLeft: 5 }}>
-                        {this.state.dokuId || 'Pending'}
+                        {this.state.dokuId || "Pending"}
                       </h6>
                     </Col>
                   </Row>
@@ -329,20 +365,20 @@ class ProfileDetailPage extends Component {
                       marginLeft: 0,
                       marginRight: 0,
                       display: "flex",
-                      justifyContent: 'center',
+                      // justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <Col
                       sm={5}
-                      className='d-flex align-items-center'
+                      className="d-flex align-items-center"
                       style={{ color: "gray" }}
                     >
-                      <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                      <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
                         Membership :
                       </div>
                       <h6 style={{ marginLeft: 5 }}>
-                        {this.state.membershipStatus || 'Pending'}
+                        {this.state.membershipStatus || "Pending"}
                       </h6>
                     </Col>
                   </Row>
@@ -352,22 +388,22 @@ class ProfileDetailPage extends Component {
                         marginLeft: 0,
                         marginRight: 0,
                         display: "flex",
-                        justifyContent: 'center',
+                        // justifyContent: "center",
                         alignItems: "center",
                       }}
                     >
                       <Col
                         sm={5}
-                        className='d-flex align-items-center'
+                        className="d-flex align-items-center"
                         style={{ color: "gray" }}
                       >
-                        <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                        <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
                           Membership Expiry:
                         </div>
                         <h6 style={{ marginLeft: 5 }}>
                           {this.state.expiryTime
                             ? moment(Number(this.state.expiryTime) * 1000).local().format("MM/DD/YYYY hh:mm A")
-                            : ''
+                            : ""
                           }
                         </h6>
                       </Col>
@@ -378,16 +414,16 @@ class ProfileDetailPage extends Component {
                       marginLeft: 0,
                       marginRight: 0,
                       display: "flex",
-                      justifyContent: 'center',
+                      // justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <Col
                       sm={5}
-                      className='d-flex align-items-center'
+                      className="d-flex align-items-center"
                       style={{ color: "gray" }}
                     >
-                      <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                      <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
                         Name :
                       </div>
                       <h6 style={{ marginLeft: 5, textTransform: "none" }}>
@@ -400,16 +436,16 @@ class ProfileDetailPage extends Component {
                       marginLeft: 0,
                       marginRight: 0,
                       display: "flex",
-                      justifyContent: 'center',
+                      // justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <Col
                       sm={5}
-                      className='d-flex align-items-center'
+                      className="d-flex align-items-center"
                       style={{ color: "gray" }}
                     >
-                      <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                      <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
                         Phone :
                       </div>
                       <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.phone}</h6>
@@ -420,16 +456,16 @@ class ProfileDetailPage extends Component {
                       marginLeft: 0,
                       marginRight: 0,
                       display: "flex",
-                      justifyContent: 'center',
+                      // justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <Col
                       sm={5}
-                      className='d-flex align-items-center'
+                      className="d-flex align-items-center"
                       style={{ color: "gray" }}
                     >
-                      <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                      <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
                         Username :
                       </div>
                       <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.displayUsername}</h6>
@@ -440,32 +476,37 @@ class ProfileDetailPage extends Component {
                       marginLeft: 0,
                       marginRight: 0,
                       display: "flex",
-                      justifyContent: 'center',
+                      // justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <Col
                       sm={5}
-                      className='d-flex align-items-center'
+                      className="d-flex align-items-center"
                       style={{ color: "gray" }}
                     >
-                      <div style={{ fontWeight: 'bold', marginRight: 0, marginBottom: 10 }}>
+                      <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
                         Email :
                       </div>
                       <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.email}</h6>
                     </Col>
                   </Row>
                 </>
-                : <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                  <h4 style={{ marginTop: 20, fontWeight: 'bold' }}>Welcome {`${this.state.firstName} ${this.state.lastName}`}</h4>
+                : <Row
+                  style={{
+                    // justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <h4 style={{ marginTop: 20, fontWeight: "bold" }}>Welcome {`${this.state.firstName} ${this.state.lastName}`}</h4>
                   {/* <MdExitToApp
                     size="20"
-                    style={{ cursor: 'pointer', marginLeft: '7px' }}
+                    style={{ cursor: "pointer", marginLeft: "7px" }}
                     onClick={this.logout}
                   /> */}
                 </Row>
               }
-              {this.state.signupMethod === 'web3'
+              {this.state.signupMethod === "web3"
                 ? <>
                   <Row style={{ justifyContent: "center", alignItems: "center" }}>
                     <Col xs={12} sm={6}>
@@ -475,8 +516,8 @@ class ProfileDetailPage extends Component {
                         }}
                         style={{
                           width: "100%",
-                          fontSize: '15px',
-                          fontWeight: 'bold',
+                          fontSize: "15px",
+                          fontWeight: "bold",
                         }}
                         className="btn-round" color="info" type="button" outline>
                         Go to my Credentials
@@ -487,8 +528,8 @@ class ProfileDetailPage extends Component {
                         onClick={this.toggleEditKeyFactorPage}
                         style={{
                           width: "100%",
-                          fontSize: '15px',
-                          fontWeight: 'bold',
+                          fontSize: "15px",
+                          fontWeight: "bold",
                         }}
                         className="btn-round" color="info" type="button" outline>
                         Edit authentication factors
@@ -501,8 +542,8 @@ class ProfileDetailPage extends Component {
                       onClick={() => { }}
                       style={{
                         width: "100%",
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
                       className="btn-round" color="info" type="button" outline>
                       My Badges
@@ -515,8 +556,8 @@ class ProfileDetailPage extends Component {
                       onClick={() => { }}
                       style={{
                         width: "100%",
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
                       className="btn-round" color="info" type="button" outline>
                       Set up biometric authentication
@@ -532,8 +573,8 @@ class ProfileDetailPage extends Component {
                       }}
                       style={{
                         width: "100%",
-                        fontSize: '15px',
-                        fontWeight: 'bold',
+                        fontSize: "15px",
+                        fontWeight: "bold",
                       }}
                       className="btn-round" color="info" type="button" size="lg" outline>
                       Learn about Web 3.0 Wallet
@@ -549,8 +590,8 @@ class ProfileDetailPage extends Component {
                     }}
                     style={{
                       width: "100%",
-                      fontSize: '15px',
-                      fontWeight: 'bold',
+                      fontSize: "15px",
+                      fontWeight: "bold",
                     }}
                     className="btn-round" color="info" type="button" size="lg">
                     Done
@@ -563,8 +604,8 @@ class ProfileDetailPage extends Component {
                     onClick={this.logout}
                     style={{
                       width: "100%",
-                      fontSize: '15px',
-                      fontWeight: 'bold',
+                      fontSize: "15px",
+                      fontWeight: "bold",
                     }}
                     className="btn-round" color="info" type="button" size="lg"
                     outline
