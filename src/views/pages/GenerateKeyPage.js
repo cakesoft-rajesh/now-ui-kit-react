@@ -296,9 +296,16 @@ class GenerateKeyPage extends Component {
                                 className="btn-round"
                                 color="info"
                                 size="lg"
-                                onClick={() => this.props.updateStateValue({
-                                  editKeyFactorPage: false
-                                })}
+                                onClick={
+                                  () => this.props.fromPage === "loginPage"
+                                    ? this.props.updateStateValue({
+                                      editKeyFactorPage: false,
+                                      reconstructKeyPage: true
+                                    })
+                                    : this.props.updateStateValue({
+                                      editKeyFactorPage: false
+                                    })
+                                }
                                 outline
                               >
                                 Cancel

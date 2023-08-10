@@ -192,6 +192,7 @@ class ProfilePage extends Component {
                     displayUsername: this.state.displayUsername,
                     signupMethod: this.state.signupMethod,
                     walletAddress: this.state.walletAddress,
+                    skip2FactorAuth: true
                   }
                 });
               }
@@ -222,7 +223,8 @@ class ProfilePage extends Component {
               userName: `${this.state.countryCode.value}${this.state.phone}`,
               displayUsername: this.state.displayUsername,
               signupMethod: this.state.signupMethod,
-              walletAddress: this.state.walletAddress
+              walletAddress: this.state.walletAddress,
+              skip2FactorAuth: true
             }
           });
         }
@@ -338,7 +340,8 @@ class ProfilePage extends Component {
                   userName: `${this.state.countryCode.value}${this.state.phone}`,
                   displayUsername: this.state.displayUsername,
                   signupMethod: this.state.signupMethod,
-                  walletAddress: this.state.walletAddress
+                  walletAddress: this.state.walletAddress,
+                  skip2FactorAuth: true
                 }
               });
             }
@@ -368,7 +371,8 @@ class ProfilePage extends Component {
               userName: `${this.state.countryCode.value}${this.state.phone}`,
               displayUsername: this.state.displayUsername,
               signupMethod: this.state.signupMethod,
-              walletAddress: this.state.walletAddress
+              walletAddress: this.state.walletAddress,
+              skip2FactorAuth: true
             }
           });
         }

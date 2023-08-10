@@ -49,7 +49,11 @@ class ProfileDetailPage extends Component {
     if (params.walletAddress && params.tokenId) {
       this.getUser(params.walletAddress, params.tokenId, "web3");
     }
-    this.sendOTP();
+    if (this.props.location.state && this.props.location.state.skip2FactorAuth) {
+      this.setState({ showOTPage: false });
+    } else {
+      this.setState({ showOTPage: true }, () => this.sendOTP());
+    }
   }
 
   getUser = async (walletAddress, tokenId, signupMethod) => {
@@ -251,7 +255,7 @@ class ProfileDetailPage extends Component {
                       backgroundColor: "#e0e0e0",
                       borderTopLeftRadius: 30,
                       borderTopRightRadius: 30,
-                      height: "calc(100vh - 90px)"
+                      height: window.innerHeight < 565 ? "unset" : "calc(100vh - 90px)"
                     }}
                   >
                     {this.state.signupMethod === "web3"
