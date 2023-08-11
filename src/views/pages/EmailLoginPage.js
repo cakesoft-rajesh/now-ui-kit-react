@@ -238,628 +238,626 @@ class EmailLoginPage extends Component {
         {
           this.state.showLoader
             ? <PageSpinner showLoader={this.state.showLoader} />
-            : <>
-              <div
-                style={{
-                  // height: "100vh",
-                  // justifyContent: "center",
-                  flexDirection: "column",
-                  display: "flex",
-                  marginTop: 100,
-                }}
-              >
-                <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <img
-                      style={{ height: "50px", width: "50px" }}
-                      alt="..."
-                      src="nusantaraBlue.png"
-                    ></img>
-                  </div>
-                </Row>
-                <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                  <Col
-                    md="3"
-                    sm="4"
-                    style={{
-                      width: "90%",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Form onSubmit={(event) => this.sendOTP(event)}>
-                      <Row
-                        style={{
-                          justifyContent: "center",
-                          marginLeft: 10,
-                          marginRight: 10,
-                          marginTop: 25,
-                        }}
-                      >
-                        <FormGroup style={{ width: "100%" }}>
-                          <label
-                            style={{
-                              fontSize: "15px",
-                              fontWeight: "bold",
-                              marginLeft: "10px",
-                              margin: "10px"
-                            }}
-                          >
-                            Email
-                          </label>
-                          <Input
-                            style={{
-                              marginBottom: 10,
-                              width: "100%",
-                              borderColor: "gray",
-                            }}
-                            placeholder="Enter the email"
-                            type="email"
-                            value={this.state.email}
-                            onChange={(event) =>
-                              this.setState({ email: event.target.value })
-                            }
-                            required
-                          ></Input>
-                        </FormGroup>
-                      </Row>
-                      <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                        <Button
+            : <div
+              style={{
+                // height: "100vh",
+                // justifyContent: "center",
+                flexDirection: "column",
+                display: "flex",
+                marginTop: 100,
+              }}
+            >
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <img
+                    style={{ height: "50px", width: "50px" }}
+                    alt="..."
+                    src="nusantaraBlue.png"
+                  ></img>
+                </div>
+              </Row>
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                <Col
+                  md="3"
+                  sm="4"
+                  style={{
+                    width: "90%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Form onSubmit={(event) => this.sendOTP(event)}>
+                    <Row
+                      style={{
+                        justifyContent: "center",
+                        marginLeft: 10,
+                        marginRight: 10,
+                        marginTop: 25,
+                      }}
+                    >
+                      <FormGroup style={{ width: "100%" }}>
+                        <label
                           style={{
-                            width: "100%",
-                            padding: "13px 0px",
                             fontSize: "15px",
                             fontWeight: "bold",
+                            marginLeft: "10px",
+                            margin: "10px"
                           }}
-                          className="btn-round"
-                          color="info"
-                          type="submit"
-                          size="lg"
                         >
-                          Login with email
-                        </Button>
-                      </Row>
-                    </Form>
-                  </Col>
-                </Row>
-              </div>
-              <NotificationSystem
-                dismissible={false}
-                ref={(notificationSystem) =>
-                  (this.notificationSystem = notificationSystem)
-                }
-              />
-              {this.state.showTokenTransferModal ? (
-                <Modal
-                  isOpen={this.state.showTokenTransferModal}
-                  toggle={this.toggleTokenTransferModal}
-                  className="modal-md"
-                  style={{ width: "90%" }}
-                  centered
-                >
-                  <ModalHeader toggle={this.toggleTokenTransferModal}>
-                    Token Transfer
-                  </ModalHeader>
-                  <ModalBody>
+                          Email
+                        </label>
+                        <Input
+                          style={{
+                            marginBottom: 10,
+                            width: "100%",
+                            borderColor: "gray",
+                          }}
+                          placeholder="Enter the email"
+                          type="email"
+                          value={this.state.email}
+                          onChange={(event) =>
+                            this.setState({ email: event.target.value })
+                          }
+                          required
+                        ></Input>
+                      </FormGroup>
+                    </Row>
                     <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                      <Col
-                        xs="12"
+                      <Button
+                        style={{
+                          width: "100%",
+                          padding: "13px 0px",
+                          fontSize: "15px",
+                          fontWeight: "bold",
+                        }}
+                        className="btn-round"
+                        color="info"
+                        type="submit"
+                        size="lg"
                       >
-                        <Form onSubmit={(event) => this.tokenTransfer(event)}>
-                          <Row
-                            style={{
-                              justifyContent: "center",
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          >
-                            <FormGroup style={{ width: "100%" }}>
-                              <label
-                                style={{
-                                  fontSize: "15px",
-                                  fontWeight: "bold",
-                                  marginLeft: 10,
-                                  marginRight: 10,
-                                }}
-                              >
-                                From :
-                              </label>
-                              <Input
-                                style={{
-                                  marginBottom: 10,
-                                  width: "100%",
-                                  borderColor: "gray",
-                                }}
-                                placeholder="From"
-                                type="text"
-                                value={localStorage.getItem("walletAddress")}
-                                disabled
-                              ></Input>
-                            </FormGroup>
-                          </Row>
-                          <Row
-                            style={{
-                              justifyContent: "center",
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          >
-                            <FormGroup style={{ width: "100%" }}>
-                              <label
-                                style={{
-                                  fontSize: "15px",
-                                  fontWeight: "bold",
-                                  marginLeft: 10,
-                                  marginRight: 10,
-                                }}
-                              >
-                                To :
-                              </label>
-                              <Input
-                                style={{
-                                  marginBottom: 10,
-                                  width: "100%",
-                                  borderColor: "gray",
-                                }}
-                                placeholder="To Address"
-                                type="text"
-                                value={this.state.toAddress}
-                                onChange={(event) =>
-                                  this.setState({ toAddress: event.target.value })
-                                }
-                                required
-                              ></Input>
-                            </FormGroup>
-                          </Row>
-                          <Row
-                            style={{
-                              justifyContent: "center",
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          >
-                            <FormGroup style={{ width: "100%" }}>
-                              <label
-                                style={{
-                                  fontSize: "15px",
-                                  fontWeight: "bold",
-                                  marginLeft: 10,
-                                  marginRight: 10,
-                                }}
-                              >
-                                Value :
-                              </label>
-                              <Input
-                                style={{
-                                  marginBottom: 10,
-                                  width: "100%",
-                                  borderColor: "gray",
-                                }}
-                                placeholder="Enter the value"
-                                type="number"
-                                value={this.state.value}
-                                onChange={(event) =>
-                                  this.setState({ value: event.target.value })
-                                }
-                                required
-                              ></Input>
-                            </FormGroup>
-                          </Row>
-                          <Row style={{
-                            justifyContent: "center",
-                            alignItems: "center",
+                        Login with email
+                      </Button>
+                    </Row>
+                  </Form>
+                </Col>
+              </Row>
+            </div>
+        }
+        <NotificationSystem
+          dismissible={false}
+          ref={(notificationSystem) =>
+            (this.notificationSystem = notificationSystem)
+          }
+        />
+        {this.state.showTokenTransferModal ? (
+          <Modal
+            isOpen={this.state.showTokenTransferModal}
+            toggle={this.toggleTokenTransferModal}
+            className="modal-md"
+            style={{ width: "90%" }}
+            centered
+          >
+            <ModalHeader toggle={this.toggleTokenTransferModal}>
+              Token Transfer
+            </ModalHeader>
+            <ModalBody>
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                <Col
+                  xs="12"
+                >
+                  <Form onSubmit={(event) => this.tokenTransfer(event)}>
+                    <Row
+                      style={{
+                        justifyContent: "center",
+                        marginLeft: 10,
+                        marginRight: 10,
+                      }}
+                    >
+                      <FormGroup style={{ width: "100%" }}>
+                        <label
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "bold",
                             marginLeft: 10,
                             marginRight: 10,
-                          }}>
-                            <Button
-                              style={{
-                                width: "100%",
-                                padding: "13px 0px",
-                                fontSize: "15px",
-                                fontWeight: "bold",
-                              }}
-                              className="btn-round"
-                              color="info"
-                              type="submit"
-                              size="lg"
-                            >
-                              Send
-                            </Button>
-                          </Row>
-                        </Form>
-                      </Col>
+                          }}
+                        >
+                          From :
+                        </label>
+                        <Input
+                          style={{
+                            marginBottom: 10,
+                            width: "100%",
+                            borderColor: "gray",
+                          }}
+                          placeholder="From"
+                          type="text"
+                          value={localStorage.getItem("walletAddress")}
+                          disabled
+                        ></Input>
+                      </FormGroup>
                     </Row>
-                  </ModalBody>
-                </Modal>
-              ) : null}
-              <BottomSheet
-                expandOnContentDrag={true}
-                open={this.state.showSheetForOTP}
-                defaultSnap={({ maxHeight }) => maxHeight / 2}
-                snapPoints={({ maxHeight }) => [
-                  maxHeight - maxHeight / 10,
-                  maxHeight / 4,
-                  maxHeight * 0.6,
-                ]}
-              >
-                <style>
-                  {`[data-rsbs-overlay] {
-            background: #2CA8FF;
-          }`}
-                </style>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 0px",
-                    marginTop: 15,
-                  }}
-                >
-                  <img
-                    style={{ height: "40px", width: "40px", marginTop: "5px" }}
-                    alt="..."
-                    src="nusantaraWhite.png"
-                  ></img>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 0px",
-                    marginTop: 20,
-                  }}
-                >
-                  <div
-                    style={{
-                      color: "white",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Enter the OTP
-                  </div>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 30px",
-                    marginTop: 30,
-                  }}
-                >
-                  <OtpInput
-                    className="d-flex justify-content-center"
-                    inputStyle={{
-                      color: "black",
-                      width: this.getWidth(),
-                      height: "50px",
-                      margin: "0 5px",
-                      fontSize: "25px",
-                      borderRadius: "5px",
-                      border:
-                        "1px solid rgba(0,0,0,0.3)",
-                      outlineColor: "#17517b",
-                    }}
-                    isInputNum={true}
-                    value={this.state.otp}
-                    onChange={(value) =>
-                      this.setState({
-                        otp: value,
-                      })
-                    }
-                    numInputs={6}
-                    separator={<span style={{ color: "#fff" }}>-</span>}
-                  />
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: 30,
-                  }}
-                >
-                  <Button
-                    style={{
-                      padding: "10px 29px",
-                      fontSize: "15px",
-                      fontWeight: "bold",
-                      backgroundColor: "white",
-                      color: "black",
-                    }}
-                    onClick={this.verifyOTP}
-                    className="btn-round mr-2"
-                    color="black"
-                    type="button"
-                    size="lg"
-                  >
-                    verify OTP
-                  </Button>
-                </Row>
-                <Row style={{ justifyContent: "center", alignItems: "center" }}>
-
-                </Row>
-              </BottomSheet>
-              <BottomSheet
-                open={this.state.showSheetForAddress}
-                snapPoints={({ minHeight }) => minHeight}
-              >
-                <style>
-                  {`[data-rsbs-overlay] {
-            background: #2CA8FF;
-          }`}
-                </style>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 0px",
-                    marginTop: 15,
-                  }}
-                >
-                  <img
-                    style={{ height: "40px", width: "40px", marginTop: "5px" }}
-                    alt="..."
-                    src="nusantaraWhite.png"
-                  ></img>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 0px",
-                    marginTop: 20,
-                  }}
-                >
-                  <div
-                    style={{
-                      color: "white",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Welcome
-                  </div>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    margin: "15px"
-                  }}
-                >
-                  <Col xs={6}>Account</Col>
-                  <Col xs={6}>Balance</Col>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    margin: "15px"
-                  }}
-                >
-                  <Col xs={6} style={{ wordBreak: "break-all" }}>
-                    <a
+                    <Row
                       style={{
-                        color: "white",
-                        fontSize: "18px",
-                        fontWeight: "bold",
+                        justifyContent: "center",
+                        marginLeft: 10,
+                        marginRight: 10,
                       }}
-                      rel="noreferrer"
-                      href={`https://mumbai.polygonscan.com/address/${localStorage.getItem("walletAddress")}`}
-                      target="_blank"
                     >
-                      {localStorage.getItem("walletAddress")}
-                    </a>
-                  </Col>
-                  <Col xs={6} style={{ wordBreak: "break-all" }}>{this.state.balance}</Col>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: 30,
-                  }}
-                >
-                  <Button
-                    style={{
-                      padding: "10px 29px",
-                      fontSize: "15px",
-                      fontWeight: "bold",
-                      backgroundColor: "white",
-                      color: "black",
-                    }}
-                    onClick={this.toggleTokenTransferModal}
-                    className="btn-round mr-2"
-                    color="black"
-                    type="button"
-                    size="lg"
-                  >
-                    Test Transfer
-                  </Button>
-                  <Button
-                    style={{
-                      padding: "10px 29px",
-                      fontSize: "15px",
-                      fontWeight: "bold",
-                      backgroundColor: "white",
-                      color: "black",
-                    }}
-                    onClick={this.mint}
-                    className="btn-round"
-                    color="black"
-                    type="button"
-                    size="lg"
-                  >
-                    Mint
-                  </Button>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Button
-                    style={{
-                      padding: "10px 29px",
-                      fontSize: "15px",
-                      fontWeight: "bold",
-                      backgroundColor: "white",
-                      color: "black",
-                    }}
-                    // onClick={this.exportPrivateKey}
-                    className="btn-round mr-2"
-                    color="black"
-                    type="button"
-                    size="lg"
-                  >
-                    <a
+                      <FormGroup style={{ width: "100%" }}>
+                        <label
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "bold",
+                            marginLeft: 10,
+                            marginRight: 10,
+                          }}
+                        >
+                          To :
+                        </label>
+                        <Input
+                          style={{
+                            marginBottom: 10,
+                            width: "100%",
+                            borderColor: "gray",
+                          }}
+                          placeholder="To Address"
+                          type="text"
+                          value={this.state.toAddress}
+                          onChange={(event) =>
+                            this.setState({ toAddress: event.target.value })
+                          }
+                          required
+                        ></Input>
+                      </FormGroup>
+                    </Row>
+                    <Row
                       style={{
-                        color: "black"
+                        justifyContent: "center",
+                        marginLeft: 10,
+                        marginRight: 10,
                       }}
-                      rel="noreferrer"
-                      href={`${window.location.origin}/exportPrivateKey?privateKey=${localStorage.getItem('privateKey')}`}
-                      target="_blank"
                     >
-                      Export Private Key
-                    </a>
-                  </Button>
-                </Row>
-                {this.state.transcationHash
-                  &&
-                  <Row style={{ marginBottom: 10, justifyContent: "center", alignItems: "center" }}>
-                    <a
-                      style={{
-                        color: "white",
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                      }}
-                      rel="noreferrer"
-                      href={`https://mumbai.polygonscan.com/tx/${this.state.transcationHash}`}
-                      target="_blank"
-                    >
-                      View Transaction
-                    </a>
-                  </Row>
-                }
-              </BottomSheet >
-              <BottomSheet
-                open={this.state.showSheetForAccount}
-                snapPoints={({ minHeight }) => minHeight}
-              >
-                <style>
-                  {`[data-rsbs-overlay] {
-            background: #2CA8FF;
-          }`}
-                </style>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 0px",
-                    marginTop: 15,
-                  }}
-                >
-                  <img
-                    style={{ height: "40px", width: "40px", marginTop: "5px" }}
-                    alt="..."
-                    src="nusantaraWhite.png"
-                  ></img>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 0px",
-                    marginTop: 20,
-                  }}
-                >
-                  <div
-                    style={{
-                      color: "white",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Welcome
-                  </div>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: 30,
-                  }}
-                >
-                  <Col xs={12} style={{ padding: "0px 25px", textAlign: "center" }}>
-                    <Button
-                      style={{
-                        padding: "10px 29px",
-                        fontSize: "15px",
-                        fontWeight: "bold",
-                        backgroundColor: "white",
-                        color: "black",
-                      }}
-                      // onClick={this.toggleTokenTransferModal}
-                      className="btn-round mr-2"
-                      color="black"
-                      type="button"
-                      size="lg"
-                    >
-                      <Label
-                        htmlFor="privateKey"
-                        className="m-0"
+                      <FormGroup style={{ width: "100%" }}>
+                        <label
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "bold",
+                            marginLeft: 10,
+                            marginRight: 10,
+                          }}
+                        >
+                          Value :
+                        </label>
+                        <Input
+                          style={{
+                            marginBottom: 10,
+                            width: "100%",
+                            borderColor: "gray",
+                          }}
+                          placeholder="Enter the value"
+                          type="number"
+                          value={this.state.value}
+                          onChange={(event) =>
+                            this.setState({ value: event.target.value })
+                          }
+                          required
+                        ></Input>
+                      </FormGroup>
+                    </Row>
+                    <Row style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginLeft: 10,
+                      marginRight: 10,
+                    }}>
+                      <Button
                         style={{
-                          cursor: "pointer",
+                          width: "100%",
+                          padding: "13px 0px",
+                          fontSize: "15px",
+                          fontWeight: "bold",
                         }}
+                        className="btn-round"
+                        color="info"
+                        type="submit"
+                        size="lg"
                       >
-                        Import using private key
-                      </Label>
+                        Send
+                      </Button>
+                    </Row>
+                  </Form>
+                </Col>
+              </Row>
+            </ModalBody>
+          </Modal>
+        ) : null}
+        <BottomSheet
+          expandOnContentDrag={true}
+          open={this.state.showSheetForOTP}
+          defaultSnap={({ maxHeight }) => maxHeight / 2}
+          snapPoints={({ maxHeight }) => [
+            maxHeight - maxHeight / 10,
+            maxHeight / 4,
+            maxHeight * 0.6,
+          ]}
+        >
+          <style>
+            {`[data-rsbs-overlay] {
+            background: #2CA8FF;
+          }`}
+          </style>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 15,
+            }}
+          >
+            <img
+              style={{ height: "40px", width: "40px", marginTop: "5px" }}
+              alt="..."
+              src="nusantaraWhite.png"
+            ></img>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 20,
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Enter the OTP
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 30px",
+              marginTop: 30,
+            }}
+          >
+            <OtpInput
+              className="d-flex justify-content-center"
+              inputStyle={{
+                color: "black",
+                width: this.getWidth(),
+                height: "50px",
+                margin: "0 5px",
+                fontSize: "25px",
+                borderRadius: "5px",
+                border:
+                  "1px solid rgba(0,0,0,0.3)",
+                outlineColor: "#17517b",
+              }}
+              isInputNum={true}
+              value={this.state.otp}
+              onChange={(value) =>
+                this.setState({
+                  otp: value,
+                })
+              }
+              numInputs={6}
+              separator={<span style={{ color: "#fff" }}>-</span>}
+            />
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 30,
+            }}
+          >
+            <Button
+              style={{
+                padding: "10px 29px",
+                fontSize: "15px",
+                fontWeight: "bold",
+                backgroundColor: "white",
+                color: "black",
+              }}
+              onClick={this.verifyOTP}
+              className="btn-round mr-2"
+              color="black"
+              type="button"
+              size="lg"
+            >
+              verify OTP
+            </Button>
+          </Row>
+          <Row style={{ justifyContent: "center", alignItems: "center" }}>
 
-                    </Button>
-                    <Input
-                      id="privateKey"
-                      style={{ display: "none" }}
-                      type="file"
-                      accept=".txt"
-                      onChange={(event) => {
-                        const reader = new FileReader()
-                        reader.onload = async (e) => {
-                          const text = (e.target.result);
-                          let web3 = new Web3(this.state.rpcUrl);
-                          let account = web3.eth.accounts.privateKeyToAccount(text);
-                          localStorage.setItem("walletAddress", account.address);
-                          localStorage.setItem("privateKey", account.privateKey);
-                          let balance = await this.getBalance(account.address);
-                          this.setState({
-                            balance,
-                            showSheetForAccount: false,
-                            showSheetForAddress: true
-                          });
-                        };
-                        reader.readAsText(event.target.files[0])
-                      }}
-                    />
-                    <Button
-                      style={{
-                        padding: "10px 29px",
-                        fontSize: "15px",
-                        fontWeight: "bold",
-                        backgroundColor: "white",
-                        color: "black",
-                      }}
-                      onClick={this.createWallet}
-                      className="btn-round"
-                      color="black"
-                      type="button"
-                      size="lg"
-                    >
-                      Create new
-                    </Button>
-                  </Col>
-                </Row>
-              </BottomSheet >
-            </>
-        }
+          </Row>
+        </BottomSheet>
+        <BottomSheet
+          open={this.state.showSheetForAddress}
+          snapPoints={({ minHeight }) => minHeight}
+        >
+          <style>
+            {`[data-rsbs-overlay] {
+            background: #2CA8FF;
+          }`}
+          </style>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 15,
+            }}
+          >
+            <img
+              style={{ height: "40px", width: "40px", marginTop: "5px" }}
+              alt="..."
+              src="nusantaraWhite.png"
+            ></img>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 20,
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Welcome
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              textAlign: "center",
+              color: "white",
+              fontSize: "18px",
+              fontWeight: "bold",
+              margin: "15px"
+            }}
+          >
+            <Col xs={6}>Account</Col>
+            <Col xs={6}>Balance</Col>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              textAlign: "center",
+              color: "white",
+              fontSize: "18px",
+              fontWeight: "bold",
+              margin: "15px"
+            }}
+          >
+            <Col xs={6} style={{ wordBreak: "break-all" }}>
+              <a
+                style={{
+                  color: "white",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                }}
+                rel="noreferrer"
+                href={`https://mumbai.polygonscan.com/address/${localStorage.getItem("walletAddress")}`}
+                target="_blank"
+              >
+                {localStorage.getItem("walletAddress")}
+              </a>
+            </Col>
+            <Col xs={6} style={{ wordBreak: "break-all" }}>{this.state.balance}</Col>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 30,
+            }}
+          >
+            <Button
+              style={{
+                padding: "10px 29px",
+                fontSize: "15px",
+                fontWeight: "bold",
+                backgroundColor: "white",
+                color: "black",
+              }}
+              onClick={this.toggleTokenTransferModal}
+              className="btn-round mr-2"
+              color="black"
+              type="button"
+              size="lg"
+            >
+              Test Transfer
+            </Button>
+            <Button
+              style={{
+                padding: "10px 29px",
+                fontSize: "15px",
+                fontWeight: "bold",
+                backgroundColor: "white",
+                color: "black",
+              }}
+              onClick={this.mint}
+              className="btn-round"
+              color="black"
+              type="button"
+              size="lg"
+            >
+              Mint
+            </Button>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              style={{
+                padding: "10px 29px",
+                fontSize: "15px",
+                fontWeight: "bold",
+                backgroundColor: "white",
+                color: "black",
+              }}
+              // onClick={this.exportPrivateKey}
+              className="btn-round mr-2"
+              color="black"
+              type="button"
+              size="lg"
+            >
+              <a
+                style={{
+                  color: "black"
+                }}
+                rel="noreferrer"
+                href={`${window.location.origin}/exportPrivateKey?privateKey=${localStorage.getItem('privateKey')}`}
+                target="_blank"
+              >
+                Export Private Key
+              </a>
+            </Button>
+          </Row>
+          {this.state.transcationHash
+            &&
+            <Row style={{ marginBottom: 10, justifyContent: "center", alignItems: "center" }}>
+              <a
+                style={{
+                  color: "white",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                }}
+                rel="noreferrer"
+                href={`https://mumbai.polygonscan.com/tx/${this.state.transcationHash}`}
+                target="_blank"
+              >
+                View Transaction
+              </a>
+            </Row>
+          }
+        </BottomSheet >
+        <BottomSheet
+          open={this.state.showSheetForAccount}
+          snapPoints={({ minHeight }) => minHeight}
+        >
+          <style>
+            {`[data-rsbs-overlay] {
+            background: #2CA8FF;
+          }`}
+          </style>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 15,
+            }}
+          >
+            <img
+              style={{ height: "40px", width: "40px", marginTop: "5px" }}
+              alt="..."
+              src="nusantaraWhite.png"
+            ></img>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 20,
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Welcome
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 30,
+            }}
+          >
+            <Col xs={12} style={{ padding: "0px 25px", textAlign: "center" }}>
+              <Button
+                style={{
+                  padding: "10px 29px",
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                  backgroundColor: "white",
+                  color: "black",
+                }}
+                // onClick={this.toggleTokenTransferModal}
+                className="btn-round mr-2"
+                color="black"
+                type="button"
+                size="lg"
+              >
+                <Label
+                  htmlFor="privateKey"
+                  className="m-0"
+                  style={{
+                    cursor: "pointer",
+                  }}
+                >
+                  Import using private key
+                </Label>
+
+              </Button>
+              <Input
+                id="privateKey"
+                style={{ display: "none" }}
+                type="file"
+                accept=".txt"
+                onChange={(event) => {
+                  const reader = new FileReader()
+                  reader.onload = async (e) => {
+                    const text = (e.target.result);
+                    let web3 = new Web3(this.state.rpcUrl);
+                    let account = web3.eth.accounts.privateKeyToAccount(text);
+                    localStorage.setItem("walletAddress", account.address);
+                    localStorage.setItem("privateKey", account.privateKey);
+                    let balance = await this.getBalance(account.address);
+                    this.setState({
+                      balance,
+                      showSheetForAccount: false,
+                      showSheetForAddress: true
+                    });
+                  };
+                  reader.readAsText(event.target.files[0])
+                }}
+              />
+              <Button
+                style={{
+                  padding: "10px 29px",
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                  backgroundColor: "white",
+                  color: "black",
+                }}
+                onClick={this.createWallet}
+                className="btn-round"
+                color="black"
+                type="button"
+                size="lg"
+              >
+                Create new
+              </Button>
+            </Col>
+          </Row>
+        </BottomSheet >
       </>
     );
   }

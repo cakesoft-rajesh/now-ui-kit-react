@@ -295,14 +295,14 @@ class ReconstructKeyPage extends Component {
                   }
                 </Col>
               </Row >
-              <NotificationSystem
-                dismissible={false}
-                ref={(notificationSystem) =>
-                  (this.notificationSystem = notificationSystem)
-                }
-              />
             </>
         }
+        <NotificationSystem
+          dismissible={false}
+          ref={(notificationSystem) =>
+            (this.notificationSystem = notificationSystem)
+          }
+        />
       </>
     );
   }

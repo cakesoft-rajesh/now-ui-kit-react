@@ -311,254 +311,252 @@ class ConnectWalletPage extends Component {
         {
           this.state.showLoader
             ? <PageSpinner showLoader={this.state.showLoader} />
-            : <>
-              <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                <Col
-                  xs="12"
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Row
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      margin: "0px 15px"
-                    }}
-                  >
-                    <h3 style={{ color: "gray", margin: 0 }}>Connect a wallet</h3>
-                  </Row>
-                  <Row
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      margin: "10px 15px"
-                    }}
-                  >
-                    <h5 style={{ color: "gray", margin: 0, fontSize: "15px", fontWeight: 600 }}>Recommended</h5>
-                  </Row>
-                  <Row
-                    style={{
-                      marginBottom: "5px",
-                      padding: "15px",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      background: "rgb(245, 246, 252)",
-                      borderTopLeftRadius: "10px",
-                      borderTopRightRadius: "10px"
-                    }}
-                  >
-                    <Button
-                      onClick={() => this.connectWallet(false)}
-                      style={{
-                        width: "100%",
-                        margin: 0,
-                        padding: 0,
-                        border: 0,
-                        color: "black",
-                        display: 'flex',
-                        alignItems: "center"
-                      }}
-                      color="info"
-                      type="button"
-                      size="lg"
-                      outline
-                    >
-                      <img
-                        style={{
-                          width: "40px",
-                          cursor: "pointer",
-                          border: "1px solid rgb(210, 217, 238)",
-                          borderRadius: "8px"
-                        }}
-                        alt="..."
-                        src="metamask.png"
-                      />
-                      <label
-                        style={{
-                          cursor: "pointer",
-                          marginLeft: "10px",
-                          marginBottom: 0,
-                          fontSize: "20px",
-                          fontWeight: 600
-                        }}
-                      >
-                        MetaMask
-                      </label>
-                    </Button>
-                  </Row>
-                  <Row
-                    style={{
-                      marginBottom: "5px",
-                      padding: "15px",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      background: "rgb(245, 246, 252)",
-                      borderBottomLeftRadius: "10px",
-                      borderBottomRightRadius: "10px"
-                    }}
-                  >
-                    <Button
-                      onClick={() => this.connectWallet(true)}
-                      style={{
-                        width: "100%",
-                        margin: 0,
-                        padding: 0,
-                        border: 0,
-                        color: "black",
-                        display: 'flex',
-                        alignItems: "center"
-                      }}
-                      color="info"
-                      type="button"
-                      size="lg"
-                      outline
-                    >
-                      <img
-                        style={{
-                          width: "40px",
-                          cursor: "pointer",
-                          border: "1px solid rgb(210, 217, 238)",
-                          borderRadius: "8px"
-                        }}
-                        alt="..."
-                        src="walletConnect.png"
-                      />
-                      <label
-                        style={{
-                          cursor: "pointer",
-                          marginLeft: "10px",
-                          marginBottom: 0,
-                          fontSize: "20px",
-                          fontWeight: 600
-                        }}
-                      >
-                        WalletConnect
-                      </label>
-                    </Button>
-                  </Row>
-                </Col>
-              </Row>
-              <NotificationSystem
-                dismissible={false}
-                ref={(notificationSystem) =>
-                  (this.notificationSystem = notificationSystem)
-                }
-              />
-              <BottomSheet
-                open={this.state.showSheet}
-                snapPoints={({ minHeight }) => minHeight}
+            : <Row style={{ justifyContent: "center", alignItems: "center" }}>
+              <Col
+                xs="12"
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                <style>
-                  {`[data-rsbs-overlay] {
-            background: #17517b;
-          }`}
-                </style>
                 <Row
                   style={{
-                    justifyContent: "center",
-                    margin: "0px 0px",
-                    marginTop: 15,
-                  }}
-                >
-                  <img
-                    style={{ height: "40px", width: "40px", marginTop: "5px" }}
-                    alt="..."
-                    src="nusantaraWhite.png"
-                  ></img>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 0px",
-                    marginTop: 20,
-                  }}
-                >
-                  <div
-                    style={{
-                      color: "white",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Verify your account
-                  </div>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
-                    margin: "0px 30px",
-                    marginTop: 30,
-                  }}
-                >
-                  <div
-                    style={{
-                      color: "white",
-                      fontSize: "14px",
-                    }}
-                  >
-                    To finish connecting, sign a message in your wallet to verify that
-                    you are the owner of this account
-                  </div>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "center",
+                    justifyContent: "flex-start",
                     alignItems: "center",
-                    marginTop: 30,
+                    margin: "0px 15px"
+                  }}
+                >
+                  <h3 style={{ color: "gray", margin: 0 }}>Connect a wallet</h3>
+                </Row>
+                <Row
+                  style={{
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    margin: "10px 15px"
+                  }}
+                >
+                  <h5 style={{ color: "gray", margin: 0, fontSize: "15px", fontWeight: 600 }}>Recommended</h5>
+                </Row>
+                <Row
+                  style={{
+                    marginBottom: "5px",
+                    padding: "15px",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    background: "rgb(245, 246, 252)",
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px"
                   }}
                 >
                   <Button
+                    onClick={() => this.connectWallet(false)}
                     style={{
-                      width: "60%",
-                      padding: "13px 0px",
-                      fontSize: "15px",
-                      fontWeight: "bold",
-                      backgroundColor: "white",
+                      width: "100%",
+                      margin: 0,
+                      padding: 0,
+                      border: 0,
                       color: "black",
+                      display: 'flex',
+                      alignItems: "center"
                     }}
-                    onClick={this.state.fromPage === "loginPage"
-                      ? this.authenticateForLoginPage
-                      : this.authenticateForSignUpPage
-                    }
-                    className="btn-round"
-                    color="black"
-                    type="button"
-                    size="lg"
-                  >
-                    Send Message
-                  </Button>
-                </Row>
-                <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                  <Button
-                    onClick={() => this.onDismiss()}
-                    style={{
-                      padding: "10px 29px",
-                      fontSize: "21px",
-                      fontWeight: "bold",
-                      color: "white",
-                    }}
-                    className="btn-round"
                     color="info"
                     type="button"
                     size="lg"
                     outline
                   >
+                    <img
+                      style={{
+                        width: "40px",
+                        cursor: "pointer",
+                        border: "1px solid rgb(210, 217, 238)",
+                        borderRadius: "8px"
+                      }}
+                      alt="..."
+                      src="metamask.png"
+                    />
                     <label
                       style={{
                         cursor: "pointer",
-                        float: "left",
-                        marginBottom: "0px",
+                        marginLeft: "10px",
+                        marginBottom: 0,
+                        fontSize: "20px",
+                        fontWeight: 600
                       }}
                     >
-                      Cancel
+                      MetaMask
                     </label>
                   </Button>
                 </Row>
-              </BottomSheet>
-            </>
+                <Row
+                  style={{
+                    marginBottom: "5px",
+                    padding: "15px",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    background: "rgb(245, 246, 252)",
+                    borderBottomLeftRadius: "10px",
+                    borderBottomRightRadius: "10px"
+                  }}
+                >
+                  <Button
+                    onClick={() => this.connectWallet(true)}
+                    style={{
+                      width: "100%",
+                      margin: 0,
+                      padding: 0,
+                      border: 0,
+                      color: "black",
+                      display: 'flex',
+                      alignItems: "center"
+                    }}
+                    color="info"
+                    type="button"
+                    size="lg"
+                    outline
+                  >
+                    <img
+                      style={{
+                        width: "40px",
+                        cursor: "pointer",
+                        border: "1px solid rgb(210, 217, 238)",
+                        borderRadius: "8px"
+                      }}
+                      alt="..."
+                      src="walletConnect.png"
+                    />
+                    <label
+                      style={{
+                        cursor: "pointer",
+                        marginLeft: "10px",
+                        marginBottom: 0,
+                        fontSize: "20px",
+                        fontWeight: 600
+                      }}
+                    >
+                      WalletConnect
+                    </label>
+                  </Button>
+                </Row>
+              </Col>
+            </Row>
         }
+        <NotificationSystem
+          dismissible={false}
+          ref={(notificationSystem) =>
+            (this.notificationSystem = notificationSystem)
+          }
+        />
+        <BottomSheet
+          open={this.state.showSheet}
+          snapPoints={({ minHeight }) => minHeight}
+        >
+          <style>
+            {`[data-rsbs-overlay] {
+            background: #17517b;
+          }`}
+          </style>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 15,
+            }}
+          >
+            <img
+              style={{ height: "40px", width: "40px", marginTop: "5px" }}
+              alt="..."
+              src="nusantaraWhite.png"
+            ></img>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 0px",
+              marginTop: 20,
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Verify your account
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "0px 30px",
+              marginTop: 30,
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "14px",
+              }}
+            >
+              To finish connecting, sign a message in your wallet to verify that
+              you are the owner of this account
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 30,
+            }}
+          >
+            <Button
+              style={{
+                width: "60%",
+                padding: "13px 0px",
+                fontSize: "15px",
+                fontWeight: "bold",
+                backgroundColor: "white",
+                color: "black",
+              }}
+              onClick={this.state.fromPage === "loginPage"
+                ? this.authenticateForLoginPage
+                : this.authenticateForSignUpPage
+              }
+              className="btn-round"
+              color="black"
+              type="button"
+              size="lg"
+            >
+              Send Message
+            </Button>
+          </Row>
+          <Row style={{ justifyContent: "center", alignItems: "center" }}>
+            <Button
+              onClick={() => this.onDismiss()}
+              style={{
+                padding: "10px 29px",
+                fontSize: "21px",
+                fontWeight: "bold",
+                color: "white",
+              }}
+              className="btn-round"
+              color="info"
+              type="button"
+              size="lg"
+              outline
+            >
+              <label
+                style={{
+                  cursor: "pointer",
+                  float: "left",
+                  marginBottom: "0px",
+                }}
+              >
+                Cancel
+              </label>
+            </Button>
+          </Row>
+        </BottomSheet>
       </>
     );
   }

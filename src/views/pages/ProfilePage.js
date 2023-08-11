@@ -758,127 +758,127 @@ class ProfilePage extends Component {
                   </Col>
                 </Row >
               }
-              <NotificationSystem
-                dismissible={false}
-                ref={(notificationSystem) =>
-                  (this.notificationSystem = notificationSystem)
-                }
-              />
-              {this.state.confirmationModal
-                && <Modal
-                  size="sm"
-                  modalClassName="modal-mini modal-info"
-                  style={{ marginTop: "20%" }}
-                  toggle={this.toggleConfirmationModal}
-                  isOpen={this.state.confirmationModal}
-                >
-                  <ModalBody>
-                    <label
-                      style={{
-                        color: "gray",
-                        fontSize: "15px",
-                        fontWeight: 500
-                      }}
-                    >
-                      Your Profile information will be shared with:
-                    </label>
-                    <label
-                      style={{
-                        color: "gray",
-                        marginTop: 20,
-                        fontWeight: 600,
-                        fontSize: "15px",
-                      }}
-                    >
-                      ZTI to verify your digital membership credential
-                    </label>
-                    <label
-                      style={{
-                        color: "gray",
-                        marginTop: 20,
-                        fontWeight: 600,
-                        fontSize: "15px",
-                      }}
-                    >
-                      Payment Technology DOKU to establish a digital gateway credential
-                    </label>
-                    <div>
-                      <Button
-                        style={{
-                          padding: 0,
-                          float: "left",
-                          color: "gray",
-                          fontWeight: 500,
-                          fontSize: "20px",
-                          boxShadow: "unset",
-                          background: "transparent",
-                          margin: "25px 0px 0px 0px",
-                        }}
-                        onClick={this.toggleConfirmationModal}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        style={{
-                          padding: 0,
-                          color: "gray",
-                          float: "right",
-                          fontWeight: 500,
-                          fontSize: "20px",
-                          boxShadow: "unset",
-                          margin: "25px 0px 0px 0px",
-                          background: "transparent",
-                        }}
-                        onClick={(event) => GeneralFunctions.getMembershipWithExpiry()
-                          ? this.signupWithExpiry(event)
-                          : this.signup(event)
-                        }
-                      >
-                        OK
-                      </Button>
-                    </div>
-                  </ModalBody>
-                </Modal>
-              }
-              {this.state.learnMoreDetailModal
-                && <Modal
-                  size="sm"
-                  modalClassName="modal-mini modal-info"
-                  style={{ marginTop: "20%" }}
-                  toggle={this.toggleLearnMoreDetailModal}
-                  isOpen={this.state.learnMoreDetailModal}
-                >
-                  <ModalBody>
-                    <label
-                      style={{
-                        color: "gray",
-                        fontSize: "17px",
-                        fontWeight: 500
-                      }}
-                    >
-                      Setting Authentication Factors allows you to switch to a new device seamlessly
-                    </label>
-                    <div>
-                      <Button
-                        style={{
-                          color: "gray",
-                          background: "transparent",
-                          fontWeight: 500,
-                          fontSize: "20px",
-                          float: "right",
-                          padding: 0,
-                          margin: "20px 0px 0px 0px",
-                          boxShadow: "unset"
-                        }}
-                        onClick={this.toggleLearnMoreDetailModal}
-                      >
-                        OK
-                      </Button>
-                    </div>
-                  </ModalBody>
-                </Modal>
-              }
             </>
+        }
+        <NotificationSystem
+          dismissible={false}
+          ref={(notificationSystem) =>
+            (this.notificationSystem = notificationSystem)
+          }
+        />
+        {this.state.confirmationModal
+          && <Modal
+            size="sm"
+            modalClassName="modal-mini modal-info"
+            style={{ marginTop: "20%" }}
+            toggle={this.toggleConfirmationModal}
+            isOpen={this.state.confirmationModal}
+          >
+            <ModalBody>
+              <label
+                style={{
+                  color: "gray",
+                  fontSize: "15px",
+                  fontWeight: 500
+                }}
+              >
+                Your Profile information will be shared with:
+              </label>
+              <label
+                style={{
+                  color: "gray",
+                  marginTop: 20,
+                  fontWeight: 600,
+                  fontSize: "15px",
+                }}
+              >
+                ZTI to verify your digital membership credential
+              </label>
+              <label
+                style={{
+                  color: "gray",
+                  marginTop: 20,
+                  fontWeight: 600,
+                  fontSize: "15px",
+                }}
+              >
+                Payment Technology DOKU to establish a digital gateway credential
+              </label>
+              <div>
+                <Button
+                  style={{
+                    padding: 0,
+                    float: "left",
+                    color: "gray",
+                    fontWeight: 500,
+                    fontSize: "20px",
+                    boxShadow: "unset",
+                    background: "transparent",
+                    margin: "25px 0px 0px 0px",
+                  }}
+                  onClick={this.toggleConfirmationModal}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  style={{
+                    padding: 0,
+                    color: "gray",
+                    float: "right",
+                    fontWeight: 500,
+                    fontSize: "20px",
+                    boxShadow: "unset",
+                    margin: "25px 0px 0px 0px",
+                    background: "transparent",
+                  }}
+                  onClick={(event) => GeneralFunctions.getMembershipWithExpiry()
+                    ? this.signupWithExpiry(event)
+                    : this.signup(event)
+                  }
+                >
+                  OK
+                </Button>
+              </div>
+            </ModalBody>
+          </Modal>
+        }
+        {this.state.learnMoreDetailModal
+          && <Modal
+            size="sm"
+            modalClassName="modal-mini modal-info"
+            style={{ marginTop: "20%" }}
+            toggle={this.toggleLearnMoreDetailModal}
+            isOpen={this.state.learnMoreDetailModal}
+          >
+            <ModalBody>
+              <label
+                style={{
+                  color: "gray",
+                  fontSize: "17px",
+                  fontWeight: 500
+                }}
+              >
+                Setting Authentication Factors allows you to switch to a new device seamlessly
+              </label>
+              <div>
+                <Button
+                  style={{
+                    color: "gray",
+                    background: "transparent",
+                    fontWeight: 500,
+                    fontSize: "20px",
+                    float: "right",
+                    padding: 0,
+                    margin: "20px 0px 0px 0px",
+                    boxShadow: "unset"
+                  }}
+                  onClick={this.toggleLearnMoreDetailModal}
+                >
+                  OK
+                </Button>
+              </div>
+            </ModalBody>
+          </Modal>
         }
       </>
     );
