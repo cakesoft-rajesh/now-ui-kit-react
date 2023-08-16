@@ -21,7 +21,7 @@ class SignUpPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showLoader: false,
+      showLoader: true,
       email: "",
       ztiAppNameData: {},
       showOTPage: false,
@@ -32,6 +32,7 @@ class SignUpPage extends Component {
   async componentDidMount() {
     const ztiAppNameData = GeneralFunctions.getZTIAppNameData();
     if (ztiAppNameData) this.setState({ ztiAppNameData });
+    setTimeout(() => this.setState({ showLoader: false }), 1000);
   }
 
   sendOTP = async (event) => {
