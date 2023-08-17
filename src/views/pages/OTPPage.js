@@ -44,8 +44,7 @@ class OTPPage extends Component {
             email: this.state.email,
             otp: this.state.otp
           }
-        },
-        localStorage.getItem("accessToken")
+        }
       );
       if (response.success) {
         this.setState({ showLoader: false });

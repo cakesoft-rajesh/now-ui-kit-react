@@ -102,8 +102,7 @@ class ProfileDetailPage extends Component {
           data: {
             email: this.state.email
           }
-        },
-        localStorage.getItem("accessToken")
+        }
       );
       if (response.success) {
         this.setState({ showLoader: false });
