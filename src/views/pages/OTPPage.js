@@ -33,14 +33,15 @@ class OTPPage extends Component {
     };
   }
 
-  verifyOTPForPhone = async () => {
+  verifyOTPFor2FA = async () => {
     try {
       this.setState({ showLoader: true });
       let response = await Server.request(
         {
-          url: "/phone/verifyOTP",
+          url: "/email/verifyOTP",
           method: "POST",
           data: {
+            email: this.state.email,
             otp: this.state.otp
           }
         },
@@ -161,7 +162,7 @@ class OTPPage extends Component {
                   >
                     {
                       this.props.fromPage === "profileDetailPage"
-                        ? "A verification code will be sent to your phone."
+                        ? `A verification code will be sent to your email ${this.state.email && GeneralFunctions.maskEmailId(this.state.email)}`
                         : "A verification code will be sent to your email."
                     }
                   </div>
@@ -215,7 +216,7 @@ class OTPPage extends Component {
                     type="submit"
                     size="lg"
                     onClick={this.props.fromPage === "profileDetailPage"
-                      ? this.verifyOTPForPhone
+                      ? this.verifyOTPFor2FA
                       : this.verifyOTP
                     }
                   >

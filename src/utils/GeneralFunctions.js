@@ -166,3 +166,9 @@ export const setZTIAppNameData = (data) => {
 export const getZTIAppNameData = () => {
   return JSON.parse(localStorage.getItem("ztiAppNameData"));
 };
+
+export const maskEmailId = (email) => {
+  return email.replace(/^(.)(.*)(.@.*)$/,
+    (_, val, val1, val2) => val + val1.replace(/./g, '*') + val2
+  );
+}

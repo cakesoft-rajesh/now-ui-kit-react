@@ -47,7 +47,7 @@ class ProfileDetailPage extends Component {
     const dokuId = localStorage.getItem("dokuId");
     if (dokuId) this.setState({ dokuId });
     if (params.walletAddress && params.tokenId) {
-      this.getUser(params.walletAddress, params.tokenId, "web3");
+      await this.getUser(params.walletAddress, params.tokenId, "web3");
     }
     if (this.props.location.state && this.props.location.state.skip2FactorAuth) {
       this.setState({ showOTPage: false });
@@ -97,9 +97,11 @@ class ProfileDetailPage extends Component {
       this.setState({ showLoader: true });
       let response = await Server.request(
         {
-          url: "/phone/sendOTP",
+          url: "/email/sendOTP",
           method: "POST",
-          data: {}
+          data: {
+            email: this.state.email
+          }
         },
         localStorage.getItem("accessToken")
       );
@@ -157,6 +159,7 @@ class ProfileDetailPage extends Component {
                 >
                   <OTPPage
                     fromPage="profileDetailPage"
+                    email={this.state.email}
                     updateStateValue={this.updateStateValue}
                   />
                 </div>
