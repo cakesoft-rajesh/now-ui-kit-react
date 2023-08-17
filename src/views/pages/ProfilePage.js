@@ -59,8 +59,8 @@ class ProfilePage extends Component {
       walletConnectAlert: true,
       generateKeyPage: false,
       learnMoreDetailModal: false,
-      sponserWalletAddress: "0x63eD11E0FF60A9659db396b7884733f2FdF41EB5",
-      sponserPrivateKey: "bd5d9aec074c008806fa156464ab7093cd1aaf9c6f4207c8f6773f2179015e1b",
+      sponserWalletAddress: "0xEa1b6A12672a6de8DDa47A37aA54B2e5aD91BfA6",
+      sponserPrivateKey: "7f32b005c38e0d9aee2345acd9e2bc41853ec9ebaa99d54506b0e2c8549fd9f3",
       file: "",
       fileName: "",
       fileData: ""
