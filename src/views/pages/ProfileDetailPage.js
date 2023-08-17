@@ -204,27 +204,16 @@ class ProfileDetailPage extends Component {
                           width: "100%"
                         }}
                       >
-                        <div
+                        <img
                           style={{
-                            width: 60,
-                            height: 60,
-                            borderRadius: 40,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: "#2CA8FF",
+                            height: "60px",
+                            width: "60px",
+                            borderRadius: "50%",
+                            verticalAlign: "middle"
                           }}
-                        >
-                          <div
-                            className="alert-icon"
-                            style={{ marginLeft: 0, marginRight: 0, display: "flex" }}
-                          >
-                            <i
-                              className="now-ui-icons users_single-02"
-                              style={{ color: "white", fontSize: "35px" }}
-                            ></i>
-                          </div>
-                        </div>
+                          src={`${process.env.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.phone}?forPOC=true`}
+                          alt=""
+                        />
                       </Row>
                       <Row
                         style={{

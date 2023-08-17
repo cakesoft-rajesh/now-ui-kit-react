@@ -60,7 +60,10 @@ class ProfilePage extends Component {
       generateKeyPage: false,
       learnMoreDetailModal: false,
       sponserWalletAddress: "0x63eD11E0FF60A9659db396b7884733f2FdF41EB5",
-      sponserPrivateKey: "bd5d9aec074c008806fa156464ab7093cd1aaf9c6f4207c8f6773f2179015e1b"
+      sponserPrivateKey: "bd5d9aec074c008806fa156464ab7093cd1aaf9c6f4207c8f6773f2179015e1b",
+      file: "",
+      fileName: "",
+      fileData: ""
     };
   }
 
@@ -245,6 +248,7 @@ class ProfilePage extends Component {
       let url; let data;
       const tokenId = new Date().getTime();
       if (this.state.signupMethod === "web3") {
+        if (!this.state.file) throw Error("Select the file");
         url = "/web3Auth/signup";
         data = {
           membershipWithExpiry: false,
@@ -324,9 +328,17 @@ class ProfilePage extends Component {
               data
             });
             if (response.success) {
-              this.setState({ showLoader: false });
               localStorage.setItem("tokenId", tokenId);
               localStorage.setItem("accessToken", response.accessToken);
+              let formData = new FormData();
+              formData.append("image", this.state.file);
+              formData.append("username", `${this.state.countryCode.value}${this.state.phone}`);
+              await Server.postWithFormData(
+                "/api/v1/setAvatar",
+                formData,
+                response.accessToken
+              );
+              this.setState({ showLoader: false });
               await Server.sendDataToMobileApp(JSON.stringify(response));
               this.props.history.push({
                 pathname: "/profile-detail-page",
@@ -390,6 +402,26 @@ class ProfilePage extends Component {
     event.preventDefault();
     this.toggleConfirmationModal();
   }
+
+  handleChange = (event) => {
+    const fileUploaded = event.target.files[0];
+    this.setState({
+      file: fileUploaded,
+      fileName: fileUploaded.name,
+    });
+    this.previewFile(fileUploaded, (fileData) => {
+      this.setState({ fileData });
+    });
+    event.target.value = "";
+  };
+
+  previewFile = (file, callback) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      callback(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   logout = async () => {
     await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
@@ -484,31 +516,60 @@ class ProfilePage extends Component {
                           alignItems: "center",
                         }}
                       >
-                        <div
+                        {this.state.fileData
+                          ? <img
+                            style={{
+                              height: "50px",
+                              width: "50px",
+                              borderRadius: "50%",
+                              verticalAlign: "middle"
+                            }}
+                            src={this.state.fileData}
+                            alt=""
+                          />
+                          : <div
+                            style={{
+                              width: 45,
+                              height: 45,
+                              borderRadius: 40,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              backgroundColor: "#2CA8FF",
+                            }}
+                          >
+                            <div
+                              className="alert-icon"
+                              style={{ marginLeft: 0, marginRight: 0, display: "flex" }}
+                            >
+                              <i
+                                className="now-ui-icons users_single-02"
+                                style={{ color: "white", fontSize: "24px" }}
+                              ></i>
+                            </div>
+                          </div>
+                        }
+                        <label
+                          htmlFor="imgupload"
                           style={{
-                            width: 45,
-                            height: 45,
-                            borderRadius: 40,
+                            marginBottom: 0,
                             display: "flex",
-                            justifyContent: "center",
                             alignItems: "center",
-                            backgroundColor: "#2CA8FF",
+                            cursor: "pointer"
                           }}
                         >
-                          <div
-                            className="alert-icon"
-                            style={{ marginLeft: 0, marginRight: 0, display: "flex" }}
-                          >
-                            <i
-                              className="now-ui-icons users_single-02"
-                              style={{ color: "white", fontSize: "24px" }}
-                            ></i>
-                          </div>
-                        </div>
-                        <h6 style={{ color: "gray", marginLeft: 5, marginBottom: 0 }}>Add Avatar</h6>
-                        <div style={{ marginLeft: 5, marginRight: 0, marginBottom: 0 }}>
-                          <RiPencilLine />
-                        </div>
+                          <h6 style={{ color: "gray", marginLeft: 5, marginBottom: 0 }}>Add Avatar</h6>
+                          <RiPencilLine
+                            style={{ marginLeft: 5 }}
+                          />
+                        </label>
+                        <input
+                          type='file'
+                          id='imgupload'
+                          style={{ display: 'none' }}
+                          accept=".png,.jpg,.jpeg"
+                          onChange={this.handleChange}
+                        />
                       </Row>
                       <Row
                         style={{
