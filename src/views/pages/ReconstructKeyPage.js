@@ -82,7 +82,7 @@ class ReconstructKeyPage extends Component {
         localStorage.setItem("accessToken", response.accessToken);
         Object.assign(response, { signupMethod: "web3" });
         Server.sendDataToMobileApp(JSON.stringify(response));
-        this.setState({ showLoader: false });
+        // this.setState({ showLoader: false });
       } else {
         throw Error(response.message);
       }
