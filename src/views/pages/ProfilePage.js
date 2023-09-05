@@ -248,7 +248,7 @@ class ProfilePage extends Component {
       let url; let data;
       const tokenId = new Date().getTime();
       if (this.state.signupMethod === "web3") {
-        if (!this.state.file) throw Error("Select the file");
+        if (!this.state.file) throw Error("Select Profile Picture");
         url = "/web3Auth/signup";
         data = {
           membershipWithExpiry: false,
