@@ -22,7 +22,8 @@ class ReconstructKeyPage extends Component {
     super(props);
     this.state = {
       showLoader: false,
-      email: props.email,
+      email: this.props.location.state ? this.props.location.state.email : "",
+      fromPage: this.props.location.state ? this.props.location.state.fromPage : "",
       password: "",
       showPassword: false,
       setPassword: false,
@@ -76,13 +77,11 @@ class ReconstructKeyPage extends Component {
         }
       });
       if (response.success) {
-        localStorage.setItem("signupOrLoginMethod", "web3");
         localStorage.setItem("tokenId", response.user.tokenId);
         localStorage.setItem("walletAddress", response.walletAddress);
         localStorage.setItem("accessToken", response.accessToken);
         Object.assign(response, { signupMethod: "web3" });
         Server.sendDataToMobileApp(JSON.stringify(response));
-        // this.setState({ showLoader: false });
       } else {
         throw Error(response.message);
       }
@@ -101,7 +100,13 @@ class ReconstructKeyPage extends Component {
         {
           this.state.showLoader
             ? <PageSpinner showLoader={this.state.showLoader} />
-            : <>
+            : <div
+              style={{
+                flexDirection: "column",
+                display: "flex",
+                marginTop: 20,
+              }}
+            >
               <Row style={{ justifyContent: "center", alignItems: "center" }}>
                 <Col
                   sm="12"
@@ -241,10 +246,17 @@ class ReconstructKeyPage extends Component {
                               fontWeight: 600,
                               fontSize: "15px"
                             }}
-                            onClick={() => this.props.updateStateValue({
-                              editKeyFactorPage: true,
-                              reconstructKeyPage: false
-                            })}
+                            onClick={() =>
+                              this.props.history.push({
+                                pathname: "/generate-key-page",
+                                state: {
+                                  email: this.state.email,
+                                  walletAddress: localStorage.getItem("walletAddress"),
+                                  editKeyFactor: true,
+                                  fromPage: this.state.fromPage
+                                }
+                              })
+                            }
                           >
                             Forgot Password?
                           </label>
@@ -295,7 +307,7 @@ class ReconstructKeyPage extends Component {
                   }
                 </Col>
               </Row >
-            </>
+            </div >
         }
         <NotificationSystem
           dismissible={false}

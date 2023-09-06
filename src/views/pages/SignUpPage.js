@@ -9,8 +9,6 @@ import {
   Form,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
-import OTPPage from "./OTPPage";
-import ConnectWalletPage from "./ConnectWalletPage";
 import PageSpinner from "../../components/PageSpinner";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
@@ -23,9 +21,7 @@ class SignUpPage extends Component {
     this.state = {
       showLoader: true,
       email: "",
-      ztiAppNameData: {},
-      showOTPage: false,
-      showConnectWalletPage: false,
+      ztiAppNameData: {}
     };
   }
 
@@ -47,7 +43,13 @@ class SignUpPage extends Component {
         }
       });
       if (response.success) {
-        this.setState({ showLoader: false, showOTPage: true });
+        this.props.history.push({
+          pathname: "/otp-page",
+          state: {
+            fromPage: "signupPage",
+            email: this.state.email
+          }
+        });
       }
     } catch (error) {
       this.notificationSystem.addNotification({
@@ -57,12 +59,6 @@ class SignUpPage extends Component {
       this.setState({ showLoader: false });
     }
   };
-
-  toggleConnectWalletPage = () => {
-    this.setState({ showConnectWalletPage: !this.state.showConnectWalletPage });
-  };
-
-  updateStateValue = (value) => this.setState(value);
 
   render() {
     return (
@@ -79,142 +75,129 @@ class SignUpPage extends Component {
                 overflowY: "auto"
               }}
             >
-              {this.state.showOTPage &&
-                <OTPPage
-                  {...this.props}
-                  fromPage="signupPage"
-                  email={this.state.email}
-                  updateStateValue={this.updateStateValue}
-                />
-              }
-              {this.state.showConnectWalletPage &&
-                <ConnectWalletPage
-                  {...this.props}
-                  fromPage="signupPage"
-                />
-              }
-              {
-                !this.state.showOTPage &&
-                !this.state.showConnectWalletPage &&
-                <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                  <Col
-                    sm="12"
-                    style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                <Col
+                  sm="12"
+                  style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
+                >
+                  <Row
+                    style={{
+                      justifyContent: "end",
+                      alignItems: "center",
+                    }}
                   >
+                    <Button
+                      style={{
+                        padding: "13px 30px",
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                        marginBottom: "30px",
+                      }}
+                      className="btn-round"
+                      color="info"
+                      type="button"
+                      size="lg"
+                      outline
+                      to="/login-page"
+                      tag={Link}
+                    >
+                      Login
+                    </Button>
+                  </Row>
+                  <Row
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <img
+                      alt=''
+                      src={`/logos/${this.state.ztiAppNameData.logo}`}
+                      width="30%"
+                      style={{ marginTop: 40 }}
+                    />
+                  </Row>
+                  <Row
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <h3 style={{ color: "gray", marginTop: 15, fontWeight: 600 }}>{this.state.ztiAppNameData.label}</h3>
+                  </Row>
+                  <Row
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <h3 style={{ color: "gray", margin: 0 }}>Sign up with email</h3>
+                  </Row>
+                  {/* Code for signup with email */}
+                  <Form onSubmit={(event) => this.sendOTP(event)}>
                     <Row
                       style={{
-                        justifyContent: "end",
-                        alignItems: "center",
+                        justifyContent: "center",
+                        marginLeft: 10,
+                        marginRight: 10,
+                        marginTop: 20,
                       }}
                     >
+                      <FormGroup style={{ width: "100%" }}>
+                        <Input
+                          style={{ width: "100%", borderColor: "gray" }}
+                          value={this.state.email}
+                          placeholder="Enter email"
+                          type="email"
+                          required
+                          onChange={(event) => this.setState({ email: event.target.value })}
+                        ></Input>
+                      </FormGroup>
+                    </Row>
+                    <Row style={{ justifyContent: "center", alignItems: "center", margin: "0px 10px" }}>
                       <Button
                         style={{
-                          padding: "13px 30px",
+                          width: "100%",
+                          padding: "13px 0px",
                           fontSize: "15px",
                           fontWeight: "bold",
-                          marginBottom: "30px",
                         }}
                         className="btn-round"
                         color="info"
-                        type="button"
+                        type="submit"
                         size="lg"
-                        outline
-                        to="/login-page"
-                        tag={Link}
                       >
-                        Login
+                        Sign up
                       </Button>
                     </Row>
-                    <Row
+                  </Form>
+                  <Row
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center"
+                    }}
+                  >
+                    <label
                       style={{
-                        justifyContent: "center",
-                        alignItems: "center",
+                        color: "gray",
+                        margin: 0,
+                        marginTop: 10,
+                        fontWeight: 600,
+                        cursor: "pointer"
                       }}
+                      onClick={() => this.props.history.push({
+                        pathname: "/connect-wallet-page",
+                        state: {
+                          fromPage: "signupPage"
+                        }
+                      })}
                     >
-                      <img
-                        alt=''
-                        src={`/logos/${this.state.ztiAppNameData.logo}`}
-                        width="30%"
-                        style={{ marginTop: 40 }}
-                      />
-                    </Row>
-                    <Row
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <h3 style={{ color: "gray", marginTop: 15, fontWeight: 600 }}>{this.state.ztiAppNameData.label}</h3>
-                    </Row>
-                    <Row
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <h3 style={{ color: "gray", margin: 0 }}>Sign up with email</h3>
-                    </Row>
-                    {/* Code for signup with email */}
-                    <Form onSubmit={(event) => this.sendOTP(event)}>
-                      <Row
-                        style={{
-                          justifyContent: "center",
-                          marginLeft: 10,
-                          marginRight: 10,
-                          marginTop: 20,
-                        }}
-                      >
-                        <FormGroup style={{ width: "100%" }}>
-                          <Input
-                            style={{ width: "100%", borderColor: "gray" }}
-                            value={this.state.email}
-                            placeholder="Enter email"
-                            type="email"
-                            required
-                            onChange={(event) => this.setState({ email: event.target.value })}
-                          ></Input>
-                        </FormGroup>
-                      </Row>
-                      <Row style={{ justifyContent: "center", alignItems: "center", margin: "0px 10px" }}>
-                        <Button
-                          style={{
-                            width: "100%",
-                            padding: "13px 0px",
-                            fontSize: "15px",
-                            fontWeight: "bold",
-                          }}
-                          className="btn-round"
-                          color="info"
-                          type="submit"
-                          size="lg"
-                        >
-                          Sign up
-                        </Button>
-                      </Row>
-                    </Form>
-                    <Row
-                      style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        textAlign: "center"
-                      }}
-                    >
-                      <label
-                        style={{
-                          color: "gray",
-                          margin: 0,
-                          marginTop: 10,
-                          fontWeight: 600,
-                          cursor: "pointer"
-                        }}
-                        onClick={this.toggleConnectWalletPage}
-                      >
-                        OR sign up with an existing connected wallet
-                      </label>
-                    </Row>
-                  </Col>
-                </Row>
-              }
+                      OR sign up with an existing connected wallet
+                    </label>
+                  </Row>
+                </Col>
+              </Row>
             </div>
         }
         <NotificationSystem
