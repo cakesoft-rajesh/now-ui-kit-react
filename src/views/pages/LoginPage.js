@@ -16,7 +16,6 @@ import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import config from "../../config";
 import * as Server from "../../utils/Server";
-// import * as NetworkData from "utils/networks";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import "react-spring-bottom-sheet/dist/style.css"
 
@@ -30,7 +29,7 @@ class LoginPage extends Component {
       showLoader: false,
       email: "",
       ztiAppNameData: {},
-      rpcUrl: "https://rpc-mumbai.maticvigil.com",
+      rpcUrl: config.rpcUrl
     };
   }
 
@@ -56,7 +55,7 @@ class LoginPage extends Component {
         const connector = await wc.connect();
         let walletConnectProvider = await wc.getWeb3Provider({
           rpc: {
-            [connector.chainId]: await NetworkData.networks[connector.chainId],
+            [connector.chainId]: await config.networks[connector.chainId],
           },
         });
         await walletConnectProvider.enable();

@@ -24,7 +24,6 @@ import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import config from "../../config";
 import * as Server from "../../utils/Server";
-// import * as NetworkData from "utils/networks";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
 const wc = new WalletConnect();
@@ -116,7 +115,7 @@ class ProfilePage extends Component {
           if (isMobileDevice) {
             const connector = await wc.connect();
             let walletConnectProvider = await wc.getWeb3Provider({
-              rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+              rpc: { [connector.chainId]: await config.networks[connector.chainId] }
             });
             await walletConnectProvider.enable();
             provider = walletConnectProvider;
@@ -125,7 +124,7 @@ class ProfilePage extends Component {
           }
           web3 = new Web3(provider);
         }
-        const myContract = await new web3.eth.Contract(membershipWithExpiryABI, process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
+        const myContract = await new web3.eth.Contract(membershipWithExpiryABI, config.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
         let blockchainResponse = await myContract.methods
           .mintMembership("tokenUri", tokenId, 0)
           .send(
@@ -228,7 +227,7 @@ class ProfilePage extends Component {
           if (isMobileDevice) {
             const connector = await wc.connect();
             let walletConnectProvider = await wc.getWeb3Provider({
-              rpc: { [connector.chainId]: await NetworkData.networks[connector.chainId] }
+              rpc: { [connector.chainId]: await config.networks[connector.chainId] }
             });
             await walletConnectProvider.enable();
             provider = walletConnectProvider;
@@ -237,7 +236,7 @@ class ProfilePage extends Component {
           }
           web3 = new Web3(provider);
         }
-        const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
+        const myContract = await new web3.eth.Contract(membershipABI, config.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
         let blockchainResponse = await myContract.methods
           .mintMembership("tokenURI", tokenId)
           .send(

@@ -173,7 +173,7 @@ class ProfileDetailPage extends Component {
                         borderRadius: "50%",
                         verticalAlign: "middle"
                       }}
-                      src={`${process.env.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.phone}?forPOC=true`}
+                      src={`${config.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.phone}?forPOC=true`}
                       alt=""
                     />
                   </Row>

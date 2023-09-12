@@ -14,7 +14,6 @@ import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import config from "../../config";
 import * as Server from "../../utils/Server";
-// import * as NetworkData "utils/networks";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import 'react-spring-bottom-sheet/dist/style.css'
 
