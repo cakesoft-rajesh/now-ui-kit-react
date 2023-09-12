@@ -3,7 +3,6 @@ import Copy from "copy-to-clipboard";
 import { MdEdit } from "react-icons/md";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
-// import { MdExitToApp } from "react-icons/md";
 import { FaLink, FaCopy } from "react-icons/fa";
 import {
   Button,
@@ -12,8 +11,6 @@ import {
   Tooltip
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
-import OTPPage from "./OTPPage";
-import GenerateKeyPage from "./GenerateKeyPage";
 import PageSpinner from "components/PageSpinner";
 import config from "../../config";
 import * as Server from "../../utils/Server";
@@ -26,20 +23,19 @@ class ProfileDetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: {},
       email: this.props.location.state ? this.props.location.state.email : "",
       password: this.props.location.state ? this.props.location.state.password : "",
       firstName: this.props.location.state ? this.props.location.state.firstName : "",
       lastName: this.props.location.state ? this.props.location.state.lastName : "",
       phone: this.props.location.state ? this.props.location.state.phone : "",
       displayUsername: this.props.location.state ? this.props.location.state.displayUsername : "",
-      signupMethod: this.props.location.state ? this.props.location.state.signupMethod : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
+      skip2FactorAuth: this.props.location.state ? this.props.location.state.skip2FactorAuth : false,
       membershipStatus: "",
       dokuId: "",
       expiryTime: "",
       showCopyToClipboardToolTip: false,
-      editKeyFactorPage: false,
-      showOTPage: true
     };
   }
 
@@ -48,16 +44,11 @@ class ProfileDetailPage extends Component {
     const dokuId = localStorage.getItem("dokuId");
     if (dokuId) this.setState({ dokuId });
     if (params.walletAddress && params.tokenId) {
-      await this.getUser(params.walletAddress, params.tokenId, "web3");
-    }
-    if (this.props.location.state && this.props.location.state.skip2FactorAuth) {
-      this.setState({ showOTPage: false });
-    } else {
-      this.setState({ showOTPage: true }, () => this.sendOTP());
+      await this.getUser(params.walletAddress, params.tokenId);
     }
   }
 
-  getUser = async (walletAddress, tokenId, signupMethod) => {
+  getUser = async (walletAddress, tokenId) => {
     try {
       this.setState({ showLoader: true });
       const chainId = localStorage.getItem("chainId");
@@ -72,13 +63,12 @@ class ProfileDetailPage extends Component {
           this.setState({
             showLoader: false,
             ...response.user,
-            signupMethod
-          });
+            user: response.user
+          }, async () => (!this.state.skip2FactorAuth && await this.sendOTP()));
         } else {
           this.props.history.push({
             pathname: "/profile-page",
             state: {
-              signupMethod: "web3",
               walletAddress
             }
           });
@@ -106,7 +96,14 @@ class ProfileDetailPage extends Component {
         }
       );
       if (response.success) {
-        this.setState({ showLoader: false });
+        this.props.history.push({
+          pathname: "/otp-page",
+          state: {
+            fromPage: "profileDetailPage",
+            email: this.state.email,
+            user: this.state.user
+          }
+        });
       }
     } catch (error) {
       this.notificationSystem.addNotification({
@@ -119,7 +116,7 @@ class ProfileDetailPage extends Component {
 
   logout = async () => {
     await Server.sendDataToMobileApp(JSON.stringify({ message: 'Logout successfully' }));
-    if (this.state.signupMethod === "web3" && localStorage.getItem("signIn")) {
+    if (localStorage.getItem("signIn")) {
       let details = navigator.userAgent;
       let regexp = /android|iphone|kindle|ipad/i;
       let isMobileDevice = regexp.test(details);
@@ -133,490 +130,387 @@ class ProfileDetailPage extends Component {
     this.props.history.push(`/login-page?membershipWithExpiry=${membershipWithExpiry}`)
   }
 
-  toggleEditKeyFactorPage = () => {
-    this.setState({ editKeyFactorPage: !this.state.editKeyFactorPage });
-  };
-
-  updateStateValue = (value) => this.setState(value);
-
   render() {
     return (
       <>
         {
           this.state.showLoader
             ? <PageSpinner showLoader={this.state.showLoader} />
-            : <>
-              {
-                this.state.showOTPage &&
-                <div
-                  style={{
-                    flexDirection: "column",
+            : <Row style={{ height: "100vh" }}>
+              <Col
+                sm={12}
+                style={
+                  {
+                    marginTop: 40,
                     display: "flex",
-                    marginTop: 20,
-                    overflow: "hidden",
-                    overflowY: "auto"
+                    justifyContent: "center",
+                    alignItems: "center",
+                    maxHeight: "60px"
+                  }
+                }
+              >
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    justifyContent: "space-between",
                   }}
                 >
-                  <OTPPage
-                    fromPage="profileDetailPage"
-                    email={this.state.email}
-                    updateStateValue={this.updateStateValue}
-                  />
-                </div>
-              }
-              {
-                this.state.editKeyFactorPage &&
-                <GenerateKeyPage
-                  {...this.props}
-                  email={this.state.email}
-                  walletAddress={this.state.walletAddress}
-                  updateStateValue={this.updateStateValue}
-                  editKeyFactor={true}
-                />
-              }
-              {
-                !this.state.editKeyFactorPage &&
-                !this.state.showOTPage &&
-                <Row style={{ height: "100vh" }}>
-                  <Col
-                    sm={12}
-                    style={
-                      {
-                        marginTop: 40,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        maxHeight: "60px"
-                      }
-                    }
-                  >
-                    <Row
-                      style={{
-                        marginLeft: 0,
-                        marginRight: 0,
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Row
-                        style={{
-                          marginLeft: 0,
-                          marginRight: 0,
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          width: "100%"
-                        }}
-                      >
-                        <img
-                          style={{
-                            height: "60px",
-                            width: "60px",
-                            borderRadius: "50%",
-                            verticalAlign: "middle"
-                          }}
-                          src={`${config.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.phone}?forPOC=true`}
-                          alt=""
-                        />
-                      </Row>
-                      <Row
-                        style={{
-                          marginLeft: 0,
-                          marginRight: 0,
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          width: "100%"
-                        }}
-                      >
-                        <label
-                          style={{
-                            color: "gray",
-                            fontSize: "10px",
-                            fontWeight: 500
-                          }}
-                        >
-                          Hidden for anonymous transactions
-                        </label>
-                      </Row>
-                    </Row>
-                  </Col>
-                  <Col
-                    sm={12}
+                  <Row
                     style={{
-                      marginTop: 10,
-                      backgroundColor: "#e0e0e0",
-                      borderTopLeftRadius: 30,
-                      borderTopRightRadius: 30,
-                      height: window.innerHeight < 565 ? "unset" : "calc(100vh - 90px)"
+                      marginLeft: 0,
+                      marginRight: 0,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%"
                     }}
                   >
-                    {this.state.signupMethod === "web3"
-                      ? <>
-                        <Row style={{ marginTop: 10, justifyContent: "center", alignItems: "center" }}>
-                          <Col
-                            xs={8}
-                            style={{ marginTop: 15 }}
-                            className="d-flex align-items-center"
-                          >
-                            <h6>
-                              {this.state.firstName ? `${this.state.firstName} ${this.state.lastName}` : null}
-                            </h6>
-                          </Col>
-                          <Col
-                            xs={4}
-                            style={{ marginTop: 15, color: "gray" }}
-                            className="d-flex align-items-center justify-content-end"
-                          >
-                            <h6>
-                              Edit
-                              <MdEdit
-                                style={{
-                                  marginLeft: "5px"
-                                }}
-                              />
-                            </h6>
-                          </Col>
-                        </Row>
-                        <Row
-                          style={{
-                            marginLeft: 0,
-                            marginRight: 0,
-                            display: "flex",
-                            // justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Col sm={5} className="d-flex align-items-center">
-                            <div style={{
-                              marginRight: 0,
-                              marginBottom: 10,
-                              border: "1px solid #275996",
-                              borderRadius: "15px",
-                              padding: "6px",
-                              background: "#275996",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}>
-                              <FaLink color="white" />
-                            </div>
-                            <h6 style={{ marginLeft: 5, color: "gray" }}>
-                              {this.state.walletAddress ?
-                                GeneralFunctions._getFormatAddress(this.state.walletAddress)
-                                : "0x0000...0000"}
-                            </h6>
-                            <FaCopy
-                              id="copyToClipboard"
-                              size="16"
-                              style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px", marginRight: "10px" }}
-                              onClick={() => {
-                                Copy(this.state.walletAddress);
-                                this.setState({ showCopyToClipboardToolTip: true });
-                                setTimeout(() => this.setState({ showCopyToClipboardToolTip: false }), 3000);
-                              }}
-                            />
-                            <Tooltip
-                              style={{
-                                fontSize: "15px",
-                                fontWeight: "bold",
-                                background: "rgb(80 84 86)",
-                                borderRadius: "5px",
-                                padding: "5px",
-                                color: "white",
-                              }}
-                              placement="right"
-                              isOpen={this.state.showCopyToClipboardToolTip}
-                              target="copyToClipboard"
-                            >
-                              Copied
-                            </Tooltip>
-                            {/* <MdExitToApp
-                        size="20"
-                        style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px" }}
-                        onClick={this.logout}
-                      /> */}
-                          </Col>
-                        </Row>
-                        <Row
-                          style={{
-                            marginLeft: 0,
-                            marginRight: 0,
-                            display: "flex",
-                            // justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Col
-                            sm={5}
-                            className="d-flex align-items-center"
-                            style={{ color: "gray" }}
-                          >
-                            <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                              Payment Id :
-                            </div>
-                            <h6 style={{ marginLeft: 5 }}>
-                              {this.state.dokuId || "Pending"}
-                            </h6>
-                          </Col>
-                        </Row>
-                        <Row
-                          style={{
-                            marginLeft: 0,
-                            marginRight: 0,
-                            display: "flex",
-                            // justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Col
-                            sm={5}
-                            className="d-flex align-items-center"
-                            style={{ color: "gray" }}
-                          >
-                            <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                              Membership :
-                            </div>
-                            <h6 style={{ marginLeft: 5 }}>
-                              {this.state.membershipStatus || "Pending"}
-                            </h6>
-                          </Col>
-                        </Row>
-                        {GeneralFunctions.getMembershipWithExpiry() &&
-                          <Row
-                            style={{
-                              marginLeft: 0,
-                              marginRight: 0,
-                              display: "flex",
-                              // justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Col
-                              sm={5}
-                              className="d-flex align-items-center"
-                              style={{ color: "gray" }}
-                            >
-                              <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                                Membership Expiry:
-                              </div>
-                              <h6 style={{ marginLeft: 5 }}>
-                                {this.state.expiryTime
-                                  ? moment(Number(this.state.expiryTime) * 1000).local().format("MM/DD/YYYY hh:mm A")
-                                  : ""
-                                }
-                              </h6>
-                            </Col>
-                          </Row>
-                        }
-                        <Row
-                          style={{
-                            marginLeft: 0,
-                            marginRight: 0,
-                            display: "flex",
-                            // justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Col
-                            sm={5}
-                            className="d-flex align-items-center"
-                            style={{ color: "gray" }}
-                          >
-                            <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                              Name :
-                            </div>
-                            <h6 style={{ marginLeft: 5, textTransform: "none" }}>
-                              {`${this.state.firstName} ${this.state.lastName}`}
-                            </h6>
-                          </Col>
-                        </Row>
-                        <Row
-                          style={{
-                            marginLeft: 0,
-                            marginRight: 0,
-                            display: "flex",
-                            // justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Col
-                            sm={5}
-                            className="d-flex align-items-center"
-                            style={{ color: "gray" }}
-                          >
-                            <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                              Phone :
-                            </div>
-                            <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.phone}</h6>
-                          </Col>
-                        </Row>
-                        <Row
-                          style={{
-                            marginLeft: 0,
-                            marginRight: 0,
-                            display: "flex",
-                            // justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Col
-                            sm={5}
-                            className="d-flex align-items-center"
-                            style={{ color: "gray" }}
-                          >
-                            <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                              Username :
-                            </div>
-                            <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.displayUsername}</h6>
-                          </Col>
-                        </Row>
-                        <Row
-                          style={{
-                            marginLeft: 0,
-                            marginRight: 0,
-                            display: "flex",
-                            // justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Col
-                            sm={5}
-                            className="d-flex align-items-center"
-                            style={{ color: "gray" }}
-                          >
-                            <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                              Email :
-                            </div>
-                            <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.email}</h6>
-                          </Col>
-                        </Row>
-                      </>
-                      : <Row
+                    <img
+                      style={{
+                        height: "60px",
+                        width: "60px",
+                        borderRadius: "50%",
+                        verticalAlign: "middle"
+                      }}
+                      src={`${process.env.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.phone}?forPOC=true`}
+                      alt=""
+                    />
+                  </Row>
+                  <Row
+                    style={{
+                      marginLeft: 0,
+                      marginRight: 0,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%"
+                    }}
+                  >
+                    <label
+                      style={{
+                        color: "gray",
+                        fontSize: "10px",
+                        fontWeight: 500
+                      }}
+                    >
+                      Hidden for anonymous transactions
+                    </label>
+                  </Row>
+                </Row>
+              </Col>
+              <Col
+                sm={12}
+                style={{
+                  marginTop: 10,
+                  backgroundColor: "#e0e0e0",
+                  borderTopLeftRadius: 30,
+                  borderTopRightRadius: 30,
+                  height: window.innerHeight < 565 ? "unset" : "calc(100vh - 90px)"
+                }}
+              >
+                <Row style={{ marginTop: 10, justifyContent: "center", alignItems: "center" }}>
+                  <Col
+                    xs={8}
+                    style={{ marginTop: 15 }}
+                    className="d-flex align-items-center"
+                  >
+                    <h6>
+                      {this.state.firstName ? `${this.state.firstName} ${this.state.lastName}` : null}
+                    </h6>
+                  </Col>
+                  <Col
+                    xs={4}
+                    style={{ marginTop: 15, color: "gray" }}
+                    className="d-flex align-items-center justify-content-end"
+                  >
+                    <h6>
+                      Edit
+                      <MdEdit
                         style={{
-                          // justifyContent: "center",
-                          alignItems: "center"
+                          marginLeft: "5px"
                         }}
-                      >
-                        <h4 style={{ marginTop: 20, fontWeight: "bold" }}>Welcome {`${this.state.firstName} ${this.state.lastName}`}</h4>
-                        {/* <MdExitToApp
-                    size="20"
-                    style={{ cursor: "pointer", marginLeft: "7px" }}
-                    onClick={this.logout}
-                  /> */}
-                      </Row>
-                    }
-                    {this.state.signupMethod === "web3"
-                      ? <>
-                        <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                          <Col xs={12} sm={6}>
-                            <Button
-                              onClick={() => {
-                                Server.sendDataToMobileApp(JSON.stringify({ message: 'My credentials' }));
-                              }}
-                              style={{
-                                width: "100%",
-                                fontSize: "15px",
-                                fontWeight: "bold",
-                              }}
-                              className="btn-round" color="info" type="button" outline>
-                              Go to my Credentials
-                            </Button>
-                          </Col>
-                          <Col xs={12} sm={6}>
-                            <Button
-                              onClick={this.toggleEditKeyFactorPage}
-                              style={{
-                                width: "100%",
-                                fontSize: "15px",
-                                fontWeight: "bold",
-                              }}
-                              className="btn-round" color="info" type="button" outline>
-                              Edit authentication factors
-                            </Button>
-                          </Col>
-                        </Row>
-                        {/* <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                  <Col sm={12}>
+                      />
+                    </h6>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    display: "flex",
+                    // justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Col sm={5} className="d-flex align-items-center">
+                    <div style={{
+                      marginRight: 0,
+                      marginBottom: 10,
+                      border: "1px solid #275996",
+                      borderRadius: "15px",
+                      padding: "6px",
+                      background: "#275996",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>
+                      <FaLink color="white" />
+                    </div>
+                    <h6 style={{ marginLeft: 5, color: "gray" }}>
+                      {this.state.walletAddress ?
+                        GeneralFunctions._getFormatAddress(this.state.walletAddress)
+                        : "0x0000...0000"}
+                    </h6>
+                    <FaCopy
+                      id="copyToClipboard"
+                      size="16"
+                      style={{ cursor: "pointer", marginBottom: "7px", marginLeft: "7px", marginRight: "10px" }}
+                      onClick={() => {
+                        Copy(this.state.walletAddress);
+                        this.setState({ showCopyToClipboardToolTip: true });
+                        setTimeout(() => this.setState({ showCopyToClipboardToolTip: false }), 3000);
+                      }}
+                    />
+                    <Tooltip
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                        background: "rgb(80 84 86)",
+                        borderRadius: "5px",
+                        padding: "5px",
+                        color: "white",
+                      }}
+                      placement="right"
+                      isOpen={this.state.showCopyToClipboardToolTip}
+                      target="copyToClipboard"
+                    >
+                      Copied
+                    </Tooltip>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    display: "flex",
+                    // justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Col
+                    sm={5}
+                    className="d-flex align-items-center"
+                    style={{ color: "gray" }}
+                  >
+                    <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
+                      Payment Id :
+                    </div>
+                    <h6 style={{ marginLeft: 5 }}>
+                      {this.state.dokuId || "Pending"}
+                    </h6>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    display: "flex",
+                    // justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Col
+                    sm={5}
+                    className="d-flex align-items-center"
+                    style={{ color: "gray" }}
+                  >
+                    <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
+                      Membership :
+                    </div>
+                    <h6 style={{ marginLeft: 5 }}>
+                      {this.state.membershipStatus || "Pending"}
+                    </h6>
+                  </Col>
+                </Row>
+                {GeneralFunctions.getMembershipWithExpiry() &&
+                  <Row
+                    style={{
+                      marginLeft: 0,
+                      marginRight: 0,
+                      display: "flex",
+                      // justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Col
+                      sm={5}
+                      className="d-flex align-items-center"
+                      style={{ color: "gray" }}
+                    >
+                      <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
+                        Membership Expiry:
+                      </div>
+                      <h6 style={{ marginLeft: 5 }}>
+                        {this.state.expiryTime
+                          ? moment(Number(this.state.expiryTime) * 1000).local().format("MM/DD/YYYY hh:mm A")
+                          : ""
+                        }
+                      </h6>
+                    </Col>
+                  </Row>
+                }
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    display: "flex",
+                    // justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Col
+                    sm={5}
+                    className="d-flex align-items-center"
+                    style={{ color: "gray" }}
+                  >
+                    <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
+                      Name :
+                    </div>
+                    <h6 style={{ marginLeft: 5, textTransform: "none" }}>
+                      {`${this.state.firstName} ${this.state.lastName}`}
+                    </h6>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    display: "flex",
+                    // justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Col
+                    sm={5}
+                    className="d-flex align-items-center"
+                    style={{ color: "gray" }}
+                  >
+                    <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
+                      Phone :
+                    </div>
+                    <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.phone}</h6>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    display: "flex",
+                    // justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Col
+                    sm={5}
+                    className="d-flex align-items-center"
+                    style={{ color: "gray" }}
+                  >
+                    <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
+                      Username :
+                    </div>
+                    <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.displayUsername}</h6>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    marginLeft: 0,
+                    marginRight: 0,
+                    display: "flex",
+                    // justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Col
+                    sm={5}
+                    className="d-flex align-items-center"
+                    style={{ color: "gray" }}
+                  >
+                    <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
+                      Email :
+                    </div>
+                    <h6 style={{ marginLeft: 5, textTransform: "none" }}>{this.state.email}</h6>
+                  </Col>
+                </Row>
+                <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                  <Col xs={12} sm={6}>
                     <Button
-                      onClick={() => { }}
+                      onClick={() => {
+                        Server.sendDataToMobileApp(JSON.stringify({ message: 'My credentials' }));
+                      }}
                       style={{
                         width: "100%",
                         fontSize: "15px",
                         fontWeight: "bold",
                       }}
                       className="btn-round" color="info" type="button" outline>
-                      My Badges
+                      Go to my Credentials
+                    </Button>
+                  </Col>
+                  <Col xs={12} sm={6}>
+                    <Button
+                      onClick={() => this.props.history.push({
+                        pathname: "/generate-key-page",
+                        state: {
+                          email: this.state.email,
+                          walletAddress: this.state.walletAddress,
+                          editKeyFactor: true,
+                        }
+                      })}
+                      style={{
+                        width: "100%",
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                      }}
+                      className="btn-round" color="info" type="button" outline>
+                      Edit authentication factors
                     </Button>
                   </Col>
                 </Row>
                 <Row style={{ justifyContent: "center", alignItems: "center" }}>
                   <Col sm={12}>
                     <Button
-                      onClick={() => { }}
+                      onClick={() => {
+                        Server.sendDataToMobileApp(JSON.stringify({ message: 'homePage' }));
+                      }}
                       style={{
                         width: "100%",
                         fontSize: "15px",
                         fontWeight: "bold",
                       }}
-                      className="btn-round" color="info" type="button" outline>
-                      Set up biometric authentication
+                      className="btn-round" color="info" type="button" size="lg">
+                      Done
                     </Button>
                   </Col>
-                </Row> */}
-                      </>
-                      : <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                        <Col sm={12}>
-                          <Button
-                            onClick={() => {
-                              Server.sendDataToMobileApp(JSON.stringify({ message: 'web3DescriptionPage' }));
-                            }}
-                            style={{
-                              width: "100%",
-                              fontSize: "15px",
-                              fontWeight: "bold",
-                            }}
-                            className="btn-round" color="info" type="button" size="lg" outline>
-                            Learn about Web 3.0 Wallet
-                          </Button>
-                        </Col>
-                      </Row>
-                    }
-                    <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                      <Col sm={12}>
-                        <Button
-                          onClick={() => {
-                            Server.sendDataToMobileApp(JSON.stringify({ message: 'homePage' }));
-                          }}
-                          style={{
-                            width: "100%",
-                            fontSize: "15px",
-                            fontWeight: "bold",
-                          }}
-                          className="btn-round" color="info" type="button" size="lg">
-                          Done
-                        </Button>
-                      </Col>
-                    </Row>
-                    <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                      <Col sm={12}>
-                        <Button
-                          onClick={this.logout}
-                          style={{
-                            width: "100%",
-                            fontSize: "15px",
-                            fontWeight: "bold",
-                          }}
-                          className="btn-round" color="info" type="button" size="lg"
-                          outline
-                        >
-                          Logout
-                        </Button>
-                      </Col>
-                    </Row>
+                </Row>
+                <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                  <Col sm={12}>
+                    <Button
+                      onClick={this.logout}
+                      style={{
+                        width: "100%",
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                      }}
+                      className="btn-round" color="info" type="button" size="lg"
+                      outline
+                    >
+                      Logout
+                    </Button>
                   </Col>
-                </Row >
-              }
-            </>
+                </Row>
+              </Col>
+            </Row >
         }
         <NotificationSystem
           dismissible={false}

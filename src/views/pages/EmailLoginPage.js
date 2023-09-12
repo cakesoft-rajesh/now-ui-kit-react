@@ -170,7 +170,6 @@ class EmailLoginPage extends Component {
         }
       });
       if (response.success) {
-        localStorage.setItem("signupOrLoginMethod", "web3");
         let walletAddress = localStorage.getItem("walletAddress");
         let balance = 0;
         if (!walletAddress) {

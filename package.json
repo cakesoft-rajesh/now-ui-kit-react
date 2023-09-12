@@ -22,6 +22,7 @@
     "react-scripts": "4.0.3",
     "react-select": "^5.7.3",
     "react-spring-bottom-sheet": "^3.4.1",
+    "react-webcam": "^7.1.1",
     "reactstrap": "8.9.0",
     "sass": "1.54.0",
     "siwe": "^1.1.6",

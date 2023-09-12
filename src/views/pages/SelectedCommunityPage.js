@@ -38,7 +38,13 @@ class SelectedCommunityPage extends Component {
 
   render() {
     return (
-      <>
+      <div
+        style={{
+          flexDirection: "column",
+          display: "flex",
+          marginTop: 20,
+        }}
+      >
         <Row>
           <Col style={{ textAlign: "center" }}>
             <h4 style={{ color: "gray", margin: 0, fontWeight: 600 }}>
@@ -82,7 +88,7 @@ class SelectedCommunityPage extends Component {
               onClick={() => {
                 if (appName.value === "zti") {
                   GeneralFunctions.setZTIAppNameData(appName);
-                  this.props.updateStateValue({ selectCommunityPage: false, ztiAppNameData: appName });
+                  this.props.history.push("/login-page");
                 }
               }}
             >
@@ -104,7 +110,7 @@ class SelectedCommunityPage extends Component {
             </Col>
           </Row>
         )}
-      </>
+      </div>
     );
   }
 }

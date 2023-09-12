@@ -31,7 +31,7 @@ class ConnectWalletPage extends Component {
       connector: '',
       web3: '',
       account: '',
-      fromPage: props.fromPage
+      fromPage: this.props.location.state ? this.props.location.state.fromPage : ""
     };
   }
 
@@ -68,7 +68,6 @@ class ConnectWalletPage extends Component {
         this.props.history.push({
           pathname: "/profile-page",
           state: {
-            signupMethod: "web3",
             walletAddress
           }
         });
@@ -79,7 +78,6 @@ class ConnectWalletPage extends Component {
         this.props.history.push({
           pathname: "/profile-page",
           state: {
-            signupMethod: "web3",
             walletAddress
           }
         });
@@ -179,7 +177,6 @@ class ConnectWalletPage extends Component {
           localStorage.setItem("signIn", true);
           localStorage.setItem("chainId", chainId);
           localStorage.setItem("walletAddress", signatureVerified.walletAddress);
-          localStorage.setItem("signupOrLoginMethod", "web3");
           this.checkIfDataStoredOnBlockchain(web3, signatureVerified.walletAddress);
         } else {
           throw Error(signatureVerified.message);
@@ -259,12 +256,12 @@ class ConnectWalletPage extends Component {
         });
         if (signatureVerified.success) {
           localStorage.setItem('signIn', true);
-          localStorage.setItem('signupOrLoginMethod', 'web3');
           localStorage.setItem('chainId', chainId);
+          localStorage.setItem("tokenId", signatureVerified.user.tokenId);
+          localStorage.setItem("accessToken", signatureVerified.accessToken);
           localStorage.setItem('walletAddress', signatureVerified.walletAddress);
-          Object.assign(response, { signupMethod: 'web3' });
+          Object.assign(signatureVerified, { signupMethod: "web3" });
           Server.sendDataToMobileApp(JSON.stringify(signatureVerified));
-          this.setState({ showLoader: false });
         } else {
           throw Error(signatureVerified.message);
         }
@@ -312,134 +309,142 @@ class ConnectWalletPage extends Component {
         {
           this.state.showLoader
             ? <PageSpinner showLoader={this.state.showLoader} />
-            : <Row style={{ justifyContent: "center", alignItems: "center" }}>
-              <Col
-                xs="12"
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Row
+            : <div
+              style={{
+                flexDirection: "column",
+                display: "flex",
+                marginTop: 20,
+              }}
+            >
+              <Row style={{ justifyContent: "center", alignItems: "center" }}>
+                <Col
+                  xs="12"
                   style={{
-                    justifyContent: "flex-start",
+                    justifyContent: "center",
                     alignItems: "center",
-                    margin: "0px 15px"
                   }}
                 >
-                  <h3 style={{ color: "gray", margin: 0 }}>Connect a wallet</h3>
-                </Row>
-                <Row
-                  style={{
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                    margin: "10px 15px"
-                  }}
-                >
-                  <h5 style={{ color: "gray", margin: 0, fontSize: "15px", fontWeight: 600 }}>Recommended</h5>
-                </Row>
-                <Row
-                  style={{
-                    marginBottom: "5px",
-                    padding: "15px",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    background: "rgb(245, 246, 252)",
-                    borderTopLeftRadius: "10px",
-                    borderTopRightRadius: "10px"
-                  }}
-                >
-                  <Button
-                    onClick={() => this.connectWallet(false)}
+                  <Row
                     style={{
-                      width: "100%",
-                      margin: 0,
-                      padding: 0,
-                      border: 0,
-                      color: "black",
-                      display: 'flex',
-                      alignItems: "center"
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      margin: "0px 15px"
                     }}
-                    color="info"
-                    type="button"
-                    size="lg"
-                    outline
                   >
-                    <img
-                      style={{
-                        width: "40px",
-                        cursor: "pointer",
-                        border: "1px solid rgb(210, 217, 238)",
-                        borderRadius: "8px"
-                      }}
-                      alt="..."
-                      src="metamask.png"
-                    />
-                    <label
-                      style={{
-                        cursor: "pointer",
-                        marginLeft: "10px",
-                        marginBottom: 0,
-                        fontSize: "20px",
-                        fontWeight: 600
-                      }}
-                    >
-                      MetaMask
-                    </label>
-                  </Button>
-                </Row>
-                <Row
-                  style={{
-                    marginBottom: "5px",
-                    padding: "15px",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    background: "rgb(245, 246, 252)",
-                    borderBottomLeftRadius: "10px",
-                    borderBottomRightRadius: "10px"
-                  }}
-                >
-                  <Button
-                    onClick={() => this.connectWallet(true)}
+                    <h3 style={{ color: "gray", margin: 0 }}>Connect a wallet</h3>
+                  </Row>
+                  <Row
                     style={{
-                      width: "100%",
-                      margin: 0,
-                      padding: 0,
-                      border: 0,
-                      color: "black",
-                      display: 'flex',
-                      alignItems: "center"
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      margin: "10px 15px"
                     }}
-                    color="info"
-                    type="button"
-                    size="lg"
-                    outline
                   >
-                    <img
+                    <h5 style={{ color: "gray", margin: 0, fontSize: "15px", fontWeight: 600 }}>Recommended</h5>
+                  </Row>
+                  <Row
+                    style={{
+                      marginBottom: "5px",
+                      padding: "15px",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      background: "rgb(245, 246, 252)",
+                      borderTopLeftRadius: "10px",
+                      borderTopRightRadius: "10px"
+                    }}
+                  >
+                    <Button
+                      onClick={() => this.connectWallet(false)}
                       style={{
-                        width: "40px",
-                        cursor: "pointer",
-                        border: "1px solid rgb(210, 217, 238)",
-                        borderRadius: "8px"
+                        width: "100%",
+                        margin: 0,
+                        padding: 0,
+                        border: 0,
+                        color: "black",
+                        display: 'flex',
+                        alignItems: "center"
                       }}
-                      alt="..."
-                      src="walletConnect.png"
-                    />
-                    <label
-                      style={{
-                        cursor: "pointer",
-                        marginLeft: "10px",
-                        marginBottom: 0,
-                        fontSize: "20px",
-                        fontWeight: 600
-                      }}
+                      color="info"
+                      type="button"
+                      size="lg"
+                      outline
                     >
-                      WalletConnect
-                    </label>
-                  </Button>
-                </Row>
-              </Col>
-            </Row>
+                      <img
+                        style={{
+                          width: "40px",
+                          cursor: "pointer",
+                          border: "1px solid rgb(210, 217, 238)",
+                          borderRadius: "8px"
+                        }}
+                        alt="..."
+                        src="metamask.png"
+                      />
+                      <label
+                        style={{
+                          cursor: "pointer",
+                          marginLeft: "10px",
+                          marginBottom: 0,
+                          fontSize: "20px",
+                          fontWeight: 600
+                        }}
+                      >
+                        MetaMask
+                      </label>
+                    </Button>
+                  </Row>
+                  <Row
+                    style={{
+                      marginBottom: "5px",
+                      padding: "15px",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      background: "rgb(245, 246, 252)",
+                      borderBottomLeftRadius: "10px",
+                      borderBottomRightRadius: "10px"
+                    }}
+                  >
+                    <Button
+                      onClick={() => this.connectWallet(true)}
+                      style={{
+                        width: "100%",
+                        margin: 0,
+                        padding: 0,
+                        border: 0,
+                        color: "black",
+                        display: 'flex',
+                        alignItems: "center"
+                      }}
+                      color="info"
+                      type="button"
+                      size="lg"
+                      outline
+                    >
+                      <img
+                        style={{
+                          width: "40px",
+                          cursor: "pointer",
+                          border: "1px solid rgb(210, 217, 238)",
+                          borderRadius: "8px"
+                        }}
+                        alt="..."
+                        src="walletConnect.png"
+                      />
+                      <label
+                        style={{
+                          cursor: "pointer",
+                          marginLeft: "10px",
+                          marginBottom: 0,
+                          fontSize: "20px",
+                          fontWeight: 600
+                        }}
+                      >
+                        WalletConnect
+                      </label>
+                    </Button>
+                  </Row>
+                </Col>
+              </Row>
+            </div>
         }
         <NotificationSystem
           dismissible={false}
