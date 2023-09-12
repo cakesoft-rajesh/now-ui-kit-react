@@ -12,8 +12,9 @@ import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
+import config from "../../config";
 import * as Server from "../../utils/Server";
-import * as NetworkData from "utils/networks";
+// import * as NetworkData "utils/networks";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import 'react-spring-bottom-sheet/dist/style.css'
 
@@ -37,8 +38,8 @@ class ConnectWalletPage extends Component {
   checkIfDataStoredOnBlockchain = async (web3, walletAddress) => {
     const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
     const contractAddress = membershipWithExpiry
-      ? process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY
-      : process.env.REACT_APP_CONTRACT_ADDRESS;
+      ? config.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY
+      : config.REACT_APP_CONTRACT_ADDRESS;
     const membershipABI_JSON = membershipWithExpiry
       ? membershipWithExpiryABI
       : membershipABI;
@@ -103,7 +104,7 @@ class ConnectWalletPage extends Component {
         let provider;
         if (isMobileDevice || this.state.walletConnect) {
           let walletConnectProvider = await wc.getWeb3Provider({
-            rpc: { [this.state.connector.chainId]: await NetworkData.networks[this.state.connector.chainId] }
+            rpc: { [this.state.connector.chainId]: await config.networks[this.state.connector.chainId] }
           });
           await walletConnectProvider.enable();
           provider = walletConnectProvider;
@@ -128,7 +129,7 @@ class ConnectWalletPage extends Component {
         if (isMobileDevice || this.state.walletConnect) {
           chainId = this.state.connector.chainId;
           let walletConnectProvider = await wc.getWeb3Provider({
-            rpc: { [chainId]: await NetworkData.networks[chainId] }
+            rpc: { [chainId]: await config.networks[chainId] }
           });
           await walletConnectProvider.enable();
           web3 = new Web3(walletConnectProvider);

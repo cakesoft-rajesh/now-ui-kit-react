@@ -15,8 +15,9 @@ import ConnectWalletPage from "./ConnectWalletPage";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
+import config from "../../config";
 import * as Server from "../../utils/Server";
-import * as NetworkData from "utils/networks";
+// import * as NetworkData from "utils/networks";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import "react-spring-bottom-sheet/dist/style.css"
 import OTPPage from "./OTPPage";
@@ -39,7 +40,7 @@ class LoginPage extends Component {
       showConnectWalletPage: false,
       selectCommunityPage: true,
       editKeyFactorPage: false,
-      rpcUrl: "https://rpc-mumbai.maticvigil.com",
+      rpcUrl: config.rpcUrl
     };
   }
 
@@ -63,7 +64,7 @@ class LoginPage extends Component {
           const connector = await wc.connect();
           let walletConnectProvider = await wc.getWeb3Provider({
             rpc: {
-              [connector.chainId]: await NetworkData.networks[connector.chainId],
+              [connector.chainId]: await config.networks[connector.chainId],
             },
           });
           await walletConnectProvider.enable();
@@ -111,8 +112,8 @@ class LoginPage extends Component {
   checkIfDataStoredOnBlockchain = async (web3, walletAddress) => {
     const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
     const contractAddress = membershipWithExpiry
-      ? process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY
-      : process.env.REACT_APP_CONTRACT_ADDRESS
+      ? config.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY
+      : config.REACT_APP_CONTRACT_ADDRESS
     const membershipABI_JSON = membershipWithExpiry
       ? membershipWithExpiryABI
       : membershipABI

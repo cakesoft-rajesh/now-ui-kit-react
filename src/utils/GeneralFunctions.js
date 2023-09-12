@@ -1,7 +1,8 @@
 import CryptoJS from "crypto-js";
+import config from "../config";
 
 export const encrypt = (string) => {
-  var base64 = CryptoJS.AES.encrypt(string, process.env.REACT_APP_SECRET).toString();
+  var base64 = CryptoJS.AES.encrypt(string, config.REACT_APP_SECRET).toString();
   var parsedData = CryptoJS.enc.Base64.parse(base64);
   var hex = parsedData.toString(CryptoJS.enc.Hex);
   return hex;
@@ -10,7 +11,7 @@ export const encrypt = (string) => {
 export const decrypt = (cipherText) => {
   var reb64 = CryptoJS.enc.Hex.parse(cipherText);
   var bytes = reb64.toString(CryptoJS.enc.Base64);
-  var decrypt = CryptoJS.AES.decrypt(bytes, process.env.REACT_APP_SECRET);
+  var decrypt = CryptoJS.AES.decrypt(bytes, config.REACT_APP_SECRET);
   var plain = decrypt.toString(CryptoJS.enc.Utf8);
   return plain;
 }

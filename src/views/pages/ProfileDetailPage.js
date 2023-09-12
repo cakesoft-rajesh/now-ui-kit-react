@@ -15,6 +15,7 @@ import NotificationSystem from "react-notification-system";
 import OTPPage from "./OTPPage";
 import GenerateKeyPage from "./GenerateKeyPage";
 import PageSpinner from "components/PageSpinner";
+import config from "../../config";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
@@ -213,7 +214,7 @@ class ProfileDetailPage extends Component {
                             borderRadius: "50%",
                             verticalAlign: "middle"
                           }}
-                          src={`${process.env.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.phone}?forPOC=true`}
+                          src={`${config.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.phone}?forPOC=true`}
                           alt=""
                         />
                       </Row>

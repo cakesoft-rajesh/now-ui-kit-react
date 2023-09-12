@@ -11,6 +11,7 @@ import {
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
+import config from "config";
 import * as Server from "../../utils/Server";
 import "react-spring-bottom-sheet/dist/style.css"
 
@@ -29,7 +30,7 @@ class GenerateKeyPage extends Component {
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: localStorage.getItem("keyShare2"),
       walletAddress: props.walletAddress,
-      rpcUrl: "https://rpc-mumbai.maticvigil.com"
+      rpcUrl: config.rpcUrl
     };
   }
 

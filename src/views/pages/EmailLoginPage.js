@@ -18,6 +18,7 @@ import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
+import config from "../../config";
 import * as Server from "../../utils/Server";
 import "react-spring-bottom-sheet/dist/style.css"
 
@@ -37,7 +38,7 @@ class EmailLoginPage extends Component {
       showSheetForAccount: false,
       showSheetForAddress: false,
       showTokenTransferModal: false,
-      rpcUrl: "https://rpc-mumbai.maticvigil.com"
+      rpcUrl: config.rpcUrl
     };
   }
 
@@ -63,7 +64,7 @@ class EmailLoginPage extends Component {
       const tokenId = new Date().getTime();
       const web3 = new Web3(this.state.rpcUrl);
       await web3.eth.accounts.wallet.add(localStorage.getItem("privateKey"));
-      const myContract = await new web3.eth.Contract(membershipABI, process.env.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
+      const myContract = await new web3.eth.Contract(membershipABI, config.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
       let blockchainResponse = await myContract.methods
         .mintMembership("Mint_Membership", tokenId)
         .send(
@@ -95,7 +96,7 @@ class EmailLoginPage extends Component {
       let walletAddress = localStorage.getItem("walletAddress");
       const web3 = new Web3(this.state.rpcUrl);
       await web3.eth.accounts.wallet.add(localStorage.getItem("privateKey"));
-      const myContract = await new web3.eth.Contract(membershipWithExpiryABI, process.env.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
+      const myContract = await new web3.eth.Contract(membershipWithExpiryABI, config.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
       let blockchainResponse = await myContract.methods
         .payment(this.state.toAddress)
         .send(

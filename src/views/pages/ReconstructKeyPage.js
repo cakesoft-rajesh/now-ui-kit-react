@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
+import config from "config";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import "react-spring-bottom-sheet/dist/style.css"
@@ -28,7 +29,7 @@ class ReconstructKeyPage extends Component {
       setPassword: false,
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: "",
-      rpcUrl: "https://rpc-mumbai.maticvigil.com",
+      rpcUrl: config.rpcUrl
     };
   }
 

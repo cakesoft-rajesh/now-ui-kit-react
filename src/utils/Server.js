@@ -1,9 +1,10 @@
 import axios from "axios";
 import * as GeneralFunctions from "./GeneralFunctions";
+import config from "../config";
 
 export const sendDataToMobileApp = async (message) => {
     window.ReactNativeWebView.postMessage(message);
-    // window.location.assign(`${process.env.REACT_APP_BASE_URL}/reactNativeMessage?message=${message}`);
+    // window.location.assign(`${config.REACT_APP_BASE_URL}/reactNativeMessage?message=${message}`);
 }
 
 export const request = async (obj, token) => {
@@ -22,7 +23,7 @@ export const request = async (obj, token) => {
             }
         }
         const response = await axios.create({
-            baseURL: process.env.REACT_APP_BASE_URL,
+            baseURL: config.REACT_APP_BASE_URL,
             headers: headers,
         })(obj);
         return response.data;
@@ -47,7 +48,7 @@ export const request = async (obj, token) => {
 
 export const postWithFormData = async (path, body, accessToken) => {
     try {
-        let url = `${process.env.REACT_APP_CHAT_BASE_URL}${path}`;
+        let url = `${config.REACT_APP_CHAT_BASE_URL}${path}`;
         const response = await axios.post(url, body, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
