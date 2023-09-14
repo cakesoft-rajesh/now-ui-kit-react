@@ -171,7 +171,7 @@ class SignUpPage extends Component {
                       </Button>
                     </Row>
                   </Form>
-                  <Row
+                  {/* <Row
                     style={{
                       alignItems: "center",
                       justifyContent: "center",
@@ -195,7 +195,7 @@ class SignUpPage extends Component {
                     >
                       OR sign up with an existing connected wallet
                     </label>
-                  </Row>
+                  </Row> */}
                 </Col>
               </Row>
             </div>

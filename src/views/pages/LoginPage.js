@@ -274,7 +274,7 @@ class LoginPage extends Component {
                       </Button>
                     </Row>
                   </Form>
-                  <Row
+                  {/* <Row
                     style={{
                       alignItems: "center",
                       justifyContent: "center",
@@ -298,7 +298,7 @@ class LoginPage extends Component {
                     >
                       OR login with an existing connected wallet
                     </label>
-                  </Row>
+                  </Row> */}
                 </Col>
               </Row>
             </div>
