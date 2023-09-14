@@ -31,8 +31,8 @@
   },
   "scripts": {
     "start": "cp .env.development.local .env && react-scripts start",
-    "build": "cp .env.staging.local .env && react-scripts build && gulp licenses",
-    "build:production": "cp .env.production.local .env && react-scripts build && gulp licenses",
+    "build:staging": "cp .env.staging .env.production.local && react-scripts build && gulp licenses",
+    "build:production": "cp .env.production .env.production.local && react-scripts build && gulp licenses",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
