@@ -64,7 +64,8 @@ class ProfileDetailPage extends Component {
             showLoader: false,
             ...response.user,
             user: response.user
-          }, async () => (!this.state.skip2FactorAuth && await this.sendOTP()));
+          });
+          // async () => (!this.state.skip2FactorAuth && await this.sendOTP()));
         } else {
           this.props.history.push({
             pathname: "/profile-page",
