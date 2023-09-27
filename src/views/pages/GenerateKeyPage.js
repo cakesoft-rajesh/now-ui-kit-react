@@ -85,6 +85,7 @@ class GenerateKeyPage extends Component {
       });
       if (response.success) {
         localStorage.setItem("walletAddress", this.state.walletAddress);
+        localStorage.setItem("privateKeyCreated", true);
         this.state.goBack();
       }
     } catch (error) {

@@ -43,7 +43,7 @@ class ProfilePage extends Component {
       password: this.props.location.state ? this.props.location.state.password : "",
       confirmPassword: this.props.location.state ? this.props.location.state.confirmPassword : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
-      privateKeyCreated: this.props.location.state ? this.props.location.state.privateKeyCreated : false,
+      privateKeyCreated: localStorage.getItem("privateKeyCreated") ? true : false,
       ztiAppName: "",
       countryCode: {
         label: "🇮🇩 +62",

@@ -82,6 +82,7 @@ class OTPPage extends Component {
         if (this.state.fromPage === "loginPage") {
           if (response.privateKeyCreated && response.userRegistered) {
             localStorage.setItem("keyShare1", response.keyShare1);
+            localStorage.setItem("privateKeyCreated", response.privateKeyCreated);
             this.props.history.push({
               pathname: "/reconstruct-key-page",
               state: {
@@ -94,16 +95,16 @@ class OTPPage extends Component {
           }
         } else {
           if (response.privateKeyCreated) {
-           localStorage.setItem("keyShare1", response.keyShare1);
+            localStorage.setItem("keyShare1", response.keyShare1);
             localStorage.setItem("keyShare2", response.keyShare2);
             localStorage.setItem("walletAddress", response.walletAddress);
+            localStorage.setItem("privateKeyCreated", response.privateKeyCreated);
             this.props.history.push({
               pathname: "/profile-page",
               state: {
                 signUpByEmail: true,
                 email: this.state.email,
-                walletAddress: response.walletAddress,
-                privateKeyCreated: response.privateKeyCreated
+                walletAddress: response.walletAddress
               }
             });
           } else {
