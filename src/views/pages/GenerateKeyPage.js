@@ -31,7 +31,7 @@ class GenerateKeyPage extends Component {
       setPassword: false,
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: localStorage.getItem("keyShare2"),
-      walletAddress: props.walletAddress,
+      walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       rpcUrl: config.rpcUrl,
       goBack: this.props.history.goBack
     };
