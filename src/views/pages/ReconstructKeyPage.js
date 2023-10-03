@@ -81,7 +81,12 @@ class ReconstructKeyPage extends Component {
         localStorage.setItem("tokenId", response.user.tokenId);
         localStorage.setItem("walletAddress", response.walletAddress);
         localStorage.setItem("accessToken", response.accessToken);
-        Object.assign(response, { signupMethod: "web3" });
+        Object.assign(response,
+          {
+            signupMethod: "web3",
+            message: "Logged in Successfully"
+          }
+        );
         Server.sendDataToMobileApp(JSON.stringify(response));
       } else {
         throw Error(response.message);
