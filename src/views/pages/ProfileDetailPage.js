@@ -225,7 +225,12 @@ class ProfileDetailPage extends Component {
                     style={{ marginTop: 15, color: "gray" }}
                     className="d-flex align-items-center justify-content-end"
                   >
-                    <h6>
+                    <h6
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      onClick={() => Server.sendDataToMobileApp(JSON.stringify({ message: 'profile edit' }))}
+                    >
                       Edit
                       <MdEdit
                         style={{
