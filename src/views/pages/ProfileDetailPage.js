@@ -229,7 +229,17 @@ class ProfileDetailPage extends Component {
                       style={{
                         cursor: "pointer",
                       }}
-                      onClick={() => Server.sendDataToMobileApp(JSON.stringify({ message: 'profile edit' }))}
+                      onClick={() => Server.sendDataToMobileApp(JSON.stringify(
+                        {
+                          message: 'profile edit',
+                          email: this.state.email,
+                          firstName: this.state.firstName,
+                          lastName: this.state.lastName,
+                          phone: this.state.phone,
+                          displayUsername: this.state.displayUsername,
+                          username: this.state.user.username
+                        }
+                      ))}
                     >
                       Edit
                       <MdEdit
