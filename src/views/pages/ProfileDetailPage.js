@@ -225,7 +225,7 @@ class ProfileDetailPage extends Component {
                     style={{ marginTop: 15, color: "gray" }}
                     className="d-flex align-items-center justify-content-end"
                   >
-                    <h6
+                    {/* <h6
                       style={{
                         cursor: "pointer",
                       }}
@@ -247,7 +247,7 @@ class ProfileDetailPage extends Component {
                           marginLeft: "5px"
                         }}
                       />
-                    </h6>
+                    </h6> */}
                   </Col>
                 </Row>
                 <Row
