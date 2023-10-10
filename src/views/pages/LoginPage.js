@@ -293,6 +293,7 @@ class LoginPage extends Component {
                         <a
                           style={{ color: "blue" }}
                           target="_blank"
+                          rel="noreferrer"
                           href="https://zocial.io/termsOfService.html"
                         >
                           Terms of Service
@@ -301,6 +302,7 @@ class LoginPage extends Component {
                         <a
                           style={{ color: "blue" }}
                           target="_blank"
+                          rel="noreferrer"
                           href="https://file.zocial.io/doku/DOKUPlus_TNC.pdf"
                         >
                           Terms of Use

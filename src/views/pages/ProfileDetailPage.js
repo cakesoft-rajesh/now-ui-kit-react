@@ -1,6 +1,6 @@
 import moment from "moment";
 import Copy from "copy-to-clipboard";
-import { MdEdit } from "react-icons/md";
+// import { MdEdit } from "react-icons/md";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import { FaLink, FaCopy } from "react-icons/fa";
