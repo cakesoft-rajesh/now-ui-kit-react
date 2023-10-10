@@ -273,6 +273,40 @@ class LoginPage extends Component {
                         Log in
                       </Button>
                     </Row>
+                    <Row
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textAlign: "center"
+                      }}
+                    >
+                      <label
+                        style={{
+                          color: "gray",
+                          margin: 0,
+                          marginTop: 10,
+                          fontWeight: 500,
+                          cursor: "pointer"
+                        }}
+                      >
+                        By logging in you are agreeing to ZTI's{" "}
+                        <a
+                          style={{ color: "blue" }}
+                          target="_blank"
+                          href="https://zocial.io/termsOfService.html"
+                        >
+                          Terms of Service
+                        </a>{" "}
+                        and Doku's{" "}
+                        <a
+                          style={{ color: "blue" }}
+                          target="_blank"
+                          href="https://file.zocial.io/doku/DOKUPlus_TNC.pdf"
+                        >
+                          Terms of Use
+                        </a>
+                      </label>
+                    </Row>
                   </Form>
                   {/* <Row
                     style={{
