@@ -11,11 +11,11 @@ const config = {
     networks: process.env.REACT_APP_NODE_ENV === "production"
         ? {
             // chainId : RPC URL
-            80001: 'https://matic-mumbai.chainstacklabs.com' //for polygon mainnet
+            80001: "https://matic-mumbai.chainstacklabs.com" //for polygon mainnet
         }
         : {
             // chainId : RPC URL
-            80001: 'https://matic-mumbai.chainstacklabs.com' //for polygon testnet
+            80001: "https://matic-mumbai.chainstacklabs.com" //for polygon testnet
         }
 };
 

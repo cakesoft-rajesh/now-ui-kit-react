@@ -34,7 +34,7 @@ export const request = async (obj, token) => {
                 window.location.assign(`${window.location.origin}/login-page`);
             }
             if (error.response.data && error.response.data.message) {
-                if (error.response.data.message === 'Unauthorized') {
+                if (error.response.data.message === "Unauthorized") {
                     window.location.assign(`${window.location.origin}/login-page`);
                 }
                 throw Error(error.response.data.message);
@@ -63,7 +63,7 @@ export const postWithFormData = async (path, body, accessToken) => {
                 window.location.assign(`${window.location.origin}/login-page`);
             }
             if (error.response.data && error.response.data.message) {
-                if (error.response.data.message === 'Unauthorized') {
+                if (error.response.data.message === "Unauthorized") {
                     window.location.assign(`${window.location.origin}/login-page`);
                 }
                 throw Error(error.response.data.message);

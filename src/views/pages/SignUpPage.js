@@ -111,7 +111,7 @@ class SignUpPage extends Component {
                     }}
                   >
                     <img
-                      alt=''
+                      alt=""
                       src={`/logos/${this.state.ztiAppNameData.logo}`}
                       width="30%"
                       style={{ marginTop: 40 }}

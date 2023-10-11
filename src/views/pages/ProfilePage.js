@@ -103,8 +103,8 @@ class ProfilePage extends Component {
         let web3;
         if (this.state.signUpByEmail) {
           web3 = new Web3(this.state.rpcUrl);
-          // const keyShare1 = localStorage.getItem('keyShare1');
-          // const keyShare2 = localStorage.getItem('keyShare2');
+          // const keyShare1 = localStorage.getItem("keyShare1");
+          // const keyShare2 = localStorage.getItem("keyShare2");
           // const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
           await web3.eth.accounts.wallet.add(this.state.sponserPrivateKey);
         } else {
@@ -215,8 +215,8 @@ class ProfilePage extends Component {
         let web3;
         if (this.state.signUpByEmail) {
           web3 = new Web3(this.state.rpcUrl);
-          // const keyShare1 = localStorage.getItem('keyShare1');
-          // const keyShare2 = localStorage.getItem('keyShare2');
+          // const keyShare1 = localStorage.getItem("keyShare1");
+          // const keyShare2 = localStorage.getItem("keyShare2");
           // const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
           await web3.eth.accounts.wallet.add(this.state.sponserPrivateKey);
         } else {
@@ -445,9 +445,9 @@ class ProfilePage extends Component {
                       />
                     </label>
                     <input
-                      type='file'
-                      id='imgupload'
-                      style={{ display: 'none' }}
+                      type="file"
+                      id="imgupload"
+                      style={{ display: "none" }}
                       accept=".png,.jpg,.jpeg"
                       onChange={this.handleChange}
                     />
@@ -642,8 +642,8 @@ class ProfilePage extends Component {
                           <Button
                             style={{
                               width: "100%",
-                              fontSize: '15px',
-                              fontWeight: 'bold',
+                              fontSize: "15px",
+                              fontWeight: "bold",
                             }}
                             outline
                             color="info"
@@ -681,8 +681,8 @@ class ProfilePage extends Component {
                       <Button
                         style={{
                           width: "100%",
-                          fontSize: '15px',
-                          fontWeight: 'bold',
+                          fontSize: "15px",
+                          fontWeight: "bold",
                         }}
                         color="info"
                         type="submit"

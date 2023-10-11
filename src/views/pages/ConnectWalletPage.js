@@ -1,5 +1,5 @@
-import Web3 from 'web3';
-import { SiweMessage } from 'siwe';
+import Web3 from "web3";
+import { SiweMessage } from "siwe";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import {
@@ -7,7 +7,7 @@ import {
   Col,
   Button,
 } from "reactstrap";
-import { BottomSheet } from 'react-spring-bottom-sheet'
+import { BottomSheet } from "react-spring-bottom-sheet"
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
@@ -15,7 +15,7 @@ import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import config from "../../config";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
-import 'react-spring-bottom-sheet/dist/style.css'
+import "react-spring-bottom-sheet/dist/style.css"
 
 const wc = new WalletConnect();
 
@@ -27,9 +27,9 @@ class ConnectWalletPage extends Component {
       showLoader: false,
       showSheet: false,
       walletConnect: false,
-      connector: '',
-      web3: '',
-      account: '',
+      connector: "",
+      web3: "",
+      account: "",
       fromPage: this.props.location.state ? this.props.location.state.fromPage : ""
     };
   }
@@ -193,7 +193,7 @@ class ConnectWalletPage extends Component {
   authenticateForLoginPage = async () => {
     try {
       this.setState({ showLoader: true, showSheet: false });
-      const signIn = localStorage.getItem('signIn');
+      const signIn = localStorage.getItem("signIn");
       if (signIn) {
         Server.sendDataToMobileApp(JSON.stringify({ message: 'Logged in Successfully' }));
       } else {
@@ -218,9 +218,9 @@ class ConnectWalletPage extends Component {
               uri: window.location.origin,
               address: account,
               chainId,
-              version: '1',
+              version: "1",
               statement: message,
-              nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
+              nonce: await GeneralFunctions.getUid(16, "alphaNumeric"),
             });
             messageToSign = siwe.prepareMessage();
             try {
@@ -237,15 +237,15 @@ class ConnectWalletPage extends Component {
             uri: window.location.origin,
             address: this.state.account,
             chainId,
-            version: '1',
+            version: "1",
             statement: message,
-            nonce: await GeneralFunctions.getUid(16, 'alphaNumeric'),
+            nonce: await GeneralFunctions.getUid(16, "alphaNumeric"),
           });
           messageToSign = siwe.prepareMessage();
           signature = await web3.eth.personal.sign(messageToSign, this.state.account);
         }
         let signatureVerified = await Server.request({
-          url: '/web3Auth/verifySignMessage',
+          url: "/web3Auth/verifySignMessage",
           method: "POST",
           data: {
             messageToSign,
@@ -254,11 +254,11 @@ class ConnectWalletPage extends Component {
           }
         });
         if (signatureVerified.success) {
-          localStorage.setItem('signIn', true);
-          localStorage.setItem('chainId', chainId);
+          localStorage.setItem("signIn", true);
+          localStorage.setItem("chainId", chainId);
           localStorage.setItem("tokenId", signatureVerified.user.tokenId);
           localStorage.setItem("accessToken", signatureVerified.accessToken);
-          localStorage.setItem('walletAddress', signatureVerified.walletAddress);
+          localStorage.setItem("walletAddress", signatureVerified.walletAddress);
           Object.assign(signatureVerified, { signupMethod: "web3" });
           Server.sendDataToMobileApp(JSON.stringify(signatureVerified));
         } else {
@@ -360,7 +360,7 @@ class ConnectWalletPage extends Component {
                         padding: 0,
                         border: 0,
                         color: "black",
-                        display: 'flex',
+                        display: "flex",
                         alignItems: "center"
                       }}
                       color="info"
@@ -410,7 +410,7 @@ class ConnectWalletPage extends Component {
                         padding: 0,
                         border: 0,
                         color: "black",
-                        display: 'flex',
+                        display: "flex",
                         alignItems: "center"
                       }}
                       color="info"

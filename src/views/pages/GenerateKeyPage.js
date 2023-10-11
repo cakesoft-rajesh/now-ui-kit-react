@@ -40,8 +40,8 @@ class GenerateKeyPage extends Component {
   setPassword = async () => {
     try {
       this.setState({ showLoader: true });
-      if (!this.state.password) throw Error('Password is required');
-      if (this.state.password !== this.state.confirmPassword) throw Error('Password mismatch');
+      if (!this.state.password) throw Error("Password is required");
+      if (this.state.password !== this.state.confirmPassword) throw Error("Password mismatch");
       let response = await Server.request({
         url: "/web3Auth/setPassword",
         method: "POST",
@@ -72,7 +72,7 @@ class GenerateKeyPage extends Component {
   registerPrivateKey = async () => {
     try {
       this.setState({ showLoader: true });
-      if (this.state.password !== this.state.confirmPassword) throw Error('Password mismatch');
+      if (this.state.password !== this.state.confirmPassword) throw Error("Password mismatch");
       let response = await Server.request({
         url: "/web3Auth/registerPrivateKey",
         method: "POST",

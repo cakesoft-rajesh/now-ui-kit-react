@@ -28,14 +28,14 @@ function _getRandomInt(min, max) {
 }
 
 export const getUid = async function (length, type) {
-  let uid = '';
-  let chars = '';
-  if (type === 'numeric') {
-    chars = '123456789';
-  } else if (type === 'alphaNumeric') {
-    chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
-  } else if (type === 'alphaNumericWithSmallLetter') {
-    chars = 'abcdefghijklmnopqrstuvwxyz123456789';
+  let uid = "";
+  let chars = "";
+  if (type === "numeric") {
+    chars = "123456789";
+  } else if (type === "alphaNumeric") {
+    chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789";
+  } else if (type === "alphaNumericWithSmallLetter") {
+    chars = "abcdefghijklmnopqrstuvwxyz123456789";
   }
   const charsLength = chars.length;
   for (let i = 0; i < length; ++i) {
@@ -150,10 +150,10 @@ export const getPageLimit = () => {
 
 
 export const getMembershipWithExpiry = () => {
-  switch (localStorage.getItem('membershipWithExpiry')) {
-    case 'true':
+  switch (localStorage.getItem("membershipWithExpiry")) {
+    case "true":
       return true;
-    case 'false':
+    case "false":
       return false;
     default:
       return false;
@@ -170,6 +170,6 @@ export const getZTIAppNameData = () => {
 
 export const maskEmailId = (email) => {
   return email.replace(/^(.)(.*)(.@.*)$/,
-    (_, val, val1, val2) => val + val1.replace(/./g, '*') + val2
+    (_, val, val1, val2) => val + val1.replace(/./g, "*") + val2
   );
 }

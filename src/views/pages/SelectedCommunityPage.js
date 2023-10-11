@@ -66,7 +66,7 @@ class SelectedCommunityPage extends Component {
               type="ztiAppName"
               value={this.state.ztiAppName}
               onChange={(event) => {
-                const regex = new RegExp(event.target.value, 'i');
+                const regex = new RegExp(event.target.value, "i");
                 const communityList = this.state.allCommunityList.filter(appName => appName.value.match(regex));
                 this.setState({ ztiAppName: event.target.value, communityList: communityList ? communityList : this.state.allCommunityList })
               }}

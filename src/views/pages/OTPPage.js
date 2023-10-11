@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import Web3 from "web3";
 import OtpInput from "react-otp-input";
 import React, { Component } from "react";
 import {
@@ -10,7 +10,7 @@ import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
-import 'react-spring-bottom-sheet/dist/style.css'
+import "react-spring-bottom-sheet/dist/style.css"
 
 class OTPPage extends Component {
 

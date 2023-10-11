@@ -719,7 +719,7 @@ class EmailLoginPage extends Component {
                   color: "black"
                 }}
                 rel="noreferrer"
-                href={`${window.location.origin}/exportPrivateKey?privateKey=${localStorage.getItem('privateKey')}`}
+                href={`${window.location.origin}/exportPrivateKey?privateKey=${localStorage.getItem("privateKey")}`}
                 target="_blank"
               >
                 Export Private Key
