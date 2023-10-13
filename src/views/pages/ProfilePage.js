@@ -237,14 +237,23 @@ class ProfilePage extends Component {
           web3 = new Web3(provider);
         }
         const myContract = await new web3.eth.Contract(membershipABI, config.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
-        let blockchainResponse = await myContract.methods
-          .mintMembership("tokenURI", tokenId)
-          .send(
-            {
-              from: this.state.sponserWalletAddress
-            }
-          );
-        if (blockchainResponse.status) {
+        let blockchainResponse;
+        try {
+          blockchainResponse = await myContract.methods
+            .mintMembership("tokenURI", tokenId)
+            .send(
+              {
+                from: this.state.sponserWalletAddress
+              }
+            );
+        } catch (error) {
+          this.notificationSystem.addNotification({
+            message: `Blockchain error - ${error.message}`,
+            level: "error",
+          });
+          this.setState({ showLoader: false });
+        }
+        if (blockchainResponse && blockchainResponse.status) {
           Object.assign(data, {
             transactionId: blockchainResponse.transactionHash,
             date: new Date(),
