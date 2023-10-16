@@ -1,4 +1,3 @@
-import Web3 from "web3";
 import React, { Component } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { MdVerified } from "react-icons/md";
@@ -14,7 +13,6 @@ import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import config from "config";
 import * as Server from "../../utils/Server";
-import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import "react-spring-bottom-sheet/dist/style.css"
 
 class ReconstructKeyPage extends Component {
@@ -24,57 +22,23 @@ class ReconstructKeyPage extends Component {
     this.state = {
       showLoader: false,
       email: this.props.location.state ? this.props.location.state.email : "",
-      fromPage: this.props.location.state ? this.props.location.state.fromPage : "",
       password: "",
       showPassword: false,
-      setPassword: false,
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: "",
       rpcUrl: config.rpcUrl
     };
   }
 
-  verifyPassword = async () => {
+  verifyPasswordAndLogin = async () => {
     try {
       this.setState({ showLoader: true });
       let response = await Server.request({
-        url: "/web3Auth/verifyPassword",
+        url: "/web3Auth/verifyPasswordAndLogin",
         method: "POST",
         data: {
           email: this.state.email,
           password: this.state.password
-        }
-      });
-      if (response.success) {
-        this.setState({
-          showLoader: false,
-          password: "",
-          setPassword: true,
-          keyShare2: response.keyShare2
-        });
-        localStorage.setItem("keyShare2", response.keyShare2);
-      }
-    } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
-      this.setState({ showLoader: false });
-    }
-  };
-
-  reconstructPrivateKey = async () => {
-    try {
-      this.setState({ showLoader: true });
-      const privateKey = await GeneralFunctions.decrypt(`${this.state.keyShare1}${this.state.keyShare2}`);
-      let web3 = new Web3(this.state.rpcUrl);
-      let account = web3.eth.accounts.privateKeyToAccount(privateKey);
-      localStorage.setItem("walletAddress", account.address);
-      let response = await Server.request({
-        url: "/web3Auth/loginWithEmail",
-        method: "POST",
-        data: {
-          walletAddress: account.address
         }
       });
       if (response.success) {
@@ -88,8 +52,6 @@ class ReconstructKeyPage extends Component {
           }
         );
         Server.sendDataToMobileApp(JSON.stringify(response));
-      } else {
-        throw Error(response.message);
       }
     } catch (error) {
       this.notificationSystem.addNotification({
@@ -98,7 +60,7 @@ class ReconstructKeyPage extends Component {
       });
       this.setState({ showLoader: false });
     }
-  }
+  };
 
   render() {
     return (
@@ -187,130 +149,87 @@ class ReconstructKeyPage extends Component {
                     }}
                   >
                     <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      {this.state.setPassword
-                        ? <MdVerified
-                          size="45"
-                          color="#2ca8ff"
-                        />
-                        : <img
-                          style={{ width: "80px" }}
-                          alt="..."
-                          src="set_password.png"
-                        />
-                      }
+                      <img
+                        style={{ width: "80px" }}
+                        alt="..."
+                        src="set_password.png"
+                      />
                     </Col>
                     <Col sm={12} className="mt-2" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
                       <h5 style={{ fontWeight: 700 }}>Enter recovery password</h5>
                     </Col>
-                    {this.state.setPassword
-                      ? <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                      <InputGroup>
                         <Input
                           style={{ border: "transparent", color: "black", background: "white" }}
-                          value={this.state.keyShare2}
-                          disabled
-                        ></Input>
-                      </Col>
-                      : <>
-                        <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                          <InputGroup>
-                            <Input
-                              style={{ border: "transparent", color: "black", background: "white" }}
-                              value={this.state.password}
-                              placeholder="Enter password"
-                              type={this.state.showPassword ? "text" : "password"}
-                              required
-                              onChange={(event) => this.setState({ password: event.target.value })}
+                          value={this.state.password}
+                          placeholder="Enter password"
+                          type={this.state.showPassword ? "text" : "password"}
+                          required
+                          onChange={(event) => this.setState({ password: event.target.value })}
+                        />
+                        <InputGroupText
+                          style={{
+                            border: "transparent",
+                            borderTopLeftRadius: "0px",
+                            borderBottomLeftRadius: "0px",
+                            backgroundColor: "rgb(198, 198, 198)",
+                            padding: "0px 20px"
+                          }}
+                        >
+                          {this.state.showPassword
+                            ? <IoMdEyeOff
+                              size="20"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => this.setState({ showPassword: false })}
                             />
-                            <InputGroupText
-                              style={{
-                                border: "transparent",
-                                borderTopLeftRadius: "0px",
-                                borderBottomLeftRadius: "0px",
-                                backgroundColor: "rgb(198, 198, 198)",
-                                padding: "0px 20px"
-                              }}
-                            >
-                              {this.state.showPassword
-                                ? <IoMdEyeOff
-                                  size="20"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => this.setState({ showPassword: false })}
-                                />
-                                : <IoMdEye
-                                  size="20"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => this.setState({ showPassword: true })}
-                                />
-                              }
-                            </InputGroupText>
-                          </InputGroup>
-                        </Col>
-                        <Col sm={12} className="mt-1" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                          <label
-                            style={{
-                              cursor: "pointer",
-                              fontWeight: 600,
-                              fontSize: "15px"
-                            }}
-                            onClick={() =>
-                              this.props.history.push({
-                                pathname: "/generate-key-page",
-                                state: {
-                                  email: this.state.email,
-                                  walletAddress: localStorage.getItem("walletAddress"),
-                                  editKeyFactor: true,
-                                  fromPage: this.state.fromPage
-                                }
-                              })
+                            : <IoMdEye
+                              size="20"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => this.setState({ showPassword: true })}
+                            />
+                          }
+                        </InputGroupText>
+                      </InputGroup>
+                    </Col>
+                    <Col sm={12} className="mt-1" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                      <label
+                        style={{
+                          cursor: "pointer",
+                          fontWeight: 600,
+                          fontSize: "15px"
+                        }}
+                        onClick={() =>
+                          this.props.history.push({
+                            pathname: "/generate-key-page",
+                            state: {
+                              email: this.state.email,
+                              walletAddress: localStorage.getItem("walletAddress"),
+                              editKeyFactor: true
                             }
-                          >
-                            Forgot Password?
-                          </label>
-                        </Col>
-                        <Col sm={12} className="mt-1" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                          <Button
-                            style={{
-                              width: "100%",
-                              padding: "13px 0px",
-                              fontSize: "15px",
-                              fontWeight: "bold",
-                            }}
-                            className="btn-round"
-                            color="info"
-                            size="lg"
-                            onClick={this.verifyPassword}
-                          >
-                            Enter password
-                          </Button>
-                        </Col>
-                      </>
-                    }
-                  </Row>
-                  {
-                    this.state.setPassword &&
-                    <Row
-                      style={{
-                        justifyContent: "center",
-                        margin: "20px"
-                      }}
-                    >
+                          })
+                        }
+                      >
+                        Forgot Password?
+                      </label>
+                    </Col>
+                    <Col sm={12} className="mt-1" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
                       <Button
                         style={{
                           width: "100%",
                           padding: "13px 0px",
                           fontSize: "15px",
                           fontWeight: "bold",
-                          margin: 0
                         }}
                         className="btn-round"
                         color="info"
                         size="lg"
-                        onClick={this.reconstructPrivateKey}
+                        onClick={this.verifyPasswordAndLogin}
                       >
-                        Reconstruct your key
+                        Enter password to login again
                       </Button>
-                    </Row>
-                  }
+                    </Col>
+                  </Row>
                 </Col>
               </Row >
             </div >

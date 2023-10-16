@@ -1,5 +1,4 @@
 import Web3 from "web3";
-import { Link } from "react-router-dom";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import {
@@ -34,13 +33,14 @@ class LoginPage extends Component {
   }
 
   async componentDidMount() {
+    let params = await GeneralFunctions.getQueryStringParams(window.location.search);
+    if (params.walletAddress) localStorage.setItem("walletAddress", params.walletAddress);
     const ztiAppNameData = GeneralFunctions.getZTIAppNameData();
     if (ztiAppNameData) {
       this.setState({ ztiAppNameData });
     } else {
       this.props.history.push("/select-community-page");
     }
-    let params = await GeneralFunctions.getQueryStringParams(window.location.search);
     localStorage.setItem("membershipWithExpiry", params.membershipWithExpiry ? params.membershipWithExpiry : false);
     if (params.dokuId) localStorage.setItem("dokuId", params.dokuId);
     const signIn = localStorage.getItem("signIn");
@@ -85,17 +85,6 @@ class LoginPage extends Component {
     const myContract = await new web3.eth.Contract(membershipABI_JSON, contractAddress);
     try {
       let tokenId = localStorage.getItem("tokenId");
-      // if (!tokenId) {
-      //   let response = await Server.request({
-      //     url: `/user/getTokenId?walletAddress=${walletAddress}`,
-      //     method: "GET"
-      //   });
-      //   if (response.success && response.tokenId) {
-      //     tokenId = response.tokenId;
-      //   } else {
-      //     tokenId = 1;
-      //   }
-      // }
       const response = await myContract.methods
         .ownerOf(tokenId)
         .call();
@@ -143,7 +132,8 @@ class LoginPage extends Component {
           pathname: "/otp-page",
           state: {
             fromPage: "loginPage",
-            email: this.state.email
+            email: this.state.email,
+            walletCreated: response.walletCreated
           }
         });
       }
@@ -178,30 +168,6 @@ class LoginPage extends Component {
                     alignItems: "center",
                   }}
                 >
-                  <Row
-                    style={{
-                      justifyContent: "end",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Button
-                      style={{
-                        padding: "13px 30px",
-                        fontSize: "15px",
-                        fontWeight: "bold",
-                        marginBottom: "30px",
-                      }}
-                      className="btn-round"
-                      color="info"
-                      type="button"
-                      size="lg"
-                      outline
-                      to="/signup-page"
-                      tag={Link}
-                    >
-                      Sign Up
-                    </Button>
-                  </Row>
                   <Row
                     style={{
                       justifyContent: "center",

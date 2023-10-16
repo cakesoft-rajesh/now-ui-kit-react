@@ -320,7 +320,7 @@ class ProfileDetailPage extends Component {
                     style={{ color: "gray" }}
                   >
                     <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                      Payment Id :
+                      Payment Gateway Id :
                     </div>
                     <h6 style={{ marginLeft: 5 }}>
                       {this.state.dokuId || "Pending"}

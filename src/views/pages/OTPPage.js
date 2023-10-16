@@ -22,7 +22,10 @@ class OTPPage extends Component {
       email: this.props.location.state ? this.props.location.state.email : "",
       fromPage: this.props.location.state ? this.props.location.state.fromPage : "",
       userData: this.props.location.state ? this.props.location.state.user : "",
-      goBack: this.props.history.goBack
+      walletCreated: this.props.location.state ? this.props.location.state.walletCreated : false,
+      goBack: this.props.history.goBack,
+      walletAddressExists: localStorage.getItem("walletAddress") ? true : false,
+      walletAddress: localStorage.getItem("walletAddress")
     };
   }
 
@@ -75,55 +78,64 @@ class OTPPage extends Component {
         data: {
           email: this.state.email,
           otp: this.state.otp,
-          verifyOTPFrom: this.state.fromPage === "loginPage" ? "login" : "signup"
+          walletAddress: this.state.walletAddress,
+          walletAddressExistsOnPhone: this.state.walletAddressExists
         }
       });
       if (response.success) {
-        if (this.state.fromPage === "loginPage") {
-          if (response.privateKeyCreated && response.userRegistered) {
+        if (this.state.walletAddressExists) {
+          localStorage.setItem("tokenId", response.userData.user.tokenId);
+          localStorage.setItem("walletAddress", response.userData.walletAddress);
+          localStorage.setItem("accessToken", response.userData.accessToken);
+          Object.assign(response.userData,
+            {
+              signupMethod: "web3",
+              message: "Logged in Successfully"
+            }
+          );
+          Server.sendDataToMobileApp(JSON.stringify(response.userData));
+        } else {
+          if (response.userRegistered) {
             localStorage.setItem("keyShare1", response.keyShare1);
             localStorage.setItem("privateKeyCreated", response.privateKeyCreated);
             this.props.history.push({
               pathname: "/reconstruct-key-page",
               state: {
-                email: this.state.email,
-                fromPage: this.state.fromPage
+                email: this.state.email
               }
             });
           } else {
-            throw Error("User not found. Please register account first");
-          }
-        } else {
-          if (response.privateKeyCreated) {
-            localStorage.setItem("keyShare1", response.keyShare1);
-            localStorage.setItem("keyShare2", response.keyShare2);
-            localStorage.setItem("walletAddress", response.walletAddress);
-            localStorage.setItem("privateKeyCreated", response.privateKeyCreated);
-            this.props.history.push({
-              pathname: "/profile-page",
-              state: {
-                signUpByEmail: true,
-                email: this.state.email,
-                walletAddress: response.walletAddress
-              }
-            });
-          } else {
-            const { privateKey, walletAddress } = this.createWallet();
-            const encryptPrivateKey = await GeneralFunctions.encrypt(privateKey);
-            const keyShare1 = encryptPrivateKey.slice(0, encryptPrivateKey.length / 2)
-            const keyShare2 = encryptPrivateKey.slice(encryptPrivateKey.length / 2, encryptPrivateKey.length)
-            this.setState({ showLoader: false });
-            localStorage.setItem("keyShare1", keyShare1);
-            localStorage.setItem("keyShare2", keyShare2);
-            localStorage.setItem("walletAddress", walletAddress);
-            this.props.history.push({
-              pathname: "/profile-page",
-              state: {
-                signUpByEmail: true,
-                email: this.state.email,
-                walletAddress,
-              }
-            });
+            if (response.privateKeyCreated) {
+              localStorage.setItem("keyShare1", response.keyShare1);
+              localStorage.setItem("keyShare2", response.keyShare2);
+              localStorage.setItem("walletAddress", response.walletAddress);
+              localStorage.setItem("privateKeyCreated", response.privateKeyCreated);
+              this.props.history.push({
+                pathname: "/profile-page",
+                state: {
+                  signUpByEmail: true,
+                  email: this.state.email,
+                  walletAddress: response.walletAddress
+                }
+              });
+            } else {
+              const { privateKey, walletAddress } = this.createWallet();
+              const encryptPrivateKey = await GeneralFunctions.encrypt(privateKey);
+              const keyShare1 = encryptPrivateKey.slice(0, encryptPrivateKey.length / 2)
+              const keyShare2 = encryptPrivateKey.slice(encryptPrivateKey.length / 2, encryptPrivateKey.length)
+              this.setState({ showLoader: false });
+              localStorage.setItem("keyShare1", keyShare1);
+              localStorage.setItem("keyShare2", keyShare2);
+              localStorage.setItem("walletAddress", walletAddress);
+              this.props.history.push({
+                pathname: "/profile-page",
+                state: {
+                  signUpByEmail: true,
+                  email: this.state.email,
+                  walletAddress,
+                }
+              });
+            }
           }
         }
       }
@@ -162,11 +174,7 @@ class OTPPage extends Component {
                         fontWeight: "500",
                       }}
                     >
-                      {
-                        this.state.fromPage === "profileDetailPage"
-                          ? `A verification code will be sent to your email ${this.state.email && GeneralFunctions.maskEmailId(this.state.email)}`
-                          : "A verification code will be sent to your email."
-                      }
+                      {`A verification code will be sent to your email ${this.state.email && GeneralFunctions.maskEmailId(this.state.email)}`}
                     </div>
                   </Row>
                   <Row style={{ justifyContent: "flex-start", marginTop: 5 }}>
@@ -217,16 +225,9 @@ class OTPPage extends Component {
                       color="info"
                       type="submit"
                       size="lg"
-                      onClick={this.state.fromPage === "profileDetailPage"
-                        ? this.verifyOTPFor2FA
-                        : this.verifyOTP
-                      }
+                      onClick={this.verifyOTP}
                     >
-                      {
-                        this.state.fromPage === "profileDetailPage"
-                          ? "Verify OTP"
-                          : "Continue"
-                      }
+                      Verify OTP
                     </Button>
                   </Row>
                   <Row style={{ justifyContent: "flex-start", marginTop: 50 }}>
@@ -238,8 +239,8 @@ class OTPPage extends Component {
                       }}
                     >
                       {
-                        this.state.fromPage !== "profileDetailPage" &&
-                        "A blockchain connected wallet address will be created for you to protect your identity, enable passwordless sign in, and allow access to new benefits and rewards"
+                        (this.state.fromPage !== "profileDetailPage" && !this.state.walletAddressExists && !this.state.walletCreated)
+                        && "A blockchain connected wallet address will be created for you to protect your identity, enable passwordless sign in, and allow access to new benefits and rewards"
                       }
                     </div>
                   </Row>

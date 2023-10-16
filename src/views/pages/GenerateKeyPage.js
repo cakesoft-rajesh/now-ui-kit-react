@@ -23,7 +23,6 @@ class GenerateKeyPage extends Component {
       showLoader: false,
       email: this.props.location.state ? this.props.location.state.email : "",
       editKeyFactor: this.props.location.state ? this.props.location.state.editKeyFactor : "",
-      fromPage: this.props.location.state ? this.props.location.state.fromPage : "",
       password: "",
       confirmPassword: "",
       showPassword: false,
