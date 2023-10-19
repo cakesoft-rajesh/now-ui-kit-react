@@ -9,7 +9,7 @@ import * as GeneralFunctions from "../../utils/GeneralFunctions";
 
 const intialValue = [
   {
-    label: "ZTI",
+    label: "PT. Zocial Teknologi Indonesia",
     value: "zti",
     logo: "zti.png"
   },
@@ -60,7 +60,7 @@ class SelectedCommunityPage extends Component {
                 marginRight: 10,
                 borderColor: "gray",
                 padding: "10px 12px",
-                fontSize: "13px"
+                fontSize: "15px"
               }}
               placeholder="Search for your community"
               type="ztiAppName"

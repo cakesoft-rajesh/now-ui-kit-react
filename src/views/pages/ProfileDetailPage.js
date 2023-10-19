@@ -1,6 +1,6 @@
 import moment from "moment";
 import Copy from "copy-to-clipboard";
-// import { MdEdit } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import { FaLink, FaCopy } from "react-icons/fa";
@@ -25,7 +25,6 @@ class ProfileDetailPage extends Component {
     this.state = {
       user: {},
       email: this.props.location.state ? this.props.location.state.email : "",
-      password: this.props.location.state ? this.props.location.state.password : "",
       firstName: this.props.location.state ? this.props.location.state.firstName : "",
       lastName: this.props.location.state ? this.props.location.state.lastName : "",
       phone: this.props.location.state ? this.props.location.state.phone : "",
@@ -225,7 +224,7 @@ class ProfileDetailPage extends Component {
                     style={{ marginTop: 15, color: "gray" }}
                     className="d-flex align-items-center justify-content-end"
                   >
-                    {/* <h6
+                    <h6
                       style={{
                         cursor: "pointer",
                       }}
@@ -247,7 +246,7 @@ class ProfileDetailPage extends Component {
                           marginLeft: "5px"
                         }}
                       />
-                    </h6> */}
+                    </h6>
                   </Col>
                 </Row>
                 <Row

@@ -185,6 +185,7 @@ class LoginPage extends Component {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
+                      textAlign: "center"
                     }}
                   >
                     <h3 style={{ color: "gray", marginTop: 15, fontWeight: 600 }}>{this.state.ztiAppNameData.label}</h3>
@@ -212,6 +213,7 @@ class LoginPage extends Component {
                           style={{
                             width: "100%",
                             borderColor: "gray",
+                            fontSize: "15px"
                           }}
                           placeholder="Enter email"
                           type="email"

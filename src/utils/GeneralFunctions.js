@@ -173,3 +173,8 @@ export const maskEmailId = (email) => {
     (_, val, val1, val2) => val + val1.replace(/./g, "*") + val2
   );
 }
+
+let profileData;
+export const getProfileData = () => profileData;
+
+export const setProfileData = (data) => profileData = data;

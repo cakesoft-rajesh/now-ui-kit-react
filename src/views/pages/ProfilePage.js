@@ -40,8 +40,6 @@ class ProfilePage extends Component {
       displayUsername: "",
       email: this.props.location.state ? this.props.location.state.email : "",
       signUpByEmail: this.props.location.state ? this.props.location.state.signUpByEmail : false,
-      password: this.props.location.state ? this.props.location.state.password : "",
-      confirmPassword: this.props.location.state ? this.props.location.state.confirmPassword : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       privateKeyCreated: localStorage.getItem("privateKeyCreated") ? true : false,
       ztiAppName: "",
@@ -64,6 +62,8 @@ class ProfilePage extends Component {
   }
 
   async componentDidMount() {
+    const profileData = await GeneralFunctions.getProfileData();
+    if (profileData) this.setState(profileData);
     const ztiAppNameData = await GeneralFunctions.getZTIAppNameData();
     const countryCodesOptions = await CountryCode.map(code => ({
       label: `${code.emoji} +${code.dialingCode}`,
@@ -163,8 +163,6 @@ class ProfilePage extends Component {
                 pathname: "/profile-detail-page",
                 state: {
                   email: this.state.email,
-                  password: this.state.password,
-                  confirmPassword: this.state.confirmPassword,
                   firstName: this.state.firstName,
                   lastName: this.state.lastName,
                   phone: `${this.state.countryCode.value}${this.state.phone}`,
@@ -280,8 +278,6 @@ class ProfilePage extends Component {
               pathname: "/profile-detail-page",
               state: {
                 email: this.state.email,
-                password: this.state.password,
-                confirmPassword: this.state.confirmPassword,
                 firstName: this.state.firstName,
                 lastName: this.state.lastName,
                 phone: `${this.state.countryCode.value}${this.state.phone}`,
@@ -658,13 +654,28 @@ class ProfilePage extends Component {
                             color="info"
                             type="button"
                             className="btn-round"
-                            onClick={() => this.props.history.push({
-                              pathname: "/generate-key-page",
-                              state: {
-                                email: this.state.email,
-                                walletAddress: this.state.walletAddress,
-                              }
-                            })}
+                            onClick={() => {
+                              GeneralFunctions.setProfileData(
+                                {
+                                  firstName: this.state.firstName,
+                                  lastName: this.state.lastName,
+                                  phone: this.state.phone,
+                                  displayUsername: this.state.displayUsername,
+                                  email: this.state.email,
+                                  walletAddress: this.state.walletAddress,
+                                  file: this.state.file,
+                                  fileName: this.state.fileName,
+                                  fileData: this.state.fileData
+                                }
+                              );
+                              this.props.history.push({
+                                pathname: "/generate-key-page",
+                                state: {
+                                  email: this.state.email,
+                                  walletAddress: this.state.walletAddress,
+                                }
+                              })
+                            }}
                           >
                             Set authentication factors for future login and to seamlessly switch devices
                           </Button>
