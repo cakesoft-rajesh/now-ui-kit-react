@@ -148,18 +148,6 @@ export const getPageLimit = () => {
   return localStorage.getItem("pageLimit");
 };
 
-
-export const getMembershipWithExpiry = () => {
-  switch (localStorage.getItem("membershipWithExpiry")) {
-    case "true":
-      return true;
-    case "false":
-      return false;
-    default:
-      return false;
-  };
-};
-
 export const setZTIAppNameData = (data) => {
   localStorage.setItem("ztiAppNameData", JSON.stringify(data));
 };

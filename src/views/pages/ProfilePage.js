@@ -21,7 +21,6 @@ import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
 import CountryCode from "../../utils/CountryCode.json";
 import membershipABI from "../../contracts_abi/membership.json";
-import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
 import config from "../../config";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
@@ -76,115 +75,6 @@ class ProfilePage extends Component {
     }, 5000);
   }
 
-  signupWithExpiry = async (event) => {
-    try {
-      event.preventDefault();
-      this.setState({ showLoader: true });
-      const tokenId = new Date().getTime();
-      let url = "/web3Auth/signup";
-      let data = {
-        membershipWithExpiry: true,
-        tokenId,
-        email: this.state.email,
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        phone: `${this.state.countryCode.value}${this.state.phone}`,
-        userName: `${this.state.countryCode.value}${this.state.phone}`,
-        displayUsername: this.state.displayUsername,
-        walletAddress: this.state.walletAddress,
-        ztiAppName: this.state.ztiAppName
-      };
-      let verifyDataResponse = await Server.request({
-        url: "/web3Auth/verifyData",
-        method: "POST",
-        data
-      });
-      if (verifyDataResponse.success) {
-        let web3;
-        if (this.state.signUpByEmail) {
-          web3 = new Web3(this.state.rpcUrl);
-          // const keyShare1 = localStorage.getItem("keyShare1");
-          // const keyShare2 = localStorage.getItem("keyShare2");
-          // const privateKey = await GeneralFunctions.decrypt(`${keyShare1}${keyShare2}`);
-          await web3.eth.accounts.wallet.add(this.state.sponserPrivateKey);
-        } else {
-          let details = navigator.userAgent;
-          let regexp = /android|iphone|kindle|ipad/i;
-          let isMobileDevice = regexp.test(details);
-          let provider;
-          if (isMobileDevice) {
-            const connector = await wc.connect();
-            let walletConnectProvider = await wc.getWeb3Provider({
-              rpc: { [connector.chainId]: await config.networks[connector.chainId] }
-            });
-            await walletConnectProvider.enable();
-            provider = walletConnectProvider;
-          } else {
-            provider = Web3.givenProvider;
-          }
-          web3 = new Web3(provider);
-        }
-        const myContract = await new web3.eth.Contract(membershipWithExpiryABI, config.REACT_APP_CONTRACT_ADDRESS_WITH_EXPIRY, { gas: 1000000 });
-        let blockchainResponse = await myContract.methods
-          .mintMembership("tokenUri", tokenId, 0)
-          .send(
-            {
-              from: this.state.sponserWalletAddress
-            }
-          );
-        if (blockchainResponse.status) {
-          const date = new Date();
-          let paymentResponse = await myContract.methods
-            .payment("0xC2E56AE0EFB206cEd1F27F54D983cD1270833144")
-            .send(
-              {
-                from: this.state.walletAddress,
-                value: await web3.utils.toWei("0.00001", "ether")
-              }
-            );
-          if (paymentResponse.status) {
-            Object.assign(data, {
-              paymentTransactionId: paymentResponse.transactionHash,
-              transactionId: blockchainResponse.transactionHash,
-              date,
-              paymentTransactionDate: new Date(),
-            });
-            let response = await Server.request({
-              url,
-              method: "POST",
-              data
-            });
-            if (response.success) {
-              this.setState({ showLoader: false });
-              localStorage.setItem("tokenId", tokenId);
-              localStorage.setItem("accessToken", response.accessToken);
-              await Server.sendDataToMobileApp(JSON.stringify(response));
-              this.props.history.push({
-                pathname: "/profile-detail-page",
-                state: {
-                  email: this.state.email,
-                  firstName: this.state.firstName,
-                  lastName: this.state.lastName,
-                  phone: `${this.state.countryCode.value}${this.state.phone}`,
-                  userName: `${this.state.countryCode.value}${this.state.phone}`,
-                  displayUsername: this.state.displayUsername,
-                  walletAddress: this.state.walletAddress,
-                  skip2FactorAuth: true
-                }
-              });
-            }
-          }
-        }
-      }
-    } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
-      this.setState({ showLoader: false });
-    }
-  };
-
   signup = async (event) => {
     try {
       event.preventDefault();
@@ -193,7 +83,6 @@ class ProfilePage extends Component {
       const tokenId = new Date().getTime();
       let url = "/web3Auth/signup";
       let data = {
-        membershipWithExpiry: false,
         tokenId,
         email: this.state.email,
         firstName: this.state.firstName,
@@ -335,9 +224,8 @@ class ProfilePage extends Component {
         await connector.killSession();
       }
     }
-    const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
     await GeneralFunctions.clearFullLocalStorage();
-    this.props.history.push(`/login-page?membershipWithExpiry=${membershipWithExpiry}`)
+    this.props.history.push(`/login-page`)
   }
 
   toggleConfirmationModal = () => {
@@ -788,10 +676,7 @@ class ProfilePage extends Component {
                     margin: "25px 0px 0px 0px",
                     background: "transparent",
                   }}
-                  onClick={(event) => GeneralFunctions.getMembershipWithExpiry()
-                    ? this.signupWithExpiry(event)
-                    : this.signup(event)
-                  }
+                  onClick={(event) => this.signup(event)}
                 >
                   OK
                 </Button>

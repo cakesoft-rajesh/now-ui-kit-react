@@ -53,7 +53,7 @@ class ProfileDetailPage extends Component {
       const chainId = localStorage.getItem("chainId");
       let response = await Server.request(
         {
-          url: `/user/detail?chainId=${chainId}&walletAddress=${walletAddress}&tokenId=${tokenId}&membershipWithExpiry=${GeneralFunctions.getMembershipWithExpiry()}`,
+          url: `/user/detail?chainId=${chainId}&walletAddress=${walletAddress}&tokenId=${tokenId}`,
           method: "GET",
         }
       );
@@ -125,9 +125,8 @@ class ProfileDetailPage extends Component {
         await connector.killSession();
       }
     }
-    const membershipWithExpiry = GeneralFunctions.getMembershipWithExpiry();
     await GeneralFunctions.clearFullLocalStorage();
-    this.props.history.push(`/login-page?membershipWithExpiry=${membershipWithExpiry}`)
+    this.props.history.push(`/login-page`)
   }
 
   render() {
@@ -348,33 +347,6 @@ class ProfileDetailPage extends Component {
                     </h6>
                   </Col>
                 </Row>
-                {GeneralFunctions.getMembershipWithExpiry() &&
-                  <Row
-                    style={{
-                      marginLeft: 0,
-                      marginRight: 0,
-                      display: "flex",
-                      // justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Col
-                      sm={5}
-                      className="d-flex align-items-center"
-                      style={{ color: "gray" }}
-                    >
-                      <div style={{ fontWeight: "bold", marginRight: 0, marginBottom: 10 }}>
-                        Membership Expiry:
-                      </div>
-                      <h6 style={{ marginLeft: 5 }}>
-                        {this.state.expiryTime
-                          ? moment(Number(this.state.expiryTime) * 1000).local().format("MM/DD/YYYY hh:mm A")
-                          : ""
-                        }
-                      </h6>
-                    </Col>
-                  </Row>
-                }
                 <Row
                   style={{
                     marginLeft: 0,
