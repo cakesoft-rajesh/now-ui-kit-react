@@ -5,16 +5,16 @@ const config = {
     REACT_APP_CONTRACT_ADDRESS: process.env.REACT_APP_CONTRACT_ADDRESS,
     REACT_APP_SECRET: process.env.REACT_APP_SECRET,
     rpcUrl: process.env.REACT_APP_NODE_ENV === "production"
-        ? "https://rpc-mumbai.maticvigil.com"
+        ? "https://polygon-rpc.com"
         : "https://rpc-mumbai.maticvigil.com",
     networks: process.env.REACT_APP_NODE_ENV === "production"
         ? {
             // chainId : RPC URL
-            80001: "https://matic-mumbai.chainstacklabs.com" //for polygon mainnet
+            80001: "https://polygon-rpc.com" //for polygon mainnet
         }
         : {
             // chainId : RPC URL
-            80001: "https://matic-mumbai.chainstacklabs.com" //for polygon testnet
+            80001: "https://rpc-mumbai.maticvigil.com" //for polygon testnet
         }
 };
 
