@@ -15,7 +15,9 @@ const config = {
         : {
             // chainId : RPC URL
             80001: "https://rpc-mumbai.maticvigil.com" //for polygon testnet
-        }
+        },
+    sponserWalletAddress: process.env.REACT_APP_SPONSER_WALLET_ADDRESS,
+    sponserPrivateKey: process.env.REACT_APP_SPONSER_PRIVATE_KEY
 };
 
 export default config;
