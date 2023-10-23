@@ -161,7 +161,7 @@ class ReconstructKeyPage extends Component {
                     <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
                       <InputGroup>
                         <Input
-                          style={{ border: "transparent", color: "black", background: "white" }}
+                          style={{ border: "transparent", color: "black", background: "white", fontSize: "15px" }}
                           value={this.state.password}
                           placeholder="Enter password"
                           type={this.state.showPassword ? "text" : "password"}

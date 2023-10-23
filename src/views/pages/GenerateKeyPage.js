@@ -196,7 +196,7 @@ class GenerateKeyPage extends Component {
                     <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
                       <InputGroup>
                         <Input
-                          style={{ border: "transparent", color: "black", background: "white" }}
+                          style={{ border: "transparent", color: "black", background: "white", fontSize: "15px" }}
                           value={this.state.password}
                           placeholder="create password"
                           type={this.state.showPassword ? "text" : "password"}
@@ -230,7 +230,7 @@ class GenerateKeyPage extends Component {
                     <Col sm={12} className="mt-3" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
                       <InputGroup>
                         <Input
-                          style={{ border: "transparent", color: "black", background: "white" }}
+                          style={{ border: "transparent", color: "black", background: "white", fontSize: "15px" }}
                           value={this.state.confirmPassword}
                           placeholder="confirm password"
                           type={this.state.showConfirmPassword ? "text" : "password"}

@@ -445,6 +445,7 @@ class ProfilePage extends Component {
                           marginBottom: 10,
                           width: "100%",
                           backgroundColor: "white",
+                          fontSize: "15px"
                         }}
                         placeholder="Enter first name"
                         type="text"
@@ -458,6 +459,7 @@ class ProfilePage extends Component {
                           marginBottom: 10,
                           width: "100%",
                           backgroundColor: "white",
+                          fontSize: "15px"
                         }}
                         placeholder="Enter last name"
                         type="text"
@@ -473,7 +475,7 @@ class ProfilePage extends Component {
                               control: (baseStyles) => ({
                                 ...baseStyles,
                                 borderRadius: "30px",
-                                fontSize: "0.8571em",
+                                fontSize: "15px",
                                 color: "#E3E3E3"
                               })
                             }}
@@ -490,6 +492,7 @@ class ProfilePage extends Component {
                               marginBottom: 10,
                               width: "100%",
                               backgroundColor: "white",
+                              fontSize: "15px"
                             }}
                             placeholder="Enter telephone number"
                             type="text"
@@ -505,6 +508,7 @@ class ProfilePage extends Component {
                           marginBottom: 10,
                           width: "100%",
                           backgroundColor: "white",
+                          fontSize: "15px"
                         }}
                         placeholder="Enter username"
                         type="text"
@@ -518,6 +522,7 @@ class ProfilePage extends Component {
                           marginBottom: 30,
                           width: "100%",
                           backgroundColor: "white",
+                          fontSize: "15px"
                         }}
                         placeholder="Enter email"
                         type="email"
