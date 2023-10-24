@@ -123,7 +123,8 @@ class ProfilePage extends Component {
           }
           web3 = new Web3(provider);
         }
-        const myContract = await new web3.eth.Contract(membershipABI, config.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000 });
+        const gasPrice = await new web3.eth.getGasPrice();
+        const myContract = await new web3.eth.Contract(membershipABI, config.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000, gasPrice });
         let blockchainResponse;
         try {
           blockchainResponse = await myContract.methods
