@@ -24,7 +24,7 @@ class OTPPage extends Component {
       userData: this.props.location.state ? this.props.location.state.user : "",
       walletCreated: this.props.location.state ? this.props.location.state.walletCreated : false,
       goBack: this.props.history.goBack,
-      walletAddressExists: localStorage.getItem("walletAddress") ? true : false,
+      walletAddressExistsOnPhone: localStorage.getItem("walletAddressExistsOnPhone") ? true : false,
       walletAddress: localStorage.getItem("walletAddress")
     };
   }
@@ -79,11 +79,11 @@ class OTPPage extends Component {
           email: this.state.email,
           otp: this.state.otp,
           walletAddress: this.state.walletAddress,
-          walletAddressExistsOnPhone: this.state.walletAddressExists
+          walletAddressExistsOnPhone: this.state.walletAddressExistsOnPhone
         }
       });
       if (response.success) {
-        if (this.state.walletAddressExists) {
+        if (this.state.walletAddressExistsOnPhone) {
           localStorage.setItem("tokenId", response.userData.user.tokenId);
           localStorage.setItem("walletAddress", response.userData.walletAddress);
           localStorage.setItem("accessToken", response.userData.accessToken);
@@ -239,7 +239,7 @@ class OTPPage extends Component {
                       }}
                     >
                       {
-                        (this.state.fromPage !== "profileDetailPage" && !this.state.walletAddressExists && !this.state.walletCreated)
+                        (this.state.fromPage !== "profileDetailPage" && !this.state.walletAddressExistsOnPhone && !this.state.walletCreated)
                         && "A blockchain connected wallet address will be created for you to protect your identity, enable passwordless sign in, and allow access to new benefits and rewards"
                       }
                     </div>

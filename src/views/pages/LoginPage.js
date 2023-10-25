@@ -33,7 +33,10 @@ class LoginPage extends Component {
 
   async componentDidMount() {
     let params = await GeneralFunctions.getQueryStringParams(window.location.search);
-    if (params.walletAddress) localStorage.setItem("walletAddress", params.walletAddress);
+    if (params.walletAddress) {
+      localStorage.setItem("walletAddressExistsOnPhone", true);
+      localStorage.setItem("walletAddress", params.walletAddress);
+    }
     const ztiAppNameData = GeneralFunctions.getZTIAppNameData();
     if (ztiAppNameData) {
       this.setState({ ztiAppNameData });
