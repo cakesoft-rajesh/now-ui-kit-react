@@ -5,6 +5,7 @@ import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import { RiPencilLine } from "react-icons/ri";
 import { FaLink, FaCopy } from "react-icons/fa";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import {
   Button,
   FormGroup,
@@ -16,6 +17,8 @@ import {
   Tooltip,
   Modal,
   ModalBody,
+  InputGroup,
+  InputGroupText,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
@@ -40,7 +43,6 @@ class ProfilePage extends Component {
       email: this.props.location.state ? this.props.location.state.email : "",
       signUpByEmail: this.props.location.state ? this.props.location.state.signUpByEmail : false,
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
-      privateKeyCreated: localStorage.getItem("privateKeyCreated") ? true : false,
       ztiAppName: "",
       countryCode: {
         label: "🇮🇩 +62",
@@ -51,12 +53,15 @@ class ProfilePage extends Component {
       showCopyToClipboardToolTip: false,
       confirmationModal: false,
       walletConnectAlert: true,
-      learnMoreDetailModal: false,
       sponserWalletAddress: config.sponserWalletAddress,
       sponserPrivateKey: config.sponserPrivateKey,
       file: "",
       fileName: "",
-      fileData: ""
+      fileData: "",
+      recoveryPassword: "",
+      keyShare1: localStorage.getItem("keyShare1"),
+      keyShare2: localStorage.getItem("keyShare2"),
+      showConfirmPassword: false
     };
   }
 
@@ -78,7 +83,6 @@ class ProfilePage extends Component {
   signup = async (event) => {
     try {
       event.preventDefault();
-      if (!this.state.file) throw Error("Select Profile Picture");
       this.setState({ showLoader: true });
       const tokenId = new Date().getTime();
       let url = "/web3Auth/signup";
@@ -146,37 +150,40 @@ class ProfilePage extends Component {
             transactionId: blockchainResponse.transactionHash,
             date: new Date(),
           });
-          let response = await Server.request({
-            url,
+          let setPasswordAndRegisterKeyResponse = await Server.request({
+            url: "/web3Auth/setPasswordAndRegisterKey",
             method: "POST",
-            data
+            data: {
+              email: this.state.email,
+              password: this.state.recoveryPassword,
+              confirmPassword: this.state.recoveryPassword,
+              keyShare1: this.state.keyShare1,
+              keyShare2: this.state.keyShare2,
+              walletAddress: this.state.walletAddress
+            }
           });
-          if (response.success) {
-            localStorage.setItem("tokenId", tokenId);
-            localStorage.setItem("accessToken", response.accessToken);
-            let formData = new FormData();
-            formData.append("image", this.state.file);
-            formData.append("username", `${this.state.countryCode.value}${this.state.phone}`);
-            await Server.postWithFormData(
-              "/api/v1/setAvatar",
-              formData,
-              response.accessToken
-            );
-            this.setState({ showLoader: false });
-            await Server.sendDataToMobileApp(JSON.stringify(response));
-            this.props.history.push({
-              pathname: "/profile-detail-page",
-              state: {
-                email: this.state.email,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                phone: `${this.state.countryCode.value}${this.state.phone}`,
-                userName: `${this.state.countryCode.value}${this.state.phone}`,
-                displayUsername: this.state.displayUsername,
-                walletAddress: this.state.walletAddress,
-                skip2FactorAuth: true
-              }
+          if (setPasswordAndRegisterKeyResponse.success) {
+            let response = await Server.request({
+              url,
+              method: "POST",
+              data
             });
+            if (response.success) {
+              localStorage.setItem("tokenId", tokenId);
+              localStorage.setItem("accessToken", response.accessToken);
+              if (this.state.file) {
+                let formData = new FormData();
+                formData.append("image", this.state.file);
+                formData.append("username", `${this.state.countryCode.value}${this.state.phone}`);
+                await Server.postWithFormData(
+                  "/api/v1/setAvatar",
+                  formData,
+                  response.accessToken
+                );
+              }
+              Object.assign(response, { message: "User Account Created" });
+              await Server.sendDataToMobileApp(JSON.stringify(response));
+            }
           }
         }
       }
@@ -233,9 +240,20 @@ class ProfilePage extends Component {
     this.setState({ confirmationModal: !this.state.confirmationModal });
   };
 
-  toggleLearnMoreDetailModal = () => {
-    this.setState({ learnMoreDetailModal: !this.state.learnMoreDetailModal });
-  };
+  validateData = () => {
+    if (
+      this.state.firstName &&
+      this.state.lastName &&
+      this.state.phone &&
+      this.state.displayUsername &&
+      this.state.email &&
+      this.state.recoveryPassword
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   render() {
     return (
@@ -520,7 +538,7 @@ class ProfilePage extends Component {
                       <h6>Email</h6>
                       <Input
                         style={{
-                          marginBottom: 30,
+                          marginBottom: 10,
                           width: "100%",
                           backgroundColor: "white",
                           fontSize: "15px"
@@ -532,64 +550,48 @@ class ProfilePage extends Component {
                         disabled={this.state.signUpByEmail}
                         onChange={(event) => this.setState({ email: event.target.value })}
                       ></Input>
+                      <h6>CREATE A RECOVERY PASSWORD FOR CHANGING DEVICES</h6>
+                      <InputGroup>
+                        <Input
+                          style={{
+                            marginBottom: 10,
+                            border: "transparent",
+                            color: "black",
+                            background: "white",
+                            fontSize: "15px"
+                          }}
+                          value={this.state.recoveryPassword}
+                          placeholder="Create Recovery Password"
+                          type={this.state.showConfirmPassword ? "text" : "password"}
+                          required
+                          onChange={(event) => this.setState({ recoveryPassword: event.target.value })}
+                        ></Input>
+                        <InputGroupText
+                          style={{
+                            border: "transparent",
+                            borderTopLeftRadius: "0px",
+                            borderBottomLeftRadius: "0px",
+                            background: "rgb(198, 198, 198)",
+                            padding: "0px 20px",
+                            height: "40px"
+                          }}
+                        >
+                          {this.state.showConfirmPassword
+                            ? <IoMdEyeOff
+                              size="20"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => this.setState({ showConfirmPassword: false })}
+                            />
+                            : <IoMdEye
+                              size="20"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => this.setState({ showConfirmPassword: true })}
+                            />
+                          }
+                        </InputGroupText>
+                      </InputGroup>
                     </FormGroup>
                   </Row>
-                  {!this.state.privateKeyCreated &&
-                    <>
-                      <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                        <Col sm={12}>
-                          <Button
-                            style={{
-                              width: "100%",
-                              fontSize: "15px",
-                              fontWeight: "bold",
-                            }}
-                            outline
-                            color="info"
-                            type="button"
-                            className="btn-round"
-                            onClick={() => {
-                              GeneralFunctions.setProfileData(
-                                {
-                                  firstName: this.state.firstName,
-                                  lastName: this.state.lastName,
-                                  phone: this.state.phone,
-                                  displayUsername: this.state.displayUsername,
-                                  email: this.state.email,
-                                  walletAddress: this.state.walletAddress,
-                                  file: this.state.file,
-                                  fileName: this.state.fileName,
-                                  fileData: this.state.fileData
-                                }
-                              );
-                              this.props.history.push({
-                                pathname: "/generate-key-page",
-                                state: {
-                                  email: this.state.email,
-                                  walletAddress: this.state.walletAddress,
-                                }
-                              })
-                            }}
-                          >
-                            Set authentication factors for future login and to seamlessly switch devices
-                          </Button>
-                        </Col>
-                      </Row>
-                      <Row style={{ justifyContent: "center", alignItems: "center" }}>
-                        <label
-                          style={{
-                            color: "gray",
-                            margin: 0,
-                            fontWeight: 600,
-                            cursor: "pointer"
-                          }}
-                          onClick={this.toggleLearnMoreDetailModal}
-                        >
-                          Learn More
-                        </label>
-                      </Row>
-                    </>
-                  }
                   <Row style={{ justifyContent: "center", alignItems: "center" }}>
                     <Col sm={12}>
                       <Button
@@ -601,7 +603,7 @@ class ProfilePage extends Component {
                         color="info"
                         type="submit"
                         className="btn-round"
-                        disabled={!this.state.privateKeyCreated}
+                        disabled={this.validateData()}
                       >
                         Done
                       </Button>
@@ -617,7 +619,8 @@ class ProfilePage extends Component {
             (this.notificationSystem = notificationSystem)
           }
         />
-        {this.state.confirmationModal
+        {
+          this.state.confirmationModal
           && <Modal
             size="sm"
             modalClassName="modal-mini modal-info"
@@ -683,44 +686,6 @@ class ProfilePage extends Component {
                     background: "transparent",
                   }}
                   onClick={(event) => this.signup(event)}
-                >
-                  OK
-                </Button>
-              </div>
-            </ModalBody>
-          </Modal>
-        }
-        {this.state.learnMoreDetailModal
-          && <Modal
-            size="sm"
-            modalClassName="modal-mini modal-info"
-            style={{ marginTop: "20%" }}
-            toggle={this.toggleLearnMoreDetailModal}
-            isOpen={this.state.learnMoreDetailModal}
-          >
-            <ModalBody>
-              <label
-                style={{
-                  color: "gray",
-                  fontSize: "17px",
-                  fontWeight: 500
-                }}
-              >
-                Setting Authentication Factors allows you to switch to a new device seamlessly
-              </label>
-              <div>
-                <Button
-                  style={{
-                    color: "gray",
-                    background: "transparent",
-                    fontWeight: 500,
-                    fontSize: "20px",
-                    float: "right",
-                    padding: 0,
-                    margin: "20px 0px 0px 0px",
-                    boxShadow: "unset"
-                  }}
-                  onClick={this.toggleLearnMoreDetailModal}
                 >
                   OK
                 </Button>

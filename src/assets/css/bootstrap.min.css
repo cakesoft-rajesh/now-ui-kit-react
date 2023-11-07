@@ -11139,4 +11139,9 @@ a.text-dark:hover {
         border-color: #dee2e6
     }
 }
+
+.btn.disabled{
+    background-color: #cacccc !important;
+    border-color: #cacccc !important;
+  }
 /*# sourceMappingURL=bootstrap.min.css.map */

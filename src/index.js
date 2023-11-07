@@ -81,7 +81,7 @@ root.render(
         />
         <Route
           path="/"
-          render={(props) => <Suspense fallback={fallbackFunction}><LoginPage {...props} /></Suspense>}
+          render={(props) => <Suspense fallback={fallbackFunction}><SelectedCommunityPage {...props} /></Suspense>}
         />
       </Switch>
     </Switch>

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { MdVerified } from "react-icons/md";
 import {
   Row,
   Col,
@@ -80,17 +79,6 @@ class ReconstructKeyPage extends Component {
                   sm="12"
                   style={{ width: "90%", justifyContent: "center", alignItems: "center" }}
                 >
-                  <Row style={{ justifyContent: "center", marginBottom: 10 }}>
-                    <div
-                      style={{
-                        color: "gray",
-                        fontSize: "20px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Authentication factors
-                    </div>
-                  </Row>
                   <Row style={{ justifyContent: "center" }}>
                     <div
                       style={{
@@ -99,43 +87,8 @@ class ReconstructKeyPage extends Component {
                         fontWeight: "bold",
                       }}
                     >
-                      Pair key with an authentication factor.
+                      Your recovery password is required because you have changed devices
                     </div>
-                  </Row>
-                  <Row
-                    style={{
-                      justifyContent: "center",
-                      margin: "20px 0px",
-                      border: "1px solid gray",
-                      borderRadius: "15px",
-                      padding: "20px 15px",
-                      background: "rgb(224, 224, 224)",
-                      minHeight: "200px"
-                    }}
-                  >
-                    <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <MdVerified
-                        size="45"
-                        color="#2ca8ff"
-                      />
-                    </Col>
-                    <Col sm={12} className="mt-2" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <h5 style={{ fontWeight: 700 }}>Pair with your email</h5>
-                    </Col>
-                    <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <Input
-                        style={{ border: "transparent", color: "black", background: "white" }}
-                        value={this.state.email}
-                        disabled
-                      ></Input>
-                    </Col>
-                    <Col sm={12} className="mt-3" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <Input
-                        style={{ border: "transparent", color: "black", background: "white" }}
-                        value={this.state.keyShare1}
-                        disabled
-                      ></Input>
-                    </Col>
                   </Row>
                   <Row
                     style={{
@@ -226,7 +179,7 @@ class ReconstructKeyPage extends Component {
                         size="lg"
                         onClick={this.verifyPasswordAndLogin}
                       >
-                        Enter password to login again
+                        Enter password
                       </Button>
                     </Col>
                   </Row>

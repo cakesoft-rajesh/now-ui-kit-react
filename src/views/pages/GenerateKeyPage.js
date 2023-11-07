@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { MdVerified } from "react-icons/md";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import {
   Button,
@@ -85,7 +84,6 @@ class GenerateKeyPage extends Component {
       });
       if (response.success) {
         localStorage.setItem("walletAddress", this.state.walletAddress);
-        localStorage.setItem("privateKeyCreated", true);
         this.state.goBack();
       }
     } catch (error) {
@@ -123,55 +121,25 @@ class GenerateKeyPage extends Component {
                         fontWeight: "bold",
                       }}
                     >
-                      Setup authentication factors
+                      {this.state.editKeyFactor
+                        ? "Update authentication factors"
+                        : "Setup authentication factors"
+                      }
                     </div>
                   </Row>
-                  <Row style={{ justifyContent: "center", margin: "20px 0px" }}>
-                    <div
-                      style={{
-                        color: "gray",
-                        fontSize: "15px",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Setting Authentication Factors allows you to use multiple devices or switch to a new device seamlessly. Set up 2 factors below
-                    </div>
-                  </Row>
-                  <Row
-                    style={{
-                      justifyContent: "center",
-                      margin: "20px 0px",
-                      border: "1px solid gray",
-                      borderRadius: "15px",
-                      padding: "20px 15px",
-                      background: "rgb(224, 224, 224)",
-                      minHeight: "200px"
-                    }}
-                  >
-                    <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <MdVerified
-                        size="45"
-                        color="#2ca8ff"
-                      />
-                    </Col>
-                    <Col sm={12} className="mt-2" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <h5 style={{ fontWeight: 700 }}>Pair with your email</h5>
-                    </Col>
-                    <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <Input
-                        style={{ border: "transparent", color: "black", background: "white" }}
-                        value={this.state.email}
-                        disabled
-                      ></Input>
-                    </Col>
-                    <Col sm={12} className="mt-3" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <Input
-                        style={{ border: "transparent", color: "black", background: "white" }}
-                        value={this.state.keyShare1}
-                        disabled
-                      ></Input>
-                    </Col>
-                  </Row>
+                  {!this.state.editKeyFactor &&
+                    <Row style={{ justifyContent: "center", margin: "20px 0px" }}>
+                      <div
+                        style={{
+                          color: "gray",
+                          fontSize: "15px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        Setting Authentication Factors allows you to use multiple devices or switch to a new device seamlessly. Set up 2 factors below
+                      </div>
+                    </Row>
+                  }
                   <Row
                     style={{
                       justifyContent: "center",
@@ -191,7 +159,12 @@ class GenerateKeyPage extends Component {
                       />
                     </Col>
                     <Col sm={12} className="mt-2" style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      <h5 style={{ fontWeight: 700 }}>Set recovery password</h5>
+                      <h5 style={{ fontWeight: 700 }}>
+                        {this.state.editKeyFactor
+                          ? "Update password"
+                          : "Set recovery password"
+                        }
+                      </h5>
                     </Col>
                     <Col sm={12} style={{ padding: 0, display: "flex", justifyContent: "center", alignItems: "center" }}>
                       <InputGroup>

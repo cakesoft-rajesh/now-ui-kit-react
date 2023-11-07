@@ -26,6 +26,7 @@ class LoginPage extends Component {
     this.state = {
       showLoader: false,
       email: "",
+      emailForSignup: "",
       ztiAppNameData: {},
       rpcUrl: config.rpcUrl
     };
@@ -38,11 +39,7 @@ class LoginPage extends Component {
       localStorage.setItem("walletAddress", params.walletAddress);
     }
     const ztiAppNameData = GeneralFunctions.getZTIAppNameData();
-    if (ztiAppNameData) {
-      this.setState({ ztiAppNameData });
-    } else {
-      this.props.history.push("/select-community-page");
-    }
+    if (ztiAppNameData) this.setState({ ztiAppNameData });
     if (params.dokuId) localStorage.setItem("dokuId", params.dokuId);
     const signIn = localStorage.getItem("signIn");
     if (signIn) {
@@ -110,7 +107,7 @@ class LoginPage extends Component {
     }
   }
 
-  sendOTP = async (event) => {
+  sendOTP = async (event, otpFor) => {
     try {
       event.preventDefault();
       this.setState({ showLoader: true });
@@ -118,16 +115,15 @@ class LoginPage extends Component {
         url: "/email/sendOTP",
         method: "POST",
         data: {
-          email: this.state.email
+          email: otpFor === 'login' ? this.state.email : this.state.emailForSignup
         }
       });
       if (response.success) {
         this.props.history.push({
           pathname: "/otp-page",
           state: {
-            fromPage: "loginPage",
-            email: this.state.email,
-            walletCreated: response.walletCreated
+            fromPage: otpFor === 'login' ? "loginPage" : "signupPage",
+            email: otpFor === 'login' ? this.state.email : this.state.emailForSignup
           }
         });
       }
@@ -172,7 +168,6 @@ class LoginPage extends Component {
                       alt=""
                       src={`/logos/${this.state.ztiAppNameData.logo}`}
                       width="30%"
-                      style={{ marginTop: 40 }}
                     />
                   </Row>
                   <Row
@@ -190,16 +185,16 @@ class LoginPage extends Component {
                       alignItems: "center",
                     }}
                   >
-                    <h3 style={{ color: "gray", margin: 0 }}>Login with email</h3>
+                    <h3 style={{ color: "gray", margin: 0 }}>Log in with email</h3>
                   </Row>
                   {/* Email login with OTP */}
-                  <Form onSubmit={(event) => this.sendOTP(event)}>
+                  <Form onSubmit={(event) => this.sendOTP(event, "login")}>
                     <Row
                       style={{
                         justifyContent: "center",
                         marginLeft: 10,
                         marginRight: 10,
-                        marginTop: 20,
+                        marginTop: 10,
                       }}
                     >
                       <FormGroup style={{ width: "100%" }}>
@@ -270,6 +265,67 @@ class LoginPage extends Component {
                           Terms of Use
                         </a>
                       </label>
+                    </Row>
+                  </Form>
+                  <Row
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: 10
+                    }}
+                  >
+                    <h2 style={{ color: "gray", margin: 0, fontWeight: 600 }}>OR</h2>
+                  </Row>
+                  <Row
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <h3 style={{ color: "gray", margin: 0 }}>Sign up with email</h3>
+                  </Row>
+                  {/* Email signup with OTP */}
+                  <Form onSubmit={(event) => this.sendOTP(event, "signup")}>
+                    <Row
+                      style={{
+                        justifyContent: "center",
+                        marginLeft: 10,
+                        marginRight: 10,
+                        marginTop: 10,
+                      }}
+                    >
+                      <FormGroup style={{ width: "100%" }}>
+                        <Input
+                          style={{
+                            width: "100%",
+                            borderColor: "gray",
+                            fontSize: "15px"
+                          }}
+                          placeholder="Enter email"
+                          type="email"
+                          value={this.state.emailForSignup}
+                          onChange={(event) =>
+                            this.setState({ emailForSignup: event.target.value })
+                          }
+                          required
+                        ></Input>
+                      </FormGroup>
+                    </Row>
+                    <Row style={{ justifyContent: "center", alignItems: "center", margin: "0px 10px" }}>
+                      <Button
+                        style={{
+                          width: "100%",
+                          padding: "13px 0px",
+                          fontSize: "15px",
+                          fontWeight: "bold",
+                        }}
+                        className="btn-round"
+                        color="info"
+                        type="submit"
+                        size="lg"
+                      >
+                        Sign up
+                      </Button>
                     </Row>
                   </Form>
                   {/* <Row

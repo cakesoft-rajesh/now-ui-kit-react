@@ -22,7 +22,6 @@ class OTPPage extends Component {
       email: this.props.location.state ? this.props.location.state.email : "",
       fromPage: this.props.location.state ? this.props.location.state.fromPage : "",
       userData: this.props.location.state ? this.props.location.state.user : "",
-      walletCreated: this.props.location.state ? this.props.location.state.walletCreated : false,
       goBack: this.props.history.goBack,
       walletAddressExistsOnPhone: localStorage.getItem("walletAddressExistsOnPhone") ? true : false,
       walletAddress: localStorage.getItem("walletAddress")
@@ -95,21 +94,23 @@ class OTPPage extends Component {
           );
           Server.sendDataToMobileApp(JSON.stringify(response.userData));
         } else {
-          if (response.userRegistered) {
-            localStorage.setItem("keyShare1", response.keyShare1);
-            localStorage.setItem("privateKeyCreated", response.privateKeyCreated);
-            this.props.history.push({
-              pathname: "/reconstruct-key-page",
-              state: {
-                email: this.state.email
-              }
-            });
+          if (this.state.fromPage === "loginPage") {
+            if (response.userRegistered) {
+              localStorage.setItem("keyShare1", response.keyShare1);
+              this.props.history.push({
+                pathname: "/reconstruct-key-page",
+                state: {
+                  email: this.state.email
+                }
+              });
+            } else {
+              throw Error("Please register user");
+            }
           } else {
             if (response.privateKeyCreated) {
               localStorage.setItem("keyShare1", response.keyShare1);
               localStorage.setItem("keyShare2", response.keyShare2);
               localStorage.setItem("walletAddress", response.walletAddress);
-              localStorage.setItem("privateKeyCreated", response.privateKeyCreated);
               this.props.history.push({
                 pathname: "/profile-page",
                 state: {
@@ -227,7 +228,7 @@ class OTPPage extends Component {
                       size="lg"
                       onClick={this.verifyOTP}
                     >
-                      Verify OTP
+                      Verify Code
                     </Button>
                   </Row>
                   <Row style={{ justifyContent: "flex-start", marginTop: 50 }}>
@@ -239,7 +240,7 @@ class OTPPage extends Component {
                       }}
                     >
                       {
-                        (this.state.fromPage !== "profileDetailPage" && !this.state.walletAddressExistsOnPhone && !this.state.walletCreated)
+                        (this.state.fromPage !== "profileDetailPage" && this.state.fromPage !== "loginPage" && !this.state.walletAddressExistsOnPhone)
                         && "A blockchain connected wallet address will be created for you to protect your identity, enable passwordless sign in, and allow access to new benefits and rewards"
                       }
                     </div>
