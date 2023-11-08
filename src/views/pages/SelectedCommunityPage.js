@@ -36,6 +36,14 @@ class SelectedCommunityPage extends Component {
     };
   }
 
+  async componentDidMount() {
+    let params = await GeneralFunctions.getQueryStringParams(window.location.search);
+    if (params.walletAddress) {
+      localStorage.setItem("walletAddressExistsOnPhone", true);
+      localStorage.setItem("walletAddress", params.walletAddress);
+    }
+  }
+
   render() {
     return (
       <div
