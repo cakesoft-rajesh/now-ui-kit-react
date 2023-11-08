@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import Select from "react-select";
 import Copy from "copy-to-clipboard";
+import Cropper from 'react-easy-crop'
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import { RiPencilLine } from "react-icons/ri";
@@ -19,8 +20,10 @@ import {
   ModalBody,
   InputGroup,
   InputGroupText,
+  ModalFooter,
 } from "reactstrap";
 import NotificationSystem from "react-notification-system";
+import getCroppedImg from '../../utils/CropImage';
 import PageSpinner from "components/PageSpinner";
 import CountryCode from "../../utils/CountryCode.json";
 import membershipABI from "../../contracts_abi/membership.json";
@@ -61,7 +64,13 @@ class ProfilePage extends Component {
       recoveryPassword: "",
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: localStorage.getItem("keyShare2"),
-      showConfirmPassword: false
+      showConfirmPassword: false,
+      imageCropModal: false,
+      crop: { x: 0, y: 0 },
+      zoom: 1,
+      aspect: 1,
+      croppedImage: null,
+      croppedAreaPixels: null
     };
   }
 
@@ -171,9 +180,10 @@ class ProfilePage extends Component {
             if (response.success) {
               localStorage.setItem("tokenId", tokenId);
               localStorage.setItem("accessToken", response.accessToken);
-              if (this.state.file) {
+              if (this.state.croppedImage) {
                 let formData = new FormData();
-                formData.append("image", this.state.file);
+                let blobData = await fetch(this.state.croppedImage).then(res => res.blob());
+                formData.append("image", blobData);
                 formData.append("username", `${this.state.countryCode.value}${this.state.phone}`);
                 await Server.postWithFormData(
                   "/api/v1/setAvatar",
@@ -211,6 +221,7 @@ class ProfilePage extends Component {
       this.setState({ fileData });
     });
     event.target.value = "";
+    this.toggleImageCropModal();
   };
 
   previewFile = (file, callback) => {
@@ -219,6 +230,34 @@ class ProfilePage extends Component {
       callback(reader.result);
     };
     reader.readAsDataURL(file);
+  };
+
+  onCropChange = (crop) => {
+    this.setState({ crop })
+  };
+
+  onCropComplete = (croppedArea, croppedAreaPixels) => {
+    this.setState({ croppedAreaPixels })
+  };
+
+  onZoomChange = (zoom) => {
+    this.setState({ zoom })
+  };
+
+  showCroppedImage = async () => {
+    try {
+      const croppedImage = await getCroppedImg(
+        this.state.fileData,
+        this.state.croppedAreaPixels,
+        0
+      );
+      this.setState({ croppedImage }, () => this.toggleImageCropModal());
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message || error,
+        level: "error",
+      });
+    }
   };
 
   logout = async () => {
@@ -234,10 +273,14 @@ class ProfilePage extends Component {
     }
     await GeneralFunctions.clearFullLocalStorage();
     this.props.history.push(`/login-page`)
-  }
+  };
 
   toggleConfirmationModal = () => {
     this.setState({ confirmationModal: !this.state.confirmationModal });
+  };
+
+  toggleImageCropModal = () => {
+    this.setState({ imageCropModal: !this.state.imageCropModal });
   };
 
   validateData = () => {
@@ -253,7 +296,7 @@ class ProfilePage extends Component {
     } else {
       return true;
     }
-  }
+  };
 
   render() {
     return (
@@ -309,7 +352,7 @@ class ProfilePage extends Component {
                       alignItems: "center",
                     }}
                   >
-                    {this.state.fileData
+                    {this.state.croppedImage
                       ? <img
                         style={{
                           height: "50px",
@@ -317,7 +360,7 @@ class ProfilePage extends Component {
                           borderRadius: "50%",
                           verticalAlign: "middle"
                         }}
-                        src={this.state.fileData}
+                        src={this.state.croppedImage}
                         alt=""
                       />
                       : <div
@@ -691,6 +734,38 @@ class ProfilePage extends Component {
                 </Button>
               </div>
             </ModalBody>
+          </Modal>
+        }
+        {
+          this.state.imageCropModal
+          && <Modal
+            size="md"
+            style={{ marginTop: "20%" }}
+            toggle={this.toggleImageCropModal}
+            isOpen={this.state.imageCropModal}
+          >
+            <ModalBody style={{ width: "100%", height: "200px" }}>
+              <Cropper
+                image={this.state.fileData}
+                crop={this.state.crop}
+                zoom={this.state.zoom}
+                aspect={this.state.aspect}
+                onCropChange={this.onCropChange}
+                onCropComplete={this.onCropComplete}
+                onZoomChange={this.onZoomChange}
+              />
+            </ModalBody>
+            <ModalFooter style={{ justifyContent: "center", padding: 0 }}>
+              <Button
+                onClick={this.showCroppedImage}
+                style={{
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                }}
+                className="btn-round" color="info" type="button" size="lg">
+                Crop Image
+              </Button>
+            </ModalFooter>
           </Modal>
         }
       </>
