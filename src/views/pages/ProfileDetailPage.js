@@ -125,7 +125,7 @@ class ProfileDetailPage extends Component {
       }
     }
     await GeneralFunctions.clearFullLocalStorage();
-    this.props.history.push(`/login-page`)
+    this.props.history.push("/select-community-page");
   }
 
   render() {
