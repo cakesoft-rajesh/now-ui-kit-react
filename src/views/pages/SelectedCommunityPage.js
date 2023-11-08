@@ -42,6 +42,12 @@ class SelectedCommunityPage extends Component {
       localStorage.setItem("walletAddressExistsOnPhone", true);
       localStorage.setItem("walletAddress", params.walletAddress);
     }
+    if (params.dokuId) localStorage.setItem("dokuId", params.dokuId);
+    const walletAddress = localStorage.getItem("walletAddress");
+    const tokenId = localStorage.getItem("tokenId");
+    if (walletAddress && tokenId) {
+      this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
+    }
   }
 
   render() {
