@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import Swal from "sweetalert2";
 import OtpInput from "react-otp-input";
 import React, { Component } from "react";
 import {
@@ -14,7 +15,6 @@ import {
   Label,
 } from "reactstrap";
 import { BottomSheet } from "react-spring-bottom-sheet"
-import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import membershipWithExpiryABI from "../../contracts_abi/membershipExpiry.json";
@@ -80,11 +80,13 @@ class EmailLoginPage extends Component {
         });
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   }
 
@@ -114,10 +116,6 @@ class EmailLoginPage extends Component {
       //   }
       // );
       if (blockchainResponse.status) {
-        this.notificationSystem.addNotification({
-          message: "Transfer successful",
-          level: "success",
-        });
         let balance = await this.getBalance(walletAddress);
         this.setState({
           showLoader: false,
@@ -127,11 +125,13 @@ class EmailLoginPage extends Component {
         this.toggleTokenTransferModal();
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   }
 
@@ -150,11 +150,13 @@ class EmailLoginPage extends Component {
         this.setState({ showLoader: false, showSheetForOTP: true });
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -180,11 +182,13 @@ class EmailLoginPage extends Component {
         }
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -323,12 +327,6 @@ class EmailLoginPage extends Component {
               </Row>
             </div>
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
         {this.state.showTokenTransferModal ? (
           <Modal
             isOpen={this.state.showTokenTransferModal}

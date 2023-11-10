@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import React, { Component } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import {
@@ -8,7 +9,6 @@ import {
   InputGroup,
   InputGroupText
 } from "reactstrap";
-import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import config from "config";
 import * as Server from "../../utils/Server";
@@ -53,11 +53,13 @@ class ReconstructKeyPage extends Component {
         Server.sendDataToMobileApp(JSON.stringify(response));
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -187,12 +189,6 @@ class ReconstructKeyPage extends Component {
               </Row >
             </div >
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
       </>
     );
   }

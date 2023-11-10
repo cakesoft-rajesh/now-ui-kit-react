@@ -4,7 +4,6 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 
 class WebCamPage extends Component {
@@ -82,12 +81,6 @@ class WebCamPage extends Component {
               </Col>
             </Row>
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
       </>
     );
   }

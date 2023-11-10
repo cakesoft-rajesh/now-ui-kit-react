@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import Swal from 'sweetalert2';
 import { SiweMessage } from "siwe";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
@@ -8,7 +9,6 @@ import {
   Button,
 } from "reactstrap";
 import { BottomSheet } from "react-spring-bottom-sheet"
-import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import config from "../../config";
@@ -73,9 +73,11 @@ class ConnectWalletPage extends Component {
           }
         });
       } else {
-        this.notificationSystem.addNotification({
-          message,
-          level: "error",
+        Swal.fire({
+          icon: "error",
+          text: message,
+          confirmButtonText: "OK",
+          confirmButtonColor: "#2CA8FF"
         });
       }
     }
@@ -174,11 +176,13 @@ class ConnectWalletPage extends Component {
         }
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -258,11 +262,13 @@ class ConnectWalletPage extends Component {
         }
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -437,12 +443,6 @@ class ConnectWalletPage extends Component {
               </Row>
             </div>
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
         <BottomSheet
           open={this.state.showSheet}
           snapPoints={({ minHeight }) => minHeight}

@@ -39,10 +39,11 @@ export const request = async (obj, token) => {
                 }
                 throw Error(error.response.data.message);
             }
+        } else if (error.message) {
+            throw Error(error.message || error);
         } else {
-            throw Error("Server error.");
+            throw Error("Internet error");
         }
-        throw Error("Internet error.");
     }
 };
 
@@ -68,9 +69,10 @@ export const postWithFormData = async (path, body, accessToken) => {
                 }
                 throw Error(error.response.data.message);
             }
+        } else if (error.message) {
+            throw Error(error.message || error);
         } else {
-            throw Error("Server error.");
+            throw Error("Internet error");
         }
-        throw Error("Internet error.");
     }
 };

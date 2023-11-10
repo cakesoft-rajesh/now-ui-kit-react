@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import Copy from "copy-to-clipboard";
 import { MdEdit } from "react-icons/md";
 import React, { Component } from "react";
@@ -9,7 +10,6 @@ import {
   Col,
   Tooltip
 } from "reactstrap";
-import NotificationSystem from "react-notification-system";
 import PageSpinner from "components/PageSpinner";
 import config from "../../config";
 import * as Server from "../../utils/Server";
@@ -74,11 +74,13 @@ class ProfileDetailPage extends Component {
         }
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -105,11 +107,13 @@ class ProfileDetailPage extends Component {
         });
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -498,12 +502,6 @@ class ProfileDetailPage extends Component {
               </Col>
             </Row >
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
       </>
     );
   }

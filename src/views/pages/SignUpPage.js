@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import React, { Component } from "react";
 import {
@@ -8,7 +9,6 @@ import {
   Col,
   Form,
 } from "reactstrap";
-import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
@@ -52,11 +52,13 @@ class SignUpPage extends Component {
         });
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -200,12 +202,6 @@ class SignUpPage extends Component {
               </Row>
             </div>
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
       </>
     );
   }

@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import Swal from "sweetalert2";
 import OtpInput from "react-otp-input";
 import React, { Component } from "react";
 import {
@@ -6,7 +7,6 @@ import {
   Col,
   Button,
 } from "reactstrap";
-import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
@@ -59,11 +59,13 @@ class OTPPage extends Component {
         });
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -140,11 +142,13 @@ class OTPPage extends Component {
         }
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -248,12 +252,6 @@ class OTPPage extends Component {
               </Row>
             </div>
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
       </>
     );
   }

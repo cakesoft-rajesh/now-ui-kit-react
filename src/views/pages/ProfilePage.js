@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import Swal from 'sweetalert2';
 import Select from "react-select";
 import Copy from "copy-to-clipboard";
 import Cropper from 'react-easy-crop'
@@ -24,7 +25,6 @@ import {
   InputGroupText,
   ModalFooter,
 } from "reactstrap";
-import NotificationSystem from "react-notification-system";
 import getCroppedImg from '../../utils/CropImage';
 import PageSpinner from "components/PageSpinner";
 import CountryCode from "../../utils/CountryCode.json";
@@ -113,11 +113,13 @@ class ProfilePage extends Component {
         });
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -141,11 +143,16 @@ class ProfilePage extends Component {
         });
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
+      this.setState({
+        showLoader: false,
+        showSheetForOTP: false
       });
-      this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      }).then(result => result.isConfirmed && this.setState({ showSheetForOTP: true }));
     }
   };
 
@@ -208,11 +215,13 @@ class ProfilePage extends Component {
               }
             );
         } catch (error) {
-          this.notificationSystem.addNotification({
-            message: `Blockchain error - ${error.message}`,
-            level: "error",
-          });
           this.setState({ showLoader: false });
+          Swal.fire({
+            icon: "error",
+            text: `Blockchain error - ${error.message}`,
+            confirmButtonText: "OK",
+            confirmButtonColor: "#2CA8FF"
+          });
         }
         if (blockchainResponse && blockchainResponse.status) {
           Object.assign(data, {
@@ -258,11 +267,13 @@ class ProfilePage extends Component {
         }
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -313,9 +324,11 @@ class ProfilePage extends Component {
       );
       this.setState({ croppedImage }, () => this.toggleImageCropModal());
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message || error,
-        level: "error",
+      Swal.fire({
+        icon: "error",
+        text: error.message || error,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
       });
     }
   };
@@ -717,12 +730,6 @@ class ProfilePage extends Component {
               </Col>
             </Row >
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
         {
           this.state.confirmationModal
           && <Modal

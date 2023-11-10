@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import Swal from "sweetalert2";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import {
@@ -9,7 +10,6 @@ import {
   FormGroup,
   Button,
 } from "reactstrap";
-import NotificationSystem from "react-notification-system";
 import PageSpinner from "../../components/PageSpinner";
 import membershipABI from "../../contracts_abi/membership.json";
 import config from "../../config";
@@ -99,9 +99,11 @@ class LoginPage extends Component {
           }
         });
       } else {
-        this.notificationSystem.addNotification({
-          message,
-          level: "error",
+        Swal.fire({
+          icon: "error",
+          text: message,
+          confirmButtonText: "OK",
+          confirmButtonColor: "#2CA8FF"
         });
       }
     }
@@ -128,11 +130,13 @@ class LoginPage extends Component {
         });
       }
     } catch (error) {
-      this.notificationSystem.addNotification({
-        message: error.message,
-        level: "error",
-      });
       this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
     }
   };
 
@@ -357,12 +361,6 @@ class LoginPage extends Component {
               </Row>
             </div>
         }
-        <NotificationSystem
-          dismissible={false}
-          ref={(notificationSystem) =>
-            (this.notificationSystem = notificationSystem)
-          }
-        />
       </>
     );
   }
