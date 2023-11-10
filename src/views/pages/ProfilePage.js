@@ -833,8 +833,8 @@ class ProfilePage extends Component {
           expandOnContentDrag={true}
           open={this.state.showSheetForOTP}
           snapPoints={({ minHeight, maxHeight }) => [
-            minHeight,
-            maxHeight - maxHeight / 2.2
+            minHeight + 20,
+            maxHeight - maxHeight / 3
           ]}
         >
           <style>
