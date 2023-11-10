@@ -83,20 +83,20 @@ class OTPPage extends Component {
         }
       });
       if (response.success) {
-        if (this.state.walletAddressExistsOnPhone) {
-          localStorage.setItem("tokenId", response.userData.user.tokenId);
-          localStorage.setItem("walletAddress", response.userData.walletAddress);
-          localStorage.setItem("accessToken", response.userData.accessToken);
-          Object.assign(response.userData,
-            {
-              signupMethod: "web3",
-              message: "Logged in Successfully"
-            }
-          );
-          Server.sendDataToMobileApp(JSON.stringify(response.userData));
-        } else {
-          if (this.state.fromPage === "loginPage") {
-            if (response.userRegistered) {
+        switch (this.state.fromPage) {
+          case "loginPage":
+            if (this.state.walletAddressExistsOnPhone) {
+              localStorage.setItem("tokenId", response.userData.user.tokenId);
+              localStorage.setItem("walletAddress", response.userData.walletAddress);
+              localStorage.setItem("accessToken", response.userData.accessToken);
+              Object.assign(response.userData,
+                {
+                  signupMethod: "web3",
+                  message: "Logged in Successfully"
+                }
+              );
+              Server.sendDataToMobileApp(JSON.stringify(response.userData));
+            } else if (response.userRegistered) {
               localStorage.setItem("keyShare1", response.keyShare1);
               this.props.history.push({
                 pathname: "/reconstruct-key-page",
@@ -107,7 +107,8 @@ class OTPPage extends Component {
             } else {
               throw Error("Please register user");
             }
-          } else {
+            break;
+          case "signupPage":
             if (response.userRegistered) {
               this.setState({ showLoader: false });
               Swal.fire({
@@ -146,7 +147,9 @@ class OTPPage extends Component {
                 }
               });
             }
-          }
+            break;
+          default:
+            break;
         }
       }
     } catch (error) {
@@ -251,7 +254,7 @@ class OTPPage extends Component {
                       }}
                     >
                       {
-                        (this.state.fromPage !== "profileDetailPage" && this.state.fromPage !== "loginPage" && !this.state.walletAddressExistsOnPhone)
+                        (this.state.fromPage !== "profileDetailPage" && this.state.fromPage === "signupPage")
                         && "A blockchain connected wallet address will be created for you to protect your identity, enable passwordless sign in, and allow access to new benefits and rewards"
                       }
                     </div>
