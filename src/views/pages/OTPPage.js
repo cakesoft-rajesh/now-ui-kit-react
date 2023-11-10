@@ -22,7 +22,6 @@ class OTPPage extends Component {
       email: this.props.location.state ? this.props.location.state.email : "",
       fromPage: this.props.location.state ? this.props.location.state.fromPage : "",
       userData: this.props.location.state ? this.props.location.state.user : "",
-      goBack: this.props.history.goBack,
       walletAddressExistsOnPhone: localStorage.getItem("walletAddressExistsOnPhone") ? true : false,
       walletAddress: localStorage.getItem("walletAddress")
     };

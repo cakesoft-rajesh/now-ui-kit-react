@@ -2,11 +2,13 @@ import Web3 from "web3";
 import Select from "react-select";
 import Copy from "copy-to-clipboard";
 import Cropper from 'react-easy-crop'
+import OtpInput from "react-otp-input";
 import React, { Component } from "react";
 import WalletConnect from "walletconnect";
 import { RiPencilLine } from "react-icons/ri";
 import { FaLink, FaCopy } from "react-icons/fa";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { BottomSheet } from "react-spring-bottom-sheet"
 import {
   Button,
   FormGroup,
@@ -30,6 +32,7 @@ import membershipABI from "../../contracts_abi/membership.json";
 import config from "../../config";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
+import "react-spring-bottom-sheet/dist/style.css"
 
 const wc = new WalletConnect();
 
@@ -42,6 +45,7 @@ class ProfilePage extends Component {
       firstName: "",
       lastName: "",
       phone: "",
+      phoneVerified: false,
       displayUsername: "",
       email: this.props.location.state ? this.props.location.state.email : "",
       signUpByEmail: this.props.location.state ? this.props.location.state.signUpByEmail : false,
@@ -64,13 +68,15 @@ class ProfilePage extends Component {
       recoveryPassword: "",
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: localStorage.getItem("keyShare2"),
-      showConfirmPassword: false,
+      showPassword: false,
       imageCropModal: false,
       crop: { x: 0, y: 0 },
       zoom: 1,
       aspect: 1,
       croppedImage: null,
-      croppedAreaPixels: null
+      croppedAreaPixels: null,
+      showSheetForOTP: false,
+      otp: ""
     };
   }
 
@@ -88,6 +94,60 @@ class ProfilePage extends Component {
       clearTimeout();
     }, 5000);
   }
+
+  sendPhoneOTP = async (event) => {
+    try {
+      event.preventDefault();
+      this.setState({ showLoader: true });
+      let response = await Server.request({
+        url: "/phone/sendOTP",
+        method: "POST",
+        data: {
+          phone: this.state.phone
+        }
+      });
+      if (response.success) {
+        this.setState({
+          showLoader: false,
+          showSheetForOTP: true
+        });
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
+
+  verifyPhoneOTP = async () => {
+    try {
+      this.setState({ showLoader: true });
+      let response = await Server.request({
+        url: "/phone/verifyOTP",
+        method: "POST",
+        data: {
+          phone: this.state.phone,
+          otp: this.state.otp
+        }
+      });
+      if (response.success) {
+        this.setState({
+          showLoader: false,
+          phoneVerified: true,
+          showSheetForOTP: false,
+          confirmationModal: true
+        });
+      }
+    } catch (error) {
+      this.notificationSystem.addNotification({
+        message: error.message,
+        level: "error",
+      });
+      this.setState({ showLoader: false });
+    }
+  };
 
   signup = async (event) => {
     try {
@@ -492,7 +552,7 @@ class ProfilePage extends Component {
                     Copied
                   </Tooltip>
                 </Row>
-                <Form onSubmit={this.handleSubmit}>
+                <Form onSubmit={this.sendPhoneOTP}>
                   <Row
                     style={{
                       justifyContent: "center",
@@ -560,6 +620,7 @@ class ProfilePage extends Component {
                             type="text"
                             required
                             value={this.state.phone}
+                            disabled={this.state.phoneVerified}
                             onChange={(event) => this.setState({ phone: event.target.value })}
                           ></Input>
                         </Col>
@@ -605,7 +666,7 @@ class ProfilePage extends Component {
                           }}
                           value={this.state.recoveryPassword}
                           placeholder="Create Recovery Password"
-                          type={this.state.showConfirmPassword ? "text" : "password"}
+                          type={this.state.showPassword ? "text" : "password"}
                           required
                           onChange={(event) => this.setState({ recoveryPassword: event.target.value })}
                         ></Input>
@@ -619,16 +680,16 @@ class ProfilePage extends Component {
                             height: "40px"
                           }}
                         >
-                          {this.state.showConfirmPassword
+                          {this.state.showPassword
                             ? <IoMdEyeOff
                               size="20"
                               style={{ cursor: "pointer" }}
-                              onClick={() => this.setState({ showConfirmPassword: false })}
+                              onClick={() => this.setState({ showPassword: false })}
                             />
                             : <IoMdEye
                               size="20"
                               style={{ cursor: "pointer" }}
-                              onClick={() => this.setState({ showConfirmPassword: true })}
+                              onClick={() => this.setState({ showPassword: true })}
                             />
                           }
                         </InputGroupText>
@@ -768,6 +829,107 @@ class ProfilePage extends Component {
             </ModalFooter>
           </Modal>
         }
+        <BottomSheet
+          expandOnContentDrag={true}
+          open={this.state.showSheetForOTP}
+          snapPoints={({ minHeight, maxHeight }) => [
+            minHeight,
+            maxHeight - maxHeight / 2.2
+          ]}
+        >
+          <style>
+            {`[data-rsbs-overlay] {
+            background: #2CA8FF;
+          }`}
+          </style>
+          <Row
+            style={{
+              margin: "20px 20px 0px"
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              A verification code will be sent to your mobile via text message
+            </div>
+          </Row>
+          <Row
+            style={{
+              margin: "10px 20px 0px"
+            }}
+          >
+            <div
+              style={{
+                color: "white",
+                fontSize: "18px",
+                fontWeight: "bold",
+              }}
+            >
+              Enter the code
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              margin: "10px 20px 0px"
+            }}
+          >
+            <OtpInput
+              className="d-flex justify-content-center otpCss"
+              inputStyle={{
+                color: "black",
+                width: "10vw",
+                height: "15vw",
+                margin: "0 5px",
+                fontSize: "6vw",
+                borderRadius: "5px",
+                border:
+                  "1px solid rgba(0,0,0,0.3)",
+                outlineColor: "#17517b",
+              }}
+              isInputNum={true}
+              value={this.state.otp}
+              onChange={(value) =>
+                this.setState({
+                  otp: value,
+                })
+              }
+              numInputs={6}
+              separator={<span style={{ color: "#fff" }}>-</span>}
+            />
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 20,
+            }}
+          >
+            <Button
+              style={{
+                padding: "10px 29px",
+                fontSize: "15px",
+                fontWeight: "bold",
+                backgroundColor: "white",
+                color: "rgb(81 75 75)",
+              }}
+              onClick={this.verifyPhoneOTP}
+              className="btn-round mr-2"
+              color="black"
+              type="button"
+              size="lg"
+            >
+              Verify Code
+            </Button>
+          </Row>
+          <Row style={{ justifyContent: "center", alignItems: "center" }}>
+
+          </Row>
+        </BottomSheet>
       </>
     );
   }
