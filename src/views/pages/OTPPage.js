@@ -108,7 +108,15 @@ class OTPPage extends Component {
               throw Error("Please register user");
             }
           } else {
-            if (response.privateKeyCreated) {
+            if (response.userRegistered) {
+              this.setState({ showLoader: false });
+              Swal.fire({
+                icon: "error",
+                text: "This email is in use with another member",
+                confirmButtonText: "Click for login",
+                confirmButtonColor: "#2CA8FF"
+              }).then(result => result.isConfirmed && this.props.history.goBack());
+            } else if (response.privateKeyCreated) {
               localStorage.setItem("keyShare1", response.keyShare1);
               localStorage.setItem("keyShare2", response.keyShare2);
               localStorage.setItem("walletAddress", response.walletAddress);
