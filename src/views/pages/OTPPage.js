@@ -76,6 +76,7 @@ class OTPPage extends Component {
         url: "/email/verifyOTP",
         method: "POST",
         data: {
+          verifyOTPFor: this.state.fromPage,
           email: this.state.email,
           otp: this.state.otp,
           walletAddress: this.state.walletAddress,
