@@ -1,7 +1,7 @@
-import Web3 from "web3";
+// import Web3 from "web3";
 import Swal from "sweetalert2";
 import React, { Component } from "react";
-import WalletConnect from "walletconnect";
+// import WalletConnect from "walletconnect";
 import {
   Row,
   Col,
@@ -11,13 +11,13 @@ import {
   Button,
 } from "reactstrap";
 import PageSpinner from "../../components/PageSpinner";
-import membershipABI from "../../contracts_abi/membership.json";
+// import membershipABI from "../../contracts_abi/membership.json";
 import config from "../../config";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import "react-spring-bottom-sheet/dist/style.css"
 
-const wc = new WalletConnect();
+// const wc = new WalletConnect();
 
 class LoginPage extends Component {
 
@@ -33,81 +33,81 @@ class LoginPage extends Component {
   }
 
   async componentDidMount() {
-    let params = await GeneralFunctions.getQueryStringParams(window.location.search);
-    if (params.walletAddress) {
-      localStorage.setItem("walletAddressExistsOnPhone", true);
-      localStorage.setItem("walletAddress", params.walletAddress);
-    }
+    // let params = await GeneralFunctions.getQueryStringParams(window.location.search);
+    // if (params.walletAddress) {
+    //   localStorage.setItem("walletAddressExistsOnPhone", true);
+    //   localStorage.setItem("walletAddress", params.walletAddress);
+    // }
     const ztiAppNameData = GeneralFunctions.getZTIAppNameData();
     if (ztiAppNameData) this.setState({ ztiAppNameData });
-    if (params.dokuId) localStorage.setItem("dokuId", params.dokuId);
-    const signIn = localStorage.getItem("signIn");
-    if (signIn) {
-      this.setState({ showLoader: true });
-      const walletAddress = localStorage.getItem("walletAddress");
-      let details = navigator.userAgent;
-      let regexp = /android|iphone|kindle|ipad/i;
-      let isMobileDevice = regexp.test(details);
-      let provider;
-      if (isMobileDevice) {
-        const connector = await wc.connect();
-        let walletConnectProvider = await wc.getWeb3Provider({
-          rpc: {
-            [connector.chainId]: await config.networks[connector.chainId],
-          },
-        });
-        await walletConnectProvider.enable();
-        provider = walletConnectProvider;
-      } else {
-        provider = Web3.givenProvider;
-      }
-      const web3 = new Web3(provider);
-      this.checkIfDataStoredOnBlockchain(web3, walletAddress);
-    } else {
-      const walletAddress = localStorage.getItem("walletAddress");
-      const tokenId = localStorage.getItem("tokenId");
-      if (walletAddress && tokenId) {
-        this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
-      }
-    }
+    // if (params.dokuId) localStorage.setItem("dokuId", params.dokuId);
+    // const signIn = localStorage.getItem("signIn");
+    // if (signIn) {
+    //   this.setState({ showLoader: true });
+    //   const walletAddress = localStorage.getItem("walletAddress");
+    //   let details = navigator.userAgent;
+    //   let regexp = /android|iphone|kindle|ipad/i;
+    //   let isMobileDevice = regexp.test(details);
+    //   let provider;
+    //   if (isMobileDevice) {
+    //     const connector = await wc.connect();
+    //     let walletConnectProvider = await wc.getWeb3Provider({
+    //       rpc: {
+    //         [connector.chainId]: await config.networks[connector.chainId],
+    //       },
+    //     });
+    //     await walletConnectProvider.enable();
+    //     provider = walletConnectProvider;
+    //   } else {
+    //     provider = Web3.givenProvider;
+    //   }
+    //   const web3 = new Web3(provider);
+    //   this.checkIfDataStoredOnBlockchain(web3, walletAddress);
+    // } else {
+    //   const walletAddress = localStorage.getItem("walletAddress");
+    //   const tokenId = localStorage.getItem("tokenId");
+    //   if (walletAddress && tokenId) {
+    //     this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
+    //   }
+    // }
   }
 
-  checkIfDataStoredOnBlockchain = async (web3, walletAddress) => {
-    const myContract = await new web3.eth.Contract(membershipABI, config.REACT_APP_CONTRACT_ADDRESS);
-    try {
-      let tokenId = localStorage.getItem("tokenId");
-      const response = await myContract.methods
-        .ownerOf(tokenId)
-        .call();
-      if (response && response === walletAddress) {
-        this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
-      } else {
-        this.props.history.push({
-          pathname: "/profile-page",
-          state: {
-            walletAddress
-          }
-        });
-      }
-    } catch (error) {
-      let message = error.message || error.Error;
-      if (message.toLowerCase().includes("invalid token id")) {
-        this.props.history.push({
-          pathname: "/profile-page",
-          state: {
-            walletAddress
-          }
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          text: message,
-          confirmButtonText: "OK",
-          confirmButtonColor: "#2CA8FF"
-        });
-      }
-    }
-  }
+  // checkIfDataStoredOnBlockchain = async (web3, walletAddress) => {
+  //   const myContract = await new web3.eth.Contract(membershipABI, config.REACT_APP_CONTRACT_ADDRESS);
+  //   try {
+  //     let tokenId = localStorage.getItem("tokenId");
+  //     const response = await myContract.methods
+  //       .ownerOf(tokenId)
+  //       .call();
+  //     if (response && response === walletAddress) {
+  //       this.props.history.push(`/profile-detail-page?walletAddress=${walletAddress}&tokenId=${tokenId}`);
+  //     } else {
+  //       this.props.history.push({
+  //         pathname: "/profile-page",
+  //         state: {
+  //           walletAddress
+  //         }
+  //       });
+  //     }
+  //   } catch (error) {
+  //     let message = error.message || error.Error;
+  //     if (message.toLowerCase().includes("invalid token id")) {
+  //       this.props.history.push({
+  //         pathname: "/profile-page",
+  //         state: {
+  //           walletAddress
+  //         }
+  //       });
+  //     } else {
+  //       Swal.fire({
+  //         icon: "error",
+  //         text: message,
+  //         confirmButtonText: "OK",
+  //         confirmButtonColor: "#2CA8FF"
+  //       });
+  //     }
+  //   }
+  // }
 
   sendOTP = async (event, otpFor) => {
     try {

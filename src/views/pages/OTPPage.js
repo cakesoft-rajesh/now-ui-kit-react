@@ -113,9 +113,8 @@ class OTPPage extends Component {
             if (response.userRegistered) {
               this.setState({ showLoader: false });
               Swal.fire({
-                icon: "error",
-                text: "This email is in use with another member",
-                confirmButtonText: "Click for login",
+                text: "This email is in use with an existing account",
+                confirmButtonText: "Go back to Log In screen",
                 confirmButtonColor: "#2CA8FF"
               }).then(result => result.isConfirmed && this.props.history.goBack());
             } else if (response.privateKeyCreated) {
