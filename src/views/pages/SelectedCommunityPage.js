@@ -100,7 +100,7 @@ class SelectedCommunityPage extends Component {
                 cursor: "pointer"
               }}
               onClick={() => {
-                if (appName.value === "zti" && appName.value === "own") {
+                if (appName.value === "zti" || appName.value === "own") {
                   GeneralFunctions.setZTIAppNameData(appName);
                   this.props.history.push("/login-page");
                 }
