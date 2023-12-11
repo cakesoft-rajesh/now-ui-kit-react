@@ -12,6 +12,7 @@ import {
 import PageSpinner from "../../components/PageSpinner";
 import config from "config";
 import * as Server from "../../utils/Server";
+import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import "react-spring-bottom-sheet/dist/style.css"
 
 class ReconstructKeyPage extends Component {
@@ -25,7 +26,8 @@ class ReconstructKeyPage extends Component {
       showPassword: false,
       keyShare1: localStorage.getItem("keyShare1"),
       keyShare2: "",
-      rpcUrl: config.rpcUrl
+      rpcUrl: config.rpcUrl,
+      appNameData: GeneralFunctions.getZTIAppNameData()
     };
   }
 
@@ -37,7 +39,8 @@ class ReconstructKeyPage extends Component {
         method: "POST",
         data: {
           email: this.state.email,
-          password: this.state.password
+          password: this.state.password,
+          appName: this.state.appNameData.value
         }
       });
       if (response.success) {
