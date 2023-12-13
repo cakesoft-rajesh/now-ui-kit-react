@@ -130,7 +130,7 @@ class ProfilePage extends Component {
         url: "/phone/verifyOTP",
         method: "POST",
         data: {
-          phone: this.state.phone,
+          phone: `${this.state.countryCode.value}${this.state.phone}`,
           otp: this.state.otp
         }
       });
@@ -913,7 +913,25 @@ class ProfilePage extends Component {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              marginTop: 20,
+              marginTop: 15,
+            }}
+          >
+            <div
+              style={{
+                color: "#e9e5e5",
+                fontSize: "18px",
+                fontWeight: "bold",
+                cursor: "pointer"
+              }}
+              onClick={this.sendPhoneOTP}
+            >
+              Resend Code
+            </div>
+          </Row>
+          <Row
+            style={{
+              justifyContent: "center",
+              alignItems: "center"
             }}
           >
             <Button
