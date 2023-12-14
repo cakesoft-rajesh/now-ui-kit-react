@@ -23,7 +23,8 @@ class OTPPage extends Component {
       fromPage: this.props.location.state ? this.props.location.state.fromPage : "",
       userData: this.props.location.state ? this.props.location.state.user : "",
       walletAddressExistsOnPhone: localStorage.getItem("walletAddressExistsOnPhone") ? true : false,
-      walletAddress: localStorage.getItem("walletAddress")
+      walletAddress: localStorage.getItem("walletAddress"),
+      appNameData: GeneralFunctions.getZTIAppNameData()
     };
   }
 
@@ -45,7 +46,8 @@ class OTPPage extends Component {
           method: "POST",
           data: {
             email: this.state.email,
-            otp: this.state.otp
+            otp: this.state.otp,
+            appName: this.state.appNameData.value
           }
         }
       );
@@ -80,7 +82,8 @@ class OTPPage extends Component {
           email: this.state.email,
           otp: this.state.otp,
           walletAddress: this.state.walletAddress,
-          walletAddressExistsOnPhone: this.state.walletAddressExistsOnPhone
+          walletAddressExistsOnPhone: this.state.walletAddressExistsOnPhone,
+          appName: this.state.appNameData.value
         }
       });
       if (response.success) {
