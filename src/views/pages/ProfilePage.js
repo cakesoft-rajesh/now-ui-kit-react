@@ -103,7 +103,7 @@ class ProfilePage extends Component {
         url: "/phone/sendOTP",
         method: "POST",
         data: {
-          phone: this.state.phone
+          phone: `${this.state.countryCode.value}${this.state.phone}`
         }
       });
       if (response.success) {
@@ -130,7 +130,7 @@ class ProfilePage extends Component {
         url: "/phone/verifyOTP",
         method: "POST",
         data: {
-          phone: this.state.phone,
+          phone: `${this.state.countryCode.value}${this.state.phone}`,
           otp: this.state.otp
         }
       });
