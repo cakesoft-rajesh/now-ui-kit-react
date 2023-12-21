@@ -1,8 +1,1465 @@
 [
     {
+        "code": "AF",
+        "name": "Afghanistan",
+        "dialingCode": "93",
+        "show": false,
+        "emoji": "🇦🇫"
+    },
+    {
+        "code": "AL",
+        "name": "Albania",
+        "dialingCode": "355",
+        "show": false,
+        "emoji": "🇦🇱"
+    },
+    {
+        "code": "DZ",
+        "name": "Algeria",
+        "dialingCode": "213",
+        "show": false,
+        "emoji": "🇩🇿"
+    },
+    {
+        "code": "AD",
+        "name": "Andorra",
+        "dialingCode": "376",
+        "show": false,
+        "emoji": "🇦🇩"
+    },
+    {
+        "code": "AO",
+        "name": "Angola",
+        "dialingCode": "244",
+        "show": false,
+        "emoji": "🇦🇴"
+    },
+    {
+        "code": "AR",
+        "name": "Argentina",
+        "dialingCode": "54",
+        "show": false,
+        "emoji": "🇦🇷"
+    },
+    {
+        "code": "AM",
+        "name": "Armenia",
+        "dialingCode": "374",
+        "show": false,
+        "emoji": "🇦🇲"
+    },
+    {
+        "code": "AW",
+        "name": "Aruba",
+        "dialingCode": "297",
+        "show": false,
+        "emoji": "🇦🇼"
+    },
+    {
+        "code": "AU",
+        "name": "Australia",
+        "dialingCode": "61",
+        "show": false,
+        "emoji": "🇦🇺"
+    },
+    {
+        "code": "AI",
+        "name": "Austria",
+        "dialingCode": "43",
+        "show": false,
+        "emoji": "🇦🇮"
+    },
+    {
+        "code": "AZ",
+        "name": "Azerbaijan",
+        "dialingCode": "994",
+        "show": false,
+        "emoji": "🇦🇿"
+    },
+    {
+        "code": "BH",
+        "name": "Bahrain",
+        "dialingCode": "973",
+        "show": false,
+        "emoji": "🇧🇭"
+    },
+    {
+        "code": "BD",
+        "name": "Bangladesh",
+        "dialingCode": "880",
+        "show": false,
+        "emoji": "🇧🇩"
+    },
+    {
+        "code": "BY",
+        "name": "Belarus",
+        "dialingCode": "375",
+        "show": false,
+        "emoji": "🇧🇾"
+    },
+    {
+        "code": "BE",
+        "name": "Belgium",
+        "dialingCode": "32",
+        "show": false,
+        "emoji": "🇧🇪"
+    },
+    {
+        "code": "BZ",
+        "name": "Belize",
+        "dialingCode": "501",
+        "show": false,
+        "emoji": "🇧🇿"
+    },
+    {
+        "code": "BJ",
+        "name": "Benin",
+        "dialingCode": "229",
+        "show": false,
+        "emoji": "🇧🇯"
+    },
+    {
+        "code": "BT",
+        "name": "Bhutan",
+        "dialingCode": "975",
+        "show": false,
+        "emoji": "🇧🇹"
+    },
+    {
+        "code": "BO",
+        "name": "Bolivia",
+        "dialingCode": "591",
+        "show": false,
+        "emoji": "🇧🇴"
+    },
+    {
+        "code": "BA",
+        "name": "Bosnia and Herzegovina",
+        "dialingCode": "387",
+        "show": false,
+        "emoji": "🇧🇦"
+    },
+    {
+        "code": "BW",
+        "name": "Botswana",
+        "dialingCode": "267",
+        "show": false,
+        "emoji": "🇧🇼"
+    },
+    {
+        "code": "BR",
+        "name": "Brazil",
+        "dialingCode": "55",
+        "show": false,
+        "emoji": "🇧🇷"
+    },
+    {
+        "code": "IO",
+        "name": "British Indian Ocean Territory",
+        "dialingCode": "246",
+        "show": false,
+        "emoji": "🇮🇴"
+    },
+    {
+        "code": "BN",
+        "name": "Brunei",
+        "dialingCode": "673",
+        "show": false,
+        "emoji": "🇧🇳"
+    },
+    {
+        "code": "BG",
+        "name": "Bulgaria",
+        "dialingCode": "359",
+        "show": false,
+        "emoji": "🇧🇬"
+    },
+    {
+        "code": "BF",
+        "name": "Burkina Faso",
+        "dialingCode": "226",
+        "show": false,
+        "emoji": "🇧🇫"
+    },
+    {
+        "code": "MM",
+        "name": "Burma Myanmar",
+        "dialingCode": "95",
+        "show": false,
+        "emoji": "🇲🇲"
+    },
+    {
+        "code": "BI",
+        "name": "Burundi",
+        "dialingCode": "257",
+        "show": false,
+        "emoji": "🇧🇮"
+    },
+    {
+        "code": "KH",
+        "name": "Cambodia",
+        "dialingCode": "855",
+        "show": false,
+        "emoji": "🇰🇭"
+    },
+    {
+        "code": "CM",
+        "name": "Cameroon",
+        "dialingCode": "237",
+        "show": false,
+        "emoji": "🇨🇲"
+    },
+    {
+        "code": "CV",
+        "name": "Cape Verde",
+        "dialingCode": "238",
+        "show": false,
+        "emoji": "🇨🇻"
+    },
+    {
+        "code": "CF",
+        "name": "Central African Republic",
+        "dialingCode": "236",
+        "show": false,
+        "emoji": "🇨🇫"
+    },
+    {
+        "code": "ID",
+        "name": "Chad",
+        "dialingCode": "235",
+        "show": false,
+        "emoji": "🇮🇩"
+    },
+    {
+        "code": "CL",
+        "name": "Chile",
+        "dialingCode": "56",
+        "show": false,
+        "emoji": "🇨🇱"
+    },
+    {
+        "code": "CN",
+        "name": "China",
+        "dialingCode": "86",
+        "show": false,
+        "emoji": "🇨🇳"
+    },
+    {
+        "code": "CO",
+        "name": "Colombia",
+        "dialingCode": "57",
+        "show": false,
+        "emoji": "🇨🇴"
+    },
+    {
+        "code": "KM",
+        "name": "Comoros",
+        "dialingCode": "269",
+        "show": false,
+        "emoji": "🇰🇲"
+    },
+    {
+        "code": "CK",
+        "name": "Cook Islands",
+        "dialingCode": "682",
+        "show": false,
+        "emoji": "🇨🇰"
+    },
+    {
+        "code": "CR",
+        "name": "Costa Rica",
+        "dialingCode": "506",
+        "show": false,
+        "emoji": "🇨🇷"
+    },
+    {
+        "code": "CI",
+        "name": "Côte d'Ivoire",
+        "dialingCode": "225",
+        "show": false,
+        "emoji": "🇨🇮"
+    },
+    {
+        "code": "HR",
+        "name": "Croatia",
+        "dialingCode": "385",
+        "show": false,
+        "emoji": "🇭🇷"
+    },
+    {
+        "code": "CU",
+        "name": "Cuba",
+        "dialingCode": "53",
+        "show": false,
+        "emoji": "🇨🇺"
+    },
+    {
+        "code": "CY",
+        "name": "Cyprus",
+        "dialingCode": "357",
+        "show": false,
+        "emoji": "🇨🇾"
+    },
+    {
+        "code": "CZ",
+        "name": "Czech Republic",
+        "dialingCode": "420",
+        "show": false,
+        "emoji": "🇨🇿"
+    },
+    {
+        "code": "CD",
+        "name": "Democratic Republic of Congo",
+        "dialingCode": "243",
+        "show": false,
+        "emoji": "🇨🇩"
+    },
+    {
+        "code": "DK",
+        "name": "Denmark",
+        "dialingCode": "45",
+        "show": false,
+        "emoji": "🇩🇰"
+    },
+    {
+        "code": "DJ",
+        "name": "Djibouti",
+        "dialingCode": "253",
+        "show": false,
+        "emoji": "🇩🇯"
+    },
+    {
+        "code": "EC",
+        "name": "Ecuador",
+        "dialingCode": "593",
+        "show": false,
+        "emoji": "🇪🇨"
+    },
+    {
+        "code": "EG",
+        "name": "Egypt",
+        "dialingCode": "20",
+        "show": false,
+        "emoji": "🇪🇬"
+    },
+    {
+        "code": "SV",
+        "name": "El Salvador",
+        "dialingCode": "503",
+        "show": false,
+        "emoji": "🇸🇻"
+    },
+    {
+        "code": "GQ",
+        "name": "Equatorial Guinea",
+        "dialingCode": "240",
+        "show": false,
+        "emoji": "🇬🇶"
+    },
+    {
+        "code": "ER",
+        "name": "Eritrea",
+        "dialingCode": "291",
+        "show": false,
+        "emoji": "🇪🇷"
+    },
+    {
+        "code": "EE",
+        "name": "Estonia",
+        "dialingCode": "372",
+        "show": false,
+        "emoji": "🇪🇪"
+    },
+    {
+        "code": "ET",
+        "name": "Ethiopia",
+        "dialingCode": "251",
+        "show": false,
+        "emoji": "🇪🇹"
+    },
+    {
+        "code": "FK",
+        "name": "Falkland Islands",
+        "dialingCode": "500",
+        "show": false,
+        "emoji": "🇫🇰"
+    },
+    {
+        "code": "FO",
+        "name": "Faroe Islands",
+        "dialingCode": "298",
+        "show": false,
+        "emoji": "🇫🇴"
+    },
+    {
+        "code": "FM",
+        "name": "Federated States of Micronesia",
+        "dialingCode": "691",
+        "show": false,
+        "emoji": "🇫🇲"
+    },
+    {
+        "code": "FJ",
+        "name": "Fiji",
+        "dialingCode": "679",
+        "show": false,
+        "emoji": "🇫🇯"
+    },
+    {
+        "code": "FI",
+        "name": "Finland",
+        "dialingCode": "358",
+        "show": false,
+        "emoji": "🇫🇮"
+    },
+    {
+        "code": "FR",
+        "name": "France",
+        "dialingCode": "33",
+        "show": false,
+        "emoji": "🇫🇷"
+    },
+    {
+        "code": "GF",
+        "name": "French Guiana",
+        "dialingCode": "594",
+        "show": false,
+        "emoji": "🇬🇫"
+    },
+    {
+        "code": "PF",
+        "name": "French Polynesia",
+        "dialingCode": "689",
+        "show": false,
+        "emoji": "🇵🇫"
+    },
+    {
+        "code": "GA",
+        "name": "Gabon",
+        "dialingCode": "241",
+        "show": false,
+        "emoji": "🇬🇦"
+    },
+    {
+        "code": "GE",
+        "name": "Georgia",
+        "dialingCode": "995",
+        "show": false,
+        "emoji": "🇬🇪"
+    },
+    {
+        "code": "DE",
+        "name": "Germany",
+        "dialingCode": "49",
+        "show": false,
+        "emoji": "🇩🇪"
+    },
+    {
+        "code": "GH",
+        "name": "Ghana",
+        "dialingCode": "233",
+        "show": false,
+        "emoji": "🇬🇭"
+    },
+    {
+        "code": "GI",
+        "name": "Gibraltar",
+        "dialingCode": "350",
+        "show": false,
+        "emoji": "🇬🇮"
+    },
+    {
+        "code": "GR",
+        "name": "Greece",
+        "dialingCode": "30",
+        "show": false,
+        "emoji": "🇬🇷"
+    },
+    {
+        "code": "GL",
+        "name": "Greenland",
+        "dialingCode": "299",
+        "show": false,
+        "emoji": "🇬🇱"
+    },
+    {
+        "code": "GP",
+        "name": "Guadeloupe",
+        "dialingCode": "590",
+        "show": false,
+        "emoji": "🇬🇵"
+    },
+    {
+        "code": "GT",
+        "name": "Guatemala",
+        "dialingCode": "502",
+        "show": false,
+        "emoji": "🇬🇹"
+    },
+    {
+        "code": "GN",
+        "name": "Guinea",
+        "dialingCode": "224",
+        "show": false,
+        "emoji": "🇬🇳"
+    },
+    {
+        "code": "GW",
+        "name": "Guinea-Bissau",
+        "dialingCode": "245",
+        "show": false,
+        "emoji": "🇬🇼"
+    },
+    {
+        "code": "GY",
+        "name": "Guyana",
+        "dialingCode": "592",
+        "show": false,
+        "emoji": "🇬🇾"
+    },
+    {
+        "code": "HT",
+        "name": "Haiti",
+        "dialingCode": "509",
+        "show": false,
+        "emoji": "🇭🇹"
+    },
+    {
+        "code": "HN",
+        "name": "Honduras",
+        "dialingCode": "504",
+        "show": false,
+        "emoji": "🇭🇳"
+    },
+    {
+        "code": "HK",
+        "name": "Hong Kong",
+        "dialingCode": "852",
+        "show": false,
+        "emoji": "🇭🇰"
+    },
+    {
+        "code": "HU",
+        "name": "Hungary",
+        "dialingCode": "36",
+        "show": false,
+        "emoji": "🇭🇺"
+    },
+    {
+        "code": "IS",
+        "name": "Iceland",
+        "dialingCode": "354",
+        "show": false,
+        "emoji": "🇮🇸"
+    },
+    {
+        "code": "IN",
+        "name": "India",
+        "dialingCode": "91",
+        "show": false,
+        "emoji": "🇮🇳"
+    },
+    {
         "code": "ID",
         "name": "Indonesia",
         "dialingCode": "62",
+        "show": true,
         "emoji": "🇮🇩"
+    },
+    {
+        "code": "IR",
+        "name": "Iran",
+        "dialingCode": "98",
+        "show": false,
+        "emoji": "🇮🇷"
+    },
+    {
+        "code": "IQ",
+        "name": "Iraq",
+        "dialingCode": "964",
+        "show": false,
+        "emoji": "🇮🇶"
+    },
+    {
+        "code": "IE",
+        "name": "Ireland",
+        "dialingCode": "353",
+        "show": false,
+        "emoji": "🇮🇪"
+    },
+    {
+        "code": "IL",
+        "name": "Israel",
+        "dialingCode": "972",
+        "show": false,
+        "emoji": "🇮🇱"
+    },
+    {
+        "code": "IT",
+        "name": "Italy",
+        "dialingCode": "39",
+        "show": false,
+        "emoji": "🇮🇹"
+    },
+    {
+        "code": "JP",
+        "name": "Japan",
+        "dialingCode": "81",
+        "show": false,
+        "emoji": "🇯🇵"
+    },
+    {
+        "code": "JO",
+        "name": "Jordan",
+        "dialingCode": "962",
+        "show": false,
+        "emoji": "🇯🇴"
+    },
+    {
+        "code": "KZ",
+        "name": "Kazakhstan",
+        "dialingCode": "7",
+        "show": false,
+        "emoji": "🇰🇿"
+    },
+    {
+        "code": "KE",
+        "name": "Kenya",
+        "dialingCode": "254",
+        "show": false,
+        "emoji": "🇰🇪"
+    },
+    {
+        "code": "KI",
+        "name": "Kiribati",
+        "dialingCode": "686",
+        "show": false,
+        "emoji": "🇰🇮"
+    },
+    {
+        "code": "XK",
+        "name": "Kosovo",
+        "dialingCode": "381",
+        "show": false,
+        "emoji": "🇽🇰"
+    },
+    {
+        "code": "KW",
+        "name": "Kuwait",
+        "dialingCode": "965",
+        "show": false,
+        "emoji": "🇰🇼"
+    },
+    {
+        "code": "KG",
+        "name": "Kyrgyzstan",
+        "dialingCode": "996",
+        "show": false,
+        "emoji": "🇰🇬"
+    },
+    {
+        "code": "LA",
+        "name": "Laos",
+        "dialingCode": "856",
+        "show": false,
+        "emoji": "🇱🇦"
+    },
+    {
+        "code": "LV",
+        "name": "Latvia",
+        "dialingCode": "371",
+        "show": false,
+        "emoji": "🇱🇻"
+    },
+    {
+        "code": "LB",
+        "name": "Lebanon",
+        "dialingCode": "961",
+        "show": false,
+        "emoji": "🇱🇧"
+    },
+    {
+        "code": "LS",
+        "name": "Lesotho",
+        "dialingCode": "266",
+        "show": false,
+        "emoji": "🇱🇸"
+    },
+    {
+        "code": "LR",
+        "name": "Liberia",
+        "dialingCode": "231",
+        "show": false,
+        "emoji": "🇱🇷"
+    },
+    {
+        "code": "LY",
+        "name": "Libya",
+        "dialingCode": "218",
+        "show": false,
+        "emoji": "🇱🇾"
+    },
+    {
+        "code": "LI",
+        "name": "Liechtenstein",
+        "dialingCode": "423",
+        "show": false,
+        "emoji": "🇱🇮"
+    },
+    {
+        "code": "LT",
+        "name": "Lithuania",
+        "dialingCode": "370",
+        "show": false,
+        "emoji": "🇱🇹"
+    },
+    {
+        "code": "LU",
+        "name": "Luxembourg",
+        "dialingCode": "352",
+        "show": false,
+        "emoji": "🇱🇺"
+    },
+    {
+        "code": "MO",
+        "name": "Macau",
+        "dialingCode": "853",
+        "show": false,
+        "emoji": "🇲🇴"
+    },
+    {
+        "code": "MK",
+        "name": "Macedonia",
+        "dialingCode": "389",
+        "show": false,
+        "emoji": "🇲🇰"
+    },
+    {
+        "code": "MG",
+        "name": "Madagascar",
+        "dialingCode": "261",
+        "show": false,
+        "emoji": "🇲🇬"
+    },
+    {
+        "code": "MW",
+        "name": "Malawi",
+        "dialingCode": "265",
+        "show": false,
+        "emoji": "🇲🇼"
+    },
+    {
+        "code": "MY",
+        "name": "Malaysia",
+        "dialingCode": "60",
+        "show": false,
+        "emoji": "🇲🇾"
+    },
+    {
+        "code": "MV",
+        "name": "Maldives",
+        "dialingCode": "960",
+        "show": false,
+        "emoji": "🇲🇻"
+    },
+    {
+        "code": "ML",
+        "name": "Mali",
+        "dialingCode": "223",
+        "show": false,
+        "emoji": "🇲🇱"
+    },
+    {
+        "code": "MT",
+        "name": "Malta",
+        "dialingCode": "356",
+        "show": false,
+        "emoji": "🇲🇹"
+    },
+    {
+        "code": "MH",
+        "name": "Marshall Islands",
+        "dialingCode": "692",
+        "show": false,
+        "emoji": "🇲🇭"
+    },
+    {
+        "code": "MQ",
+        "name": "Martinique",
+        "dialingCode": "596",
+        "show": false,
+        "emoji": "🇲🇶"
+    },
+    {
+        "code": "MR",
+        "name": "Mauritania",
+        "dialingCode": "222",
+        "show": false,
+        "emoji": "🇲🇷"
+    },
+    {
+        "code": "MU",
+        "name": "Mauritius",
+        "dialingCode": "230",
+        "show": false,
+        "emoji": "🇲🇺"
+    },
+    {
+        "code": "YT",
+        "name": "Mayotte",
+        "dialingCode": "262",
+        "show": false,
+        "emoji": "🇾🇹"
+    },
+    {
+        "code": "MX",
+        "name": "Mexico",
+        "dialingCode": "52",
+        "show": false,
+        "emoji": "🇲🇽"
+    },
+    {
+        "code": "MD",
+        "name": "Moldova",
+        "dialingCode": "373",
+        "show": false,
+        "emoji": "🇲🇩"
+    },
+    {
+        "code": "MC",
+        "name": "Monaco",
+        "dialingCode": "377",
+        "show": false,
+        "emoji": "🇲🇨"
+    },
+    {
+        "code": "MN",
+        "name": "Mongolia",
+        "dialingCode": "976",
+        "show": false,
+        "emoji": "🇲🇳"
+    },
+    {
+        "code": "ME",
+        "name": "Montenegro",
+        "dialingCode": "382",
+        "show": false,
+        "emoji": "🇲🇪"
+    },
+    {
+        "code": "MA",
+        "name": "Morocco",
+        "dialingCode": "212",
+        "show": false,
+        "emoji": "🇲🇦"
+    },
+    {
+        "code": "MZ",
+        "name": "Mozambique",
+        "dialingCode": "258",
+        "show": false,
+        "emoji": "🇲🇿"
+    },
+    {
+        "code": "NA",
+        "name": "Namibia",
+        "dialingCode": "264",
+        "show": false,
+        "emoji": "🇳🇦"
+    },
+    {
+        "code": "NR",
+        "name": "Nauru",
+        "dialingCode": "674",
+        "show": false,
+        "emoji": "🇳🇷"
+    },
+    {
+        "code": "NP",
+        "name": "Nepal",
+        "dialingCode": "977",
+        "show": false,
+        "emoji": "🇳🇵"
+    },
+    {
+        "code": "NL",
+        "name": "Netherlands",
+        "dialingCode": "31",
+        "show": false,
+        "emoji": "🇳🇱"
+    },
+    {
+        "code": "AN",
+        "name": "Netherlands Antilles",
+        "dialingCode": "599",
+        "show": false,
+        "emoji": "🇧🇶"
+    },
+    {
+        "code": "NC",
+        "name": "New Caledonia",
+        "dialingCode": "687",
+        "show": false,
+        "emoji": "🇳🇨"
+    },
+    {
+        "code": "NZ",
+        "name": "New Zealand",
+        "dialingCode": "64",
+        "show": false,
+        "emoji": "🇳🇿"
+    },
+    {
+        "code": "NI",
+        "name": "Nicaragua",
+        "dialingCode": "505",
+        "show": false,
+        "emoji": "🇳🇮"
+    },
+    {
+        "code": "NE",
+        "name": "Niger",
+        "dialingCode": "227",
+        "show": false,
+        "emoji": "🇳🇪"
+    },
+    {
+        "code": "NG",
+        "name": "Nigeria",
+        "dialingCode": "234",
+        "show": false,
+        "emoji": "🇳🇬"
+    },
+    {
+        "code": "NU",
+        "name": "Niue",
+        "dialingCode": "683",
+        "show": false,
+        "emoji": "🇳🇺"
+    },
+    {
+        "code": "NF",
+        "name": "Norfolk Island",
+        "dialingCode": "672",
+        "show": false,
+        "emoji": "🇳🇫"
+    },
+    {
+        "code": "KP",
+        "name": "North Korea",
+        "dialingCode": "850",
+        "show": false,
+        "emoji": "🇰🇵"
+    },
+    {
+        "code": "NO",
+        "name": "Norway",
+        "dialingCode": "47",
+        "show": false,
+        "emoji": "🇳🇴"
+    },
+    {
+        "code": "OM",
+        "name": "Oman",
+        "dialingCode": "968",
+        "show": false,
+        "emoji": "🇴🇲"
+    },
+    {
+        "code": "PK",
+        "name": "Pakistan",
+        "dialingCode": "92",
+        "show": false,
+        "emoji": "🇵🇰"
+    },
+    {
+        "code": "PW",
+        "name": "Palau",
+        "dialingCode": "680",
+        "show": false,
+        "emoji": "🇵🇼"
+    },
+    {
+        "code": "PS",
+        "name": "Palestine",
+        "dialingCode": "970",
+        "show": false,
+        "emoji": "🇵🇸"
+    },
+    {
+        "code": "PA",
+        "name": "Panama",
+        "dialingCode": "507",
+        "show": false,
+        "emoji": "🇵🇦"
+    },
+    {
+        "code": "PG",
+        "name": "Papua New Guinea",
+        "dialingCode": "675",
+        "show": false,
+        "emoji": "🇵🇬"
+    },
+    {
+        "code": "PY",
+        "name": "Paraguay",
+        "dialingCode": "595",
+        "show": false,
+        "emoji": "🇵🇾"
+    },
+    {
+        "code": "PE",
+        "name": "Peru",
+        "dialingCode": "51",
+        "show": false,
+        "emoji": "🇵🇪"
+    },
+    {
+        "code": "PH",
+        "name": "Philippines",
+        "dialingCode": "63",
+        "show": false,
+        "emoji": "🇵🇭"
+    },
+    {
+        "code": "PL",
+        "name": "Poland",
+        "dialingCode": "48",
+        "show": false,
+        "emoji": "🇵🇱"
+    },
+    {
+        "code": "PT",
+        "name": "Portugal",
+        "dialingCode": "351",
+        "show": false,
+        "emoji": "🇵🇹"
+    },
+    {
+        "code": "QA",
+        "name": "Qatar",
+        "dialingCode": "974",
+        "show": false,
+        "emoji": "🇶🇦"
+    },
+    {
+        "code": "CG",
+        "name": "Republic of the Congo",
+        "dialingCode": "242",
+        "show": false,
+        "emoji": "🇨🇬"
+    },
+    {
+        "code": "RE",
+        "name": "Réunion",
+        "dialingCode": "262",
+        "show": false,
+        "emoji": "🇷🇪"
+    },
+    {
+        "code": "RO",
+        "name": "Romania",
+        "dialingCode": "40",
+        "show": false,
+        "emoji": "🇷🇴"
+    },
+    {
+        "code": "RU",
+        "name": "Russia",
+        "dialingCode": "7",
+        "show": false,
+        "emoji": "🇷🇺"
+    },
+    {
+        "code": "RW",
+        "name": "Rwanda",
+        "dialingCode": "250",
+        "show": false,
+        "emoji": "🇷🇼"
+    },
+    {
+        "code": "BL",
+        "name": "Saint Barthélemy",
+        "dialingCode": "590",
+        "show": false,
+        "emoji": "🇧🇱"
+    },
+    {
+        "code": "SH",
+        "name": "Saint Helena",
+        "dialingCode": "290",
+        "show": false,
+        "emoji": "🇸🇭"
+    },
+    {
+        "code": "MF",
+        "name": "Saint Martin",
+        "dialingCode": "590",
+        "show": false,
+        "emoji": "🇲🇫"
+    },
+    {
+        "code": "PM",
+        "name": "Saint Pierre and Miquelon",
+        "dialingCode": "508",
+        "show": false,
+        "emoji": "🇵🇲"
+    },
+    {
+        "code": "WS",
+        "name": "Samoa",
+        "dialingCode": "685",
+        "show": false,
+        "emoji": "🇼🇸"
+    },
+    {
+        "code": "SM",
+        "name": "San Marino",
+        "dialingCode": "378",
+        "show": false,
+        "emoji": "🇸🇲"
+    },
+    {
+        "code": "ST",
+        "name": "São Tomé and Príncipe",
+        "dialingCode": "239",
+        "show": false,
+        "emoji": "🇸🇹"
+    },
+    {
+        "code": "SA",
+        "name": "Saudi Arabia",
+        "dialingCode": "966",
+        "show": false,
+        "emoji": "🇸🇦"
+    },
+    {
+        "code": "SN",
+        "name": "Senegal",
+        "dialingCode": "221",
+        "show": false,
+        "emoji": "🇸🇳"
+    },
+    {
+        "code": "RS",
+        "name": "Serbia",
+        "dialingCode": "381",
+        "show": false,
+        "emoji": "🇷🇸"
+    },
+    {
+        "code": "SC",
+        "name": "Seychelles",
+        "dialingCode": "248",
+        "show": false,
+        "emoji": "🇸🇨"
+    },
+    {
+        "code": "SL",
+        "name": "Sierra Leone",
+        "dialingCode": "232",
+        "show": false,
+        "emoji": "🇸🇱"
+    },
+    {
+        "code": "SG",
+        "name": "Singapore",
+        "dialingCode": "65",
+        "show": false,
+        "emoji": "🇸🇬"
+    },
+    {
+        "code": "SK",
+        "name": "Slovakia",
+        "dialingCode": "421",
+        "show": false,
+        "emoji": "🇸🇰"
+    },
+    {
+        "code": "SI",
+        "name": "Slovenia",
+        "dialingCode": "386",
+        "show": false,
+        "emoji": "🇸🇮"
+    },
+    {
+        "code": "SB",
+        "name": "Solomon Islands",
+        "dialingCode": "677",
+        "show": false,
+        "emoji": "🇸🇧"
+    },
+    {
+        "code": "SO",
+        "name": "Somalia",
+        "dialingCode": "252",
+        "show": false,
+        "emoji": "🇸🇴"
+    },
+    {
+        "code": "ZA",
+        "name": "South Africa",
+        "dialingCode": "27",
+        "show": false,
+        "emoji": "🇿🇦"
+    },
+    {
+        "code": "KR",
+        "name": "South Korea",
+        "dialingCode": "82",
+        "show": false,
+        "emoji": "🇰🇷"
+    },
+    {
+        "code": "ES",
+        "name": "Spain",
+        "dialingCode": "34",
+        "show": false,
+        "emoji": "🇪🇸"
+    },
+    {
+        "code": "LK",
+        "name": "Sri Lanka",
+        "dialingCode": "94",
+        "show": false,
+        "emoji": "🇱🇰"
+    },
+    {
+        "code": "SD",
+        "name": "Sudan",
+        "dialingCode": "249",
+        "show": false,
+        "emoji": "🇸🇩"
+    },
+    {
+        "code": "SR",
+        "name": "Suriname",
+        "dialingCode": "597",
+        "show": false,
+        "emoji": "🇸🇷"
+    },
+    {
+        "code": "SZ",
+        "name": "Swaziland",
+        "dialingCode": "268",
+        "show": false,
+        "emoji": "🇸🇿"
+    },
+    {
+        "code": "SE",
+        "name": "Sweden",
+        "dialingCode": "46",
+        "show": false,
+        "emoji": "🇸🇪"
+    },
+    {
+        "code": "CH",
+        "name": "Switzerland",
+        "dialingCode": "41",
+        "show": false,
+        "emoji": "🇨🇭"
+    },
+    {
+        "code": "SY",
+        "name": "Syria",
+        "dialingCode": "963",
+        "show": false,
+        "emoji": "🇸🇾"
+    },
+    {
+        "code": "TW",
+        "name": "Taiwan",
+        "dialingCode": "886",
+        "show": false,
+        "emoji": "🇹🇼"
+    },
+    {
+        "code": "TJ",
+        "name": "Tajikistan",
+        "dialingCode": "992",
+        "show": false,
+        "emoji": "🇹🇯"
+    },
+    {
+        "code": "TZ",
+        "name": "Tanzania",
+        "dialingCode": "255",
+        "show": false,
+        "emoji": "🇹🇿"
+    },
+    {
+        "code": "TH",
+        "name": "Thailand",
+        "dialingCode": "66",
+        "show": false,
+        "emoji": "🇹🇭"
+    },
+    {
+        "code": "GM",
+        "name": "The Gambia",
+        "dialingCode": "220",
+        "show": false,
+        "emoji": "🇬🇲"
+    },
+    {
+        "code": "TL",
+        "name": "Timor-Leste",
+        "dialingCode": "670",
+        "show": false,
+        "emoji": "🇹🇱"
+    },
+    {
+        "code": "TG",
+        "name": "Togo",
+        "dialingCode": "228",
+        "show": false,
+        "emoji": "🇹🇬"
+    },
+    {
+        "code": "TK",
+        "name": "Tokelau",
+        "dialingCode": "690",
+        "show": false,
+        "emoji": "🇹🇰"
+    },
+    {
+        "code": "TO",
+        "name": "Tonga",
+        "dialingCode": "676",
+        "show": false,
+        "emoji": "🇹🇴"
+    },
+    {
+        "code": "TN",
+        "name": "Tunisia",
+        "dialingCode": "216",
+        "show": false,
+        "emoji": "🇹🇳"
+    },
+    {
+        "code": "TR",
+        "name": "Turkey",
+        "dialingCode": "90",
+        "show": false,
+        "emoji": "🇹🇷"
+    },
+    {
+        "code": "TM",
+        "name": "Turkmenistan",
+        "dialingCode": "993",
+        "show": false,
+        "emoji": "🇹🇲"
+    },
+    {
+        "code": "TV",
+        "name": "Tuvalu",
+        "dialingCode": "688",
+        "show": false,
+        "emoji": "🇹🇻"
+    },
+    {
+        "code": "UG",
+        "name": "Uganda",
+        "dialingCode": "256",
+        "show": false,
+        "emoji": "🇺🇬"
+    },
+    {
+        "code": "UA",
+        "name": "Ukraine",
+        "dialingCode": "380",
+        "show": false,
+        "emoji": "🇺🇦"
+    },
+    {
+        "code": "AE",
+        "name": "United Arab Emirates",
+        "dialingCode": "971",
+        "show": false,
+        "emoji": "🇦🇪"
+    },
+    {
+        "code": "GB",
+        "name": "United Kingdom",
+        "dialingCode": "44",
+        "show": false,
+        "emoji": "🇬🇧"
+    },
+    {
+        "code": "US",
+        "name": "United States",
+        "dialingCode": "1",
+        "show": false,
+        "emoji": "🇺🇸"
+    },
+    {
+        "code": "UY",
+        "name": "Uruguay",
+        "dialingCode": "598",
+        "show": false,
+        "emoji": "🇺🇾"
+    },
+    {
+        "code": "UZ",
+        "name": "Uzbekistan",
+        "dialingCode": "998",
+        "show": false,
+        "emoji": "🇺🇿"
+    },
+    {
+        "code": "VU",
+        "name": "Vanuatu",
+        "dialingCode": "678",
+        "show": false,
+        "emoji": "🇻🇺"
+    },
+    {
+        "code": "VA",
+        "name": "Vatican City",
+        "dialingCode": "39",
+        "show": false,
+        "emoji": "🇻🇦"
+    },
+    {
+        "code": "VE",
+        "name": "Venezuela",
+        "dialingCode": "58",
+        "show": false,
+        "emoji": "🇻🇪"
+    },
+    {
+        "code": "VN",
+        "name": "Vietnam",
+        "dialingCode": "84",
+        "show": false,
+        "emoji": "🇻🇳"
+    },
+    {
+        "code": "WF",
+        "name": "Wallis and Futuna",
+        "dialingCode": "681",
+        "show": false,
+        "emoji": "🇼🇫"
+    },
+    {
+        "code": "YE",
+        "name": "Yemen",
+        "dialingCode": "967",
+        "show": false,
+        "emoji": "🇾🇪"
+    },
+    {
+        "code": "ZM",
+        "name": "Zambia",
+        "dialingCode": "260",
+        "show": false,
+        "emoji": "🇿🇲"
+    },
+    {
+        "code": "ZW",
+        "name": "Zimbabwe",
+        "dialingCode": "263",
+        "show": false,
+        "emoji": "🇿🇼"
     }
 ]

@@ -27,6 +27,7 @@ class ProfileDetailPage extends Component {
       firstName: this.props.location.state ? this.props.location.state.firstName : "",
       lastName: this.props.location.state ? this.props.location.state.lastName : "",
       phone: this.props.location.state ? this.props.location.state.phone : "",
+      userName: this.props.location.state ? this.props.location.state.userName : "",
       displayUsername: this.props.location.state ? this.props.location.state.displayUsername : "",
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       skip2FactorAuth: this.props.location.state ? this.props.location.state.skip2FactorAuth : false,
@@ -175,7 +176,7 @@ class ProfileDetailPage extends Component {
                         borderRadius: "50%",
                         verticalAlign: "middle"
                       }}
-                      src={`${config.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.phone}?forPOC=true&data=${new Date()}`}
+                      src={`${config.REACT_APP_CHAT_BASE_URL}/avatar/${this.state.userName}?forPOC=true&data=${new Date()}`}
                       alt=""
                     />
                   </Row>

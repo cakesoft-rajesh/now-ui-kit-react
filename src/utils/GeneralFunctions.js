@@ -162,6 +162,26 @@ export const maskEmailId = (email) => {
   );
 }
 
+export const separateCountryCode = (phone) => {
+  if (phone.charAt(0) === '+' || phone.charAt(0) === '0') {
+    return {
+      countryCode: phone.replace(/[^a-zA-Z0-9+]/g, "").substring(1, 3),
+      phone: phone.replace(/[^a-zA-Z0-9+]/g, "").substring(3)
+    };
+  } else {
+    switch (phone.substring(0, 2)) {
+      case "62":
+      case "91":
+        return {
+          countryCode: phone.replace(/[^a-zA-Z0-9+]/g, "").substring(1, 2),
+          phone: phone.replace(/[^a-zA-Z0-9+]/g, "").substring(2)
+        };
+      default:
+        return phone;
+    }
+  }
+}
+
 let profileData;
 export const getProfileData = () => profileData;
 

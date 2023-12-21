@@ -8,6 +8,7 @@ import {
   Button,
 } from "reactstrap";
 import PageSpinner from "../../components/PageSpinner";
+import CountryCode from "../../utils/CountryCode.json";
 import * as Server from "../../utils/Server";
 import * as GeneralFunctions from "../../utils/GeneralFunctions";
 import "react-spring-bottom-sheet/dist/style.css"
@@ -114,12 +115,44 @@ class OTPPage extends Component {
             break;
           case "signupPage":
             if (response.userRegistered) {
-              this.setState({ showLoader: false });
-              Swal.fire({
-                text: "This email is in use with an existing account",
-                confirmButtonText: "Go back to Log In screen",
-                confirmButtonColor: "#2CA8FF"
-              }).then(result => result.isConfirmed && this.props.history.goBack());
+              if (response.privateKeyCreated) {
+                this.setState({ showLoader: false });
+                Swal.fire({
+                  text: "This email is in use with an existing account",
+                  confirmButtonText: "Go back to Log In screen",
+                  confirmButtonColor: "#2CA8FF"
+                }).then(result => result.isConfirmed && this.props.history.goBack());
+              } else {
+                const { privateKey, walletAddress } = this.createWallet();
+                const encryptPrivateKey = await GeneralFunctions.encrypt(privateKey);
+                const keyShare1 = encryptPrivateKey.slice(0, encryptPrivateKey.length / 2)
+                const keyShare2 = encryptPrivateKey.slice(encryptPrivateKey.length / 2, encryptPrivateKey.length)
+                this.setState({ showLoader: false });
+                localStorage.setItem("keyShare1", keyShare1);
+                localStorage.setItem("keyShare2", keyShare2);
+                localStorage.setItem("walletAddress", walletAddress);
+                let { countryCode, phone } = await GeneralFunctions.separateCountryCode(response.userData.phone);
+                let countryCodesOption = CountryCode.find(code => code.dialingCode === countryCode);
+                this.props.history.push({
+                  pathname: "/profile-page",
+                  state: {
+                    walletAddress,
+                    phoneVerified: true,
+                    signUpForExistingUsers: true,
+                    signUpByEmail: true,
+                    email: response.userData.email,
+                    firstName: response.userData.firstName,
+                    lastName: response.userData.lastName,
+                    username: response.userData.username,
+                    phone,
+                    countryCode: {
+                      label: `${countryCodesOption.emoji} +${countryCodesOption.dialingCode}`,
+                      value: countryCodesOption.dialingCode
+                    },
+                    countryCodesOptions: countryCodesOption
+                  }
+                });
+              }
             } else if (response.privateKeyCreated) {
               localStorage.setItem("keyShare1", response.keyShare1);
               localStorage.setItem("keyShare2", response.keyShare2);
@@ -127,6 +160,8 @@ class OTPPage extends Component {
               this.props.history.push({
                 pathname: "/profile-page",
                 state: {
+                  phoneVerified: false,
+                  signUpForExistingUsers: false,
                   signUpByEmail: true,
                   email: this.state.email,
                   walletAddress: response.walletAddress
@@ -144,6 +179,8 @@ class OTPPage extends Component {
               this.props.history.push({
                 pathname: "/profile-page",
                 state: {
+                  phoneVerified: false,
+                  signUpForExistingUsers: false,
                   signUpByEmail: true,
                   email: this.state.email,
                   walletAddress,

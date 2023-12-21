@@ -42,20 +42,28 @@ class ProfilePage extends Component {
     super(props);
     this.state = {
       showLoader: false,
-      firstName: "",
-      lastName: "",
-      phone: "",
-      phoneVerified: false,
+      signUpForExistingUsers: this.props.location.state ? this.props.location.state.signUpForExistingUsers : false,
+      firstName: this.props.location.state ? this.props.location.state.firstName : "",
+      lastName: this.props.location.state ? this.props.location.state.lastName : "",
+      phone: this.props.location.state ? this.props.location.state.phone : "",
+      username: this.props.location.state ? this.props.location.state.username : "",
+      phoneVerified: this.props.location.state ? this.props.location.state.phoneVerified : false,
       displayUsername: "",
       email: this.props.location.state ? this.props.location.state.email : "",
       signUpByEmail: this.props.location.state ? this.props.location.state.signUpByEmail : false,
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",
       ztiAppName: "",
-      countryCode: {
-        label: "🇮🇩 +62",
-        value: "62"
-      },
-      countryCodesOptions: [],
+      countryCode: this.props.location.state
+        ? this.props.location.state.countryCode
+        || {
+          label: "🇮🇩 +62",
+          value: "62"
+        }
+        : {
+          label: "🇮🇩 +62",
+          value: "62"
+        },
+      countryCodesOptions: this.props.location.state ? this.props.location.state.countryCodesOptions : [],
       rpcUrl: config.rpcUrl,
       showCopyToClipboardToolTip: false,
       confirmationModal: false,
@@ -84,10 +92,14 @@ class ProfilePage extends Component {
     const profileData = await GeneralFunctions.getProfileData();
     if (profileData) this.setState(profileData);
     const ztiAppNameData = await GeneralFunctions.getZTIAppNameData();
-    const countryCodesOptions = await CountryCode.map(code => ({
-      label: `${code.emoji} +${code.dialingCode}`,
-      value: code.dialingCode
-    }))
+    const countryCodesOptions = this.state.signUpForExistingUsers
+      ? this.state.countryCodesOptions
+      : await CountryCode.filter(code => code.show).map(code => (
+        {
+          label: `${code.emoji} +${code.dialingCode}`,
+          value: code.dialingCode
+        }
+      ));
     this.setState({ countryCodesOptions, ztiAppName: ztiAppNameData.value });
     setTimeout(() => {
       this.setState({ walletConnectAlert: false });
@@ -263,6 +275,111 @@ class ProfilePage extends Component {
               Object.assign(response, { message: "User Account Created" });
               await Server.sendDataToMobileApp(JSON.stringify(response));
             }
+          }
+        }
+      }
+    } catch (error) {
+      this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
+    }
+  };
+
+  signUpForExistingUsers = async (event) => {
+    try {
+      event.preventDefault();
+      this.setState({ showLoader: true });
+      const tokenId = new Date().getTime();
+      let verifyDataResponse = await Server.request({
+        url: "/web3Auth/checkUsername",
+        method: "POST",
+        data: {
+          email: this.state.email,
+          username: this.state.username,
+          displayUsername: this.state.displayUsername
+        }
+      });
+      if (verifyDataResponse.success) {
+        let web3;
+        if (this.state.signUpByEmail) {
+          web3 = new Web3(this.state.rpcUrl);
+          await web3.eth.accounts.wallet.add(this.state.sponserPrivateKey);
+        } else {
+          let provider;
+          let details = navigator.userAgent;
+          let regexp = /android|iphone|kindle|ipad/i;
+          let isMobileDevice = regexp.test(details);
+          if (isMobileDevice) {
+            const connector = await wc.connect();
+            let walletConnectProvider = await wc.getWeb3Provider({
+              rpc: { [connector.chainId]: await config.networks[connector.chainId] }
+            });
+            await walletConnectProvider.enable();
+            provider = walletConnectProvider;
+          } else {
+            provider = Web3.givenProvider;
+          }
+          web3 = new Web3(provider);
+        }
+        const gasPrice = await new web3.eth.getGasPrice();
+        const myContract = await new web3.eth.Contract(membershipABI, config.REACT_APP_CONTRACT_ADDRESS, { gas: 1000000, gasPrice });
+        let blockchainResponse;
+        try {
+          blockchainResponse = await myContract.methods
+            .mintMembership("tokenURI", tokenId)
+            .send(
+              {
+                from: this.state.sponserWalletAddress
+              }
+            );
+        } catch (error) {
+          this.setState({ showLoader: false });
+          Swal.fire({
+            icon: "error",
+            text: `Blockchain error - ${error.message}`,
+            confirmButtonText: "OK",
+            confirmButtonColor: "#2CA8FF"
+          });
+        }
+        if (blockchainResponse && blockchainResponse.status) {
+          let response = await Server.request({
+            url: "/web3Auth/signup/existingUsers",
+            method: "POST",
+            data: {
+              tokenId,
+              email: this.state.email,
+              username: this.state.username,
+              displayUsername: this.state.displayUsername,
+              appName: this.state.ztiAppName,
+              password: this.state.recoveryPassword,
+              confirmPassword: this.state.recoveryPassword,
+              walletAddress: this.state.walletAddress,
+              keyShare1: this.state.keyShare1,
+              keyShare2: this.state.keyShare2,
+              transactionId: blockchainResponse.transactionHash,
+              date: new Date()
+            }
+          });
+          if (response.success) {
+            localStorage.setItem("tokenId", tokenId);
+            localStorage.setItem("accessToken", response.accessToken);
+            if (this.state.croppedImage) {
+              let formData = new FormData();
+              let blobData = await fetch(this.state.croppedImage).then(res => res.blob());
+              formData.append("image", blobData);
+              formData.append("username", `${this.state.countryCode.value}${this.state.phone}`);
+              await Server.postWithFormData(
+                "/api/v1/setAvatar",
+                formData,
+                response.accessToken
+              );
+            }
+            Object.assign(response, { message: "User Account Created" });
+            await Server.sendDataToMobileApp(JSON.stringify(response));
           }
         }
       }
@@ -565,7 +682,10 @@ class ProfilePage extends Component {
                     Copied
                   </Tooltip>
                 </Row>
-                <Form onSubmit={this.sendPhoneOTP}>
+                <Form onSubmit={this.state.signUpForExistingUsers
+                  ? this.handleSubmit
+                  : this.sendPhoneOTP
+                }>
                   <Row
                     style={{
                       justifyContent: "center",
@@ -585,6 +705,7 @@ class ProfilePage extends Component {
                         placeholder="Enter first name"
                         type="text"
                         required
+                        disabled={this.state.signUpForExistingUsers}
                         value={this.state.firstName}
                         onChange={(event) => this.setState({ firstName: event.target.value })}
                       ></Input>
@@ -599,6 +720,7 @@ class ProfilePage extends Component {
                         placeholder="Enter last name"
                         type="text"
                         required
+                        disabled={this.state.signUpForExistingUsers}
                         value={this.state.lastName}
                         onChange={(event) => this.setState({ lastName: event.target.value })}
                       ></Input>
@@ -618,6 +740,7 @@ class ProfilePage extends Component {
                             onChange={(result) => this.setState({ countryCode: result })}
                             options={this.state.countryCodesOptions}
                             required
+                            isDisabled={this.state.signUpForExistingUsers}
                             placeholder="Code"
                           />
                         </Col>
@@ -796,7 +919,10 @@ class ProfilePage extends Component {
                     margin: "25px 0px 0px 0px",
                     background: "transparent",
                   }}
-                  onClick={(event) => this.signup(event)}
+                  onClick={(event) => this.state.signUpForExistingUsers
+                    ? this.signUpForExistingUsers(event)
+                    : this.signup(event)
+                  }
                 >
                   OK
                 </Button>
