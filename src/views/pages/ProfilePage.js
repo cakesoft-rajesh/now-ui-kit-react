@@ -353,6 +353,8 @@ class ProfilePage extends Component {
               tokenId,
               email: this.state.email,
               username: this.state.username,
+              firstName: this.state.firstName,
+              lastName: this.state.lastName,
               displayUsername: this.state.displayUsername,
               appName: this.state.ztiAppName,
               password: this.state.recoveryPassword,
@@ -705,7 +707,6 @@ class ProfilePage extends Component {
                         placeholder="Enter first name"
                         type="text"
                         required
-                        disabled={this.state.signUpForExistingUsers}
                         value={this.state.firstName}
                         onChange={(event) => this.setState({ firstName: event.target.value })}
                       ></Input>
@@ -720,7 +721,6 @@ class ProfilePage extends Component {
                         placeholder="Enter last name"
                         type="text"
                         required
-                        disabled={this.state.signUpForExistingUsers}
                         value={this.state.lastName}
                         onChange={(event) => this.setState({ lastName: event.target.value })}
                       ></Input>
