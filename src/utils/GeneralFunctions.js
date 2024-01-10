@@ -1,4 +1,5 @@
 import CryptoJS from "crypto-js";
+import { findPhoneNumbersInText } from 'libphonenumber-js'
 import config from "../config";
 
 export const encrypt = (string) => {
@@ -163,23 +164,12 @@ export const maskEmailId = (email) => {
 }
 
 export const separateCountryCode = (phone) => {
-  if (phone.charAt(0) === '+' || phone.charAt(0) === '0') {
-    return {
-      countryCode: phone.replace(/[^a-zA-Z0-9+]/g, "").substring(1, 3),
-      phone: phone.replace(/[^a-zA-Z0-9+]/g, "").substring(3)
-    };
-  } else {
-    switch (phone.substring(0, 2)) {
-      case "62":
-      case "91":
-        return {
-          countryCode: phone.replace(/[^a-zA-Z0-9+]/g, "").substring(1, 2),
-          phone: phone.replace(/[^a-zA-Z0-9+]/g, "").substring(2)
-        };
-      default:
-        return phone;
-    }
-  }
+  phone = phone.charAt(0) === '+' ? phone : `+${phone}`;
+  let phoneData = findPhoneNumbersInText(phone);
+  return {
+    countryCode: phoneData[0].number.countryCallingCode,
+    phone: phoneData[0].number.nationalNumber
+  };
 }
 
 let profileData;

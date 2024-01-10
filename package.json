@@ -9,6 +9,7 @@
     "ethers": "5.7.2",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9",
+    "libphonenumber-js": "^1.10.53",
     "moment": "2.29.4",
     "nouislider": "15.1.0",
     "react": ">=16.8.0",
