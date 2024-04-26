@@ -14,9 +14,9 @@ const intialValue = [
     logo: "zti.png"
   },
   {
-    label: "OWN",
+    label: "Orange",
     value: "own",
-    logo: "own.png"
+    logo: "orange.png"
   },
   {
     label: "Kentungan",
