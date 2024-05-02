@@ -22,11 +22,6 @@ const intialValue = [
     label: "Orange Global Network",
     value: "orange",
     logo: "orange.png"
-  },
-  {
-    label: "Kentungan",
-    value: "kentungan",
-    logo: "kentungan.png"
   }
 ];
 
@@ -105,10 +100,8 @@ class SelectedCommunityPage extends Component {
                 cursor: "pointer"
               }}
               onClick={() => {
-                if (appName.value === "zti" || appName.value === "own") {
-                  GeneralFunctions.setZTIAppNameData(appName);
-                  this.props.history.push("/login-page");
-                }
+                GeneralFunctions.setZTIAppNameData(appName);
+                this.props.history.push("/login-page");
               }}
             >
               <img
