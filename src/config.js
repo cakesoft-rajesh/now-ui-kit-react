@@ -6,7 +6,7 @@ const config = {
     REACT_APP_SECRET: process.env.REACT_APP_SECRET,
     rpcUrl: process.env.REACT_APP_NODE_ENV === "production"
         ? "https://polygon-rpc.com"
-        : "https://rpc-mumbai.maticvigil.com",
+        : "https://rpc-amoy.polygon.technology",
     networks: process.env.REACT_APP_NODE_ENV === "production"
         ? {
             // chainId : RPC URL
@@ -14,7 +14,8 @@ const config = {
         }
         : {
             // chainId : RPC URL
-            80001: "https://rpc-mumbai.maticvigil.com" //for polygon testnet
+            80001: "https://rpc-mumbai.maticvigil.com", //for mumbai polygon testnet
+            80002: "https://rpc-amoy.polygon.technology/" //for amoy polygon testnet
         },
     sponserWalletAddress: process.env.REACT_APP_SPONSER_WALLET_ADDRESS,
     sponserPrivateKey: process.env.REACT_APP_SPONSER_PRIVATE_KEY
