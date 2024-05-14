@@ -164,7 +164,7 @@ class OTPPage extends Component {
                 email: this.state.email,
                 walletAddress: response.walletAddress
               };
-              if (response.userData.phone) {
+              if (response.userData && response.userData.phone) {
                 let { countryCode, phone } = await GeneralFunctions.separateCountryCode(response.userData.phone);
                 let countryCodesOption = CountryCode.find(code => code.dialingCode === countryCode);
                 Object.assign(stateObject,
