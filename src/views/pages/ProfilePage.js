@@ -48,7 +48,7 @@ class ProfilePage extends Component {
       phone: this.props.location.state ? this.props.location.state.phone : "",
       username: this.props.location.state ? this.props.location.state.username : "",
       phoneVerified: this.props.location.state ? this.props.location.state.phoneVerified : false,
-      displayUsername: "",
+      displayUsername: this.props.location.state ? this.props.location.state.displayUsername : false,
       email: this.props.location.state ? this.props.location.state.email : "",
       signUpByEmail: this.props.location.state ? this.props.location.state.signUpByEmail : false,
       walletAddress: this.props.location.state ? this.props.location.state.walletAddress : "",

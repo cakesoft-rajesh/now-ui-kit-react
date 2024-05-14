@@ -157,15 +157,35 @@ class OTPPage extends Component {
               localStorage.setItem("keyShare1", response.keyShare1);
               localStorage.setItem("keyShare2", response.keyShare2);
               localStorage.setItem("walletAddress", response.walletAddress);
+              let stateObject = {
+                phoneVerified: false,
+                signUpForExistingUsers: false,
+                signUpByEmail: true,
+                email: this.state.email,
+                walletAddress: response.walletAddress
+              };
+              if (response.userData.phone) {
+                let { countryCode, phone } = await GeneralFunctions.separateCountryCode(response.userData.phone);
+                let countryCodesOption = CountryCode.find(code => code.dialingCode === countryCode);
+                Object.assign(stateObject,
+                  {
+                    phoneVerified: true,
+                    phone,
+                    username: response.userData.username,
+                    displayUsername: response.userData.displayUsername,
+                    firstName: response.userData.firstName,
+                    lastName: response.userData.lastName,
+                    countryCode: {
+                      label: `${countryCodesOption.emoji} +${countryCodesOption.dialingCode}`,
+                      value: countryCodesOption.dialingCode
+                    },
+                    countryCodesOptions: countryCodesOption
+                  }
+                );
+              }
               this.props.history.push({
                 pathname: "/profile-page",
-                state: {
-                  phoneVerified: false,
-                  signUpForExistingUsers: false,
-                  signUpByEmail: true,
-                  email: this.state.email,
-                  walletAddress: response.walletAddress
-                }
+                state: stateObject
               });
             } else {
               const { privateKey, walletAddress } = this.createWallet();
@@ -176,15 +196,35 @@ class OTPPage extends Component {
               localStorage.setItem("keyShare1", keyShare1);
               localStorage.setItem("keyShare2", keyShare2);
               localStorage.setItem("walletAddress", walletAddress);
+              let stateObject = {
+                phoneVerified: false,
+                signUpForExistingUsers: false,
+                signUpByEmail: true,
+                email: this.state.email,
+                walletAddress,
+              };
+              if (response.userData.phone) {
+                let { countryCode, phone } = await GeneralFunctions.separateCountryCode(response.userData.phone);
+                let countryCodesOption = CountryCode.find(code => code.dialingCode === countryCode);
+                Object.assign(stateObject,
+                  {
+                    phoneVerified: true,
+                    phone,
+                    username: response.userData.username,
+                    displayUsername: response.userData.displayUsername,
+                    firstName: response.userData.firstName,
+                    lastName: response.userData.lastName,
+                    countryCode: {
+                      label: `${countryCodesOption.emoji} +${countryCodesOption.dialingCode}`,
+                      value: countryCodesOption.dialingCode
+                    },
+                    countryCodesOptions: countryCodesOption
+                  }
+                );
+              }
               this.props.history.push({
                 pathname: "/profile-page",
-                state: {
-                  phoneVerified: false,
-                  signUpForExistingUsers: false,
-                  signUpByEmail: true,
-                  email: this.state.email,
-                  walletAddress,
-                }
+                state: stateObject
               });
             }
             break;
