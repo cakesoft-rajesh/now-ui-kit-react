@@ -125,7 +125,8 @@ class LoginPage extends Component {
           pathname: "/otp-page",
           state: {
             fromPage: otpFor === 'login' ? "loginPage" : "signupPage",
-            email: otpFor === 'login' ? this.state.email : this.state.emailForSignup
+            email: otpFor === 'login' ? this.state.email : this.state.emailForSignup,
+            otpExpiryTime: response.otpExpiryTime
           }
         });
       }

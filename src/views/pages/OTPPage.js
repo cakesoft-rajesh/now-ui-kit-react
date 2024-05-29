@@ -7,6 +7,7 @@ import {
   Col,
   Button,
 } from "reactstrap";
+import Countdown, { zeroPad } from 'react-countdown';
 import PageSpinner from "../../components/PageSpinner";
 import CountryCode from "../../utils/CountryCode.json";
 import * as Server from "../../utils/Server";
@@ -25,7 +26,8 @@ class OTPPage extends Component {
       userData: this.props.location.state ? this.props.location.state.user : "",
       walletAddressExistsOnPhone: localStorage.getItem("walletAddressExistsOnPhone") ? true : false,
       walletAddress: localStorage.getItem("walletAddress"),
-      appNameData: GeneralFunctions.getZTIAppNameData()
+      appNameData: GeneralFunctions.getZTIAppNameData(),
+      otpExpiryTime: this.props.location.state ? this.props.location.state.otpExpiryTime : "",
     };
   }
 
@@ -59,6 +61,34 @@ class OTPPage extends Component {
             ...this.state.userData,
             skip2FactorAuth: true
           }
+        });
+      }
+    } catch (error) {
+      this.setState({ showLoader: false });
+      Swal.fire({
+        icon: "error",
+        text: error.message,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2CA8FF"
+      });
+    }
+  };
+
+  resendOTP = async (event) => {
+    try {
+      event.preventDefault();
+      this.setState({ showLoader: true });
+      let response = await Server.request({
+        url: "/email/sendOTP",
+        method: "POST",
+        data: {
+          email: this.state.email
+        }
+      });
+      if (response.success) {
+        this.setState({
+          showLoader: false,
+          otpExpiryTime: response.otpExpiryTime
         });
       }
     } catch (error) {
@@ -283,7 +313,7 @@ class OTPPage extends Component {
                       Enter the code here:
                     </div>
                   </Row>
-                  <Row style={{ justifyContent: "flex-start", margin: "25px 0px" }}>
+                  <Row style={{ justifyContent: "flex-start", margin: "25px 0px 0px 0px" }}>
                     <OtpInput
                       className="d-flex justify-content-center otpCss"
                       inputStyle={{
@@ -306,6 +336,25 @@ class OTPPage extends Component {
                       }
                       numInputs={6}
                       separator={<span style={{ color: "black" }}>-</span>}
+                    />
+                  </Row>
+                  <Row style={{ justifyContent: "flex-end", margin: "10px 0px 15px 0px" }}>
+                    <Countdown
+                      renderer={({ minutes, seconds, completed }) => (
+                        <span
+                          style={{
+                            color: "gray",
+                            fontSize: "20px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          {completed
+                            ? <label onClick={this.resendOTP}>Resend OTP</label>
+                            : `${zeroPad(minutes)}:${zeroPad(seconds)}`
+                          }
+                        </span>
+                      )}
+                      date={this.state.otpExpiryTime}
                     />
                   </Row>
                   <Row style={{ justifyContent: "flex-start", margin: "0px 30px" }}>
